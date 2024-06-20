@@ -20,9 +20,9 @@ import { RouterLink } from 'vue-router'
                     <li class="nav-item">
                         <RouterLink to="/stats" class="nav-link">Stats</RouterLink>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <RouterLink to="/concerts" class="nav-link">Concerts</RouterLink>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </div>

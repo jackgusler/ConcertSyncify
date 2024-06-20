@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const root = import.meta.env.VITE_API_ROOT;
+const root: string = import.meta.env.VITE_API_ROOT;
 
 const instance = axios.create({
     baseURL: root,
