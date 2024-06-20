@@ -44,7 +44,7 @@ module.exports = {
         { headers: authOptions.headers }
       );
       const { access_token, refresh_token } = response.data;
-      const redirectUrl = `http://localhost:5173?access_token=${access_token}&refresh_token=${refresh_token}`;
+      const redirectUrl = `http://localhost:5173/stats?access_token=${access_token}&refresh_token=${refresh_token}`;
       return redirectUrl;
     } catch (error) {
       const redirectUrl = `http://localhost:5173/#/error/invalid_token`;

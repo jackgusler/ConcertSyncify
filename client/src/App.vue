@@ -1,19 +1,17 @@
 <script setup lang="ts">
+import 'bootstrap/dist/js/bootstrap.bundle'
+import NavBar from './components/NavBar.vue'
 // import { RouterLink, RouterView } from 'vue-router'
-import ExampleView from './views/ExampleView.vue';
-import SpotifyLogin from './views/SpotifyLogin.vue';
 
 </script>
 
 <template>
-  <header>
-    <nav>
-      <SpotifyLogin />
-    </nav>
-  </header>
-
-  <!-- <RouterView /> -->
+  <nav>
+    <NavBar />
+  </nav>
+  <div>
+    <RouterView />
+  </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
