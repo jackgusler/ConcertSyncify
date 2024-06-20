@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { login } from '../model/users'
+import { login } from '../model/spotify'
 
 </script>
 

@@ -23,6 +23,10 @@ export interface Artist {
   uri: string;
 }
 
+export const login = async () => {
+  window.location.href = axios.defaults.baseURL + '/api/spotify/login';
+};
+
 export const getTopArtists = async () => {
   const authStore = useAuthStore()
   const accessToken = authStore.accessToken
