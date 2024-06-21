@@ -18,5 +18,11 @@ export const useAuthStore = defineStore('auth', {
       this.accessToken = localStorage.getItem('access_token');
       this.refreshToken = localStorage.getItem('refresh_token');
     },
+    clearTokens() {
+      this.accessToken = null;
+      this.refreshToken = null;
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+    },
   },
 });

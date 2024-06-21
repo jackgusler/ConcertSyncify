@@ -1,4 +1,6 @@
 import axios from '../myAxios'
+// router to push user to home page
+import router from '@/router'
 import { useAuthStore } from '@/stores/auth'
 
 export interface Artist {
@@ -25,6 +27,12 @@ export interface Artist {
 
 export const login = async () => {
   window.location.href = axios.defaults.baseURL + '/api/spotify/login';
+};
+
+export const logout = async () => {
+  const authStore = useAuthStore()
+  authStore.clearTokens()
+  router.push('/')
 };
 
 export const getTopArtists = async () => {

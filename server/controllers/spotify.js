@@ -17,12 +17,6 @@ router.get("/login", (req, res) => {
   res.redirect(auth_url);
 });
 
-router.post("/logout", (req, res) => {
-  req.session.access_token = null;
-  req.session.refresh_token = null;
-  res.redirect("/");
-});
-
 router.get("/callback", async (req, res) => {
   const auth_options = {
     url: "https://accounts.spotify.com/api/token",
