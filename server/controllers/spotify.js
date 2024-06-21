@@ -12,9 +12,9 @@ const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 router.get("/login", (req, res) => {
   const scope = "user-read-private user-read-email user-top-read";
 
-  const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}`;
+  const auth_url = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}`;
 
-  res.redirect(authUrl);
+  res.redirect(auth_url);
 });
 
 router.post("/logout", (req, res) => {
@@ -24,7 +24,7 @@ router.post("/logout", (req, res) => {
 });
 
 router.get("/callback", async (req, res) => {
-  const authOptions = {
+  const auth_options = {
     url: "https://accounts.spotify.com/api/token",
     form: {
       code: req.query.code,
@@ -40,28 +40,28 @@ router.get("/callback", async (req, res) => {
   };
   try {
     const response = await axios.post(
-      authOptions.url,
-      querystring.stringify(authOptions.form),
-      { headers: authOptions.headers }
+      auth_options.url,
+      querystring.stringify(auth_options.form),
+      { headers: auth_options.headers }
     );
     const { access_token, refresh_token } = response.data;
-    const redirectUrl = `http://localhost:5173/stats?access_token=${access_token}&refresh_token=${refresh_token}`;
-    res.redirect(redirectUrl);
+    const redirect_url = `http://localhost:5173/stats?access_token=${access_token}&refresh_token=${refresh_token}`;
+    res.redirect(redirect_url);
   } catch (error) {
-    const redirectUrl = `http://localhost:5173/#/error/invalid_token`;
-    res.redirect(redirectUrl);
-    return redirectUrl;
+    const redirect_url = `http://localhost:5173/#/error/invalid_token`;
+    res.redirect(redirect_url);
+    return redirect_url;
   }
 });
 
 router.get("/top-artists", async (req, res) => {
-  const accessToken = req.headers.authorization.split(" ")[1];
+  const access_token = req.headers.authorization.split(" ")[1];
   try {
     const response = await axios.get(
       "https://api.spotify.com/v1/me/top/artists",
       {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${access_token}`,
         },
       }
     );

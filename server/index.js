@@ -7,12 +7,14 @@ const cors = require("cors");
 
 const port = process.env.PORT || 3000;
 
-const spotifyController = require("./controllers/spotify");
+const spotify_controller = require("./controllers/spotify");
+const ticketmaster_controller = require("./controllers/ticketmaster");
 
 app
   .use(cors())
   .use(express.json())
-  .use("/api/spotify", spotifyController);
+  .use("/api/spotify", spotify_controller)
+  .use("/api/ticketmaster", ticketmaster_controller);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
