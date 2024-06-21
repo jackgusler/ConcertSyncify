@@ -29,7 +29,10 @@ onMounted(async () => {
                     <ul>
                         <!-- Ensure events[artist.id] is defined before iterating over it -->
                         <li v-for="event in (events[artist.id] || [])" :key="event.id">
-                            <b>{{ event.name }}</b> - {{ event.dates.start.timeTBA ? 'Time TBA' : event.dates.start.localDate}}
+                            <b>{{ event.name }}</b> 
+                            - {{ event.dates.start.timeTBA ? 'Time TBA' :
+                            event.dates.start.localDate}} in
+                            {{ event._embedded.venues[0].city ? event._embedded.venues[0].city.name : 'Unknown' }}
                         </li>
                     </ul>
                 </li>
