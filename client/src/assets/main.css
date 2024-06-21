@@ -1,3 +1,36 @@
 /* @import './base.css'; */
 @import url('bootstrap/dist/css/bootstrap.min.css');
 
+body {
+  background: #000000;
+}
+
+.box,
+.card,
+.spotify-auth {
+  background: #121212;
+}
+
+.btn-success {
+  background-color: #1db954;
+  /* Spotify green */
+  border-color: #1db954;
+  /* Spotify green */
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active {
+  background-color: #1aa34a !important;
+  /* Darker Spotify green */
+  border-color: #1aa34a !important;
+  /* Darker Spotify green */
+}
+
+h1{
+    color: white;
+}
+
+p.fs-4 {
+  color: #6D6D6D;
+}
