@@ -42,7 +42,7 @@ router.get("/callback", async (req, res) => {
     const redirect_url = `http://localhost:5173/stats?access_token=${access_token}&refresh_token=${refresh_token}`;
     res.redirect(redirect_url);
   } catch (error) {
-    const redirect_url = `http://localhost:5173/#/error/invalid_token`;
+    const redirect_url = `http://localhost:5173/error`;
     res.redirect(redirect_url);
     return redirect_url;
   }
