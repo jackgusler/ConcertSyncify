@@ -18,7 +18,7 @@ router.get("/events", async (req, res) => {
     const response = await axios.get(api_url);
     res.json(response.data);
   } catch (error) {
-    console.error("Error calling Ticketmaster API", error);
+    console.error("Error calling Ticketmaster API", error.message);
     res.status(500).send("Error calling Ticketmaster API");
   }
 });

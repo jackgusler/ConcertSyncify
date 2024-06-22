@@ -12,19 +12,17 @@ body {
 }
 
 .btn-success {
-  background-color: #1db954;
-  /* Spotify green */
-  border-color: #1db954;
-  /* Spotify green */
+  background-color: #1db954 !important;
+  border-color: #1db954 !important;
+  color: white !important;
 }
 
 .btn-success:hover,
 .btn-success:focus,
 .btn-success:active {
   background-color: #1aa34a !important;
-  /* Darker Spotify green */
   border-color: #1aa34a !important;
-  /* Darker Spotify green */
+  color: white !important;
 }
 
 h1 {
@@ -39,4 +37,12 @@ p.fs-4 {
   font-weight: bold;
   padding: 10px 20px;
   border-radius: 40px;
+}
+
+.circle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px; /* Adjust size as needed */
+  height: 50px; /* Adjust size as needed */
 }

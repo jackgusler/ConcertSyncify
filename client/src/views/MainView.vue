@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { login, logout } from '../model/spotify'
-import { useAuthStore } from '../stores/auth'
+import { useAuthStore } from '@/stores/auth';
 import logo from '../assets/logos/Spotify_Logo_RGB_Green.png'
 
-const authStore = useAuthStore()
+const authStore = useAuthStore();
 
 </script>
 
@@ -19,19 +19,23 @@ const authStore = useAuthStore()
             <div class="col-md-4 mb-md-0 mb-2">
                 <div class="box h-100 p-5 rounded-3">
                     <h1>Discover New Music Events</h1>
-                    <p class="fs-4">Never miss a concert again. Discover events for your favorite artists and genres, or find new ones to explore.
+                    <p class="fs-4">Never miss a concert again. Discover events for your favorite artists and genres, or
+                        find new ones to explore.
                     </p>
                 </div>
             </div>
             <div class="col-md-4 px-md-0 mb-md-0 mb-2">
                 <div class="box h-100 rounded-3 d-flex flex-column align-items-center">
                     <img :src="logo" alt="Spotify Logo" class="img-fluid mb-3">
-                    <div class="p-3">
-                        <button v-if="!authStore.accessToken" @click="login" class="btn btn-success">
+                    <div class="p-3 d-flex flex-column">
+                        <button v-if="!authStore.accessToken" @click="login" class="btn btn-success mb-2">
                             Login with Spotify
                         </button>
-                        <button v-else @click="logout" class="btn btn-success">
-                            Logout</button>
+                        <button v-else @click="logout" class="btn btn-success mb-2">
+                            Logout
+                        </button>
+                        <router-link v-if="authStore.accessToken" to="/stats"
+                            class="btn btn-success">Dashboard</router-link>
                     </div>
                 </div>
             </div>
@@ -85,6 +89,7 @@ img.img-fluid {
     --logo-height: 100px;
     padding: calc(var(--logo-height, 100px) / 2);
 }
+
 a {
     color: #198754;
 }
