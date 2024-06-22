@@ -17,23 +17,27 @@ const authStore = useAuthStore()
             </div>
         </div>
 
-        <div class="row g-3 mb-2">
-            <div class="col-md-4">
+        <div class="row mb-md-2">
+            <div class="col-md-4 mb-md-0 mb-2">
                 <div class="box h-100 p-5 rounded-3">
                     <h1>Discover New Music Events</h1>
                     <p class="fs-4">Never miss a concert again. Discover events for your favorite artists and genres.
                     </p>
                 </div>
             </div>
-            <div class="col-md-4 p-0">
+            <div class="col-md-4 px-md-0 mb-md-0 mb-2">
                 <div class="box h-100 rounded-3 d-flex flex-column align-items-center">
                     <img :src="logo" alt="Spotify Logo" class="img-fluid mb-3">
-                    <button v-if="!authStore.accessToken" @click="login" class="btn btn-success btn-lg">Login with
-                        Spotify</button>
-                    <button v-else @click="logout" class="btn btn-success btn-lg">Logout</button>
+                    <div class="p-3">
+                        <button v-if="!authStore.accessToken" @click="login" class="btn btn-success">
+                            Login with Spotify
+                        </button>
+                        <button v-else @click="logout" class="btn btn-success">
+                            Logout</button>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 mb-md-0 mb-2">
                 <div class="box h-100 p-5 rounded-3">
                     <h1>Easy Calendar Integration</h1>
                     <p class="fs-4">Add events directly to your Google Calendar with just a click. Stay organized
@@ -57,21 +61,18 @@ const authStore = useAuthStore()
 .container {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 1rem); /* Make the container take up the full height of the viewport */
-    width: 100vw;
+    height: calc(100vh - 1rem);
 }
 
-.box, .row {
-    flex: 1; /* Each main div (top box, middle row, bottom box) takes up equal space */
-    justify-content: center; /* Center content vertically */
+.box {
+    flex: 1;
 }
 
-/* Adjustments for the row to ensure proper spacing and alignment */
 .row {
     --bs-gutter-x: 1.2rem;
+    justify-content: center;
 }
 
-/* Adjustments for images and additional styles remain unchanged */
 img {
     min-width: 70px;
 }

@@ -27,10 +27,16 @@ body {
   /* Darker Spotify green */
 }
 
-h1{
-    color: white;
+h1 {
+  color: white;
 }
 
 p.fs-4 {
-  color: #6D6D6D;
+  color: #6d6d6d;
+}
+
+.btn {
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 40px;
 }
