@@ -11,9 +11,7 @@ const authStore = useAuthStore()
     <div class="container mt-2">
         <div class="box p-5 mb-2 rounded-3 d-flex align-items-center justify-content-center">
             <div class="text-center">
-                <h1 class="display-5 fw-bold">ConcertSyncify</h1>
-                <p class="fs-4">Sync your Spotify top artists or genres with upcoming concerts and add them to your
-                    Google Calendar!</p>
+                <h1 class="display-5 fw-bold larger-title">Concert Syncify</h1>
             </div>
         </div>
 
@@ -21,7 +19,7 @@ const authStore = useAuthStore()
             <div class="col-md-4 mb-md-0 mb-2">
                 <div class="box h-100 p-5 rounded-3">
                     <h1>Discover New Music Events</h1>
-                    <p class="fs-4">Never miss a concert again. Discover events for your favorite artists and genres.
+                    <p class="fs-4">Never miss a concert again. Discover events for your favorite artists and genres, or find new ones to explore.
                     </p>
                 </div>
             </div>
@@ -50,7 +48,11 @@ const authStore = useAuthStore()
             <div class="text-center">
                 <h1>About</h1>
                 <p class="fs-4">
-                    <!-- About content goes here -->
+                    ConcertSyncify is a web application that allows users to sync their Spotify top artists or genres
+                    with upcoming concerts and add them to their Google Calendar. The application uses the Spotify API
+                    to fetch the user's top artists and genres and the Ticketmaster API to fetch upcoming concerts. The
+                    user can then add the concerts to their Google Calendar with just a click. You can view the GitHub
+                    <a href="https://github.com/jackgusler/ConcertSyncify">here</a>!
                 </p>
             </div>
         </div>
@@ -82,5 +84,12 @@ img.img-fluid {
     height: auto;
     --logo-height: 100px;
     padding: calc(var(--logo-height, 100px) / 2);
+}
+a {
+    color: #198754;
+}
+
+.larger-title {
+    font-size: 8rem;
 }
 </style>
