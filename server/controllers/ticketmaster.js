@@ -26,12 +26,12 @@ const fetchWithRetry = async (url, retries = 3, delayTime = 1000) => {
 };
 
 router.get("/events", async (req, res) => {
-  const artist_name = req.query.artistName;
-  if (!artist_name) {
-    return res.status(400).send("Missing artist_name query parameter");
+  const keyword = req.query.keyword;
+  if (!keyword) {
+    return res.status(400).send("Missing keyword query parameter");
   }
 
-  const api_url = `https://app.ticketmaster.com/discovery/v2/events.json?keyword=${artist_name}&apikey=${consumer_key}`;
+  const api_url = `https://app.ticketmaster.com/discovery/v2/events.json?keyword=${keyword}&apikey=${consumer_key}`;
 
   try {
     const response = await fetchWithRetry(api_url);

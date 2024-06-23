@@ -1,11 +1,11 @@
 // ticketmaster.ts
 import axios from '../myAxios'
 
-export const getEvents = async (artistName: string) => {
+export const getEvents = async (keyword: string) => {
   try {
     const response = await axios.get('/api/ticketmaster/events', {
       params: {
-        artistName
+        keyword
       }
     })
     if (!response.data._embedded) {

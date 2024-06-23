@@ -25,6 +25,11 @@ export interface Artist {
   uri: string;
 }
 
+export interface Genre {
+  genre: string;
+  image: string;
+}
+
 export const login = async () => {
   window.location.href = axios.defaults.baseURL + '/api/spotify/login';
 };
@@ -72,19 +77,18 @@ export const getTopArtists = async () => {
 }
 
 export const getTopGenres = async () => {
-  const authStore = useAuthStore()
-  const accessToken = authStore.accessToken
+  const authStore = useAuthStore();
+  const accessToken = authStore.accessToken;
   if (accessToken) {
     try {
       const response = await axios.get('/api/spotify/top-genres', {
         headers: {
           Authorization: `Bearer ${accessToken}`
         }
-      })
-      console.log(response.data.topGenres) // Corrected from response.data.items to response.data.topGenres
-      return response.data.topGenres // Corrected from response.data.items to response.data.topGenres
+      });
+      return response.data.topGenres; // This should be an array of objects [{ genre: 'Genre Name', image: 'Image URL' }, ...]
     } catch (error) {
-      console.error('Error fetching top genres:', error)
+      console.error('Error fetching top genres:', error);
     }
   }
-}
+};
