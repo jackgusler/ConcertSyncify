@@ -34,7 +34,7 @@ import GenreCardList from '../components/GenreCardList.vue';
                                 </div>
                             </div>
                         </div>
-                        <!-- <ArtistCardList /> -->
+                        <ArtistCardList />
                     </div>
                 </div>
                 <div class="row flex-grow-1" style="height: calc(50vh - .8rem);">

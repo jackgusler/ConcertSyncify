@@ -27,7 +27,7 @@ export interface Artist {
 
 export interface Genre {
   genre: string;
-  image: string;
+  artist: Artist
 }
 
 export const login = async () => {
@@ -86,7 +86,8 @@ export const getTopGenres = async () => {
           Authorization: `Bearer ${accessToken}`
         }
       });
-      return response.data.topGenres; // This should be an array of objects [{ genre: 'Genre Name', image: 'Image URL' }, ...]
+      // Adjusted to match the backend response structure
+      return response.data.genres; // Now correctly accessing the 'genres' property
     } catch (error) {
       console.error('Error fetching top genres:', error);
     }

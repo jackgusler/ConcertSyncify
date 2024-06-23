@@ -13,13 +13,13 @@ const events = ref<Event[]>([]);
 const hasEvents = ref(false);
 
 onMounted(async () => {
-    if (props.artist && props.artist.name) {
-        const artistEvents = await getEvents(props.artist.name);
-        if (artistEvents && artistEvents.length > 0) {
-            events.value = artistEvents;
-            hasEvents.value = true;
-        }
-    }
+    // if (props.artist && props.artist.name) {
+    //     const artistEvents = await getEvents(props.artist.name);
+    //     if (artistEvents && artistEvents.length > 0) {
+    //         events.value = artistEvents;
+    //         hasEvents.value = true;
+    //     }
+    // }
 });
 
 </script>
@@ -38,7 +38,7 @@ onMounted(async () => {
                     class="artist-image" style="margin-top: 2.5rem;" alt="Artist Image">
             </template>
         </a>
-        <div v-if="hasEvents" class="card-body pt-0 d-flex flex-column justify-content-end align-items-center"
+        <!-- <div v-if="hasEvents" class="card-body pt-0 d-flex flex-column justify-content-end align-items-center"
             style="height: 100%;">
             <p class="my-2">
             <div class="truncate-event">
@@ -57,60 +57,11 @@ onMounted(async () => {
         </div>
         <div v-else class="card-body d-flex flex-column justify-content-end align-items-center">
             <button class="btn btn-secondary" disabled>No Events</button>
-        </div>
+        </div> -->
     </div>
 </template>
 
 <style scoped>
-.truncate {
-    position: absolute;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: calc(100% - 2rem);
-    line-height: 1.2em;
-    padding-bottom: 0.2em;
-}
-
-.truncate-event {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: 1.5rem;
-    line-height: 1.5em;
-    width: 100%;
-}
-
-.colon {
-    white-space: nowrap;
-}
-
-.card {
-    background: linear-gradient(to bottom, #242424 0%, #242424 75%, #323231 100%);
-    border-radius: 20px;
-    border: 2px solid rgb(60, 60, 60);
-    overflow: hidden;
-    height: 380px;
-    box-shadow: 0px 0px 4px rgba(30, 30, 30, 1);
-}
-
-.card-body {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    padding-bottom: .6rem;
-}
-
-.artist-image {
-    width: 12rem;
-    height: 12rem;
-    box-shadow: 0px 0px 30px rgba(0, 0, 0, 1);
-}
-
 .card-title,
 h5,
 p {

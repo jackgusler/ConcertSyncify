@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { type Artist, getTopArtists } from '@/model/spotify';
-import ArtistCard from '../components/ArtistCard.vue';
+import ArtistCard from './ArtistCard.vue';
 
 const allArtists = ref<Artist[]>([]);
 const centerIndex = ref(0);
@@ -68,7 +68,7 @@ function stopScrolling() {
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
         </div>
-        <div class="col artist-display-container" style="overflow: hidden; position: relative; height: 380px;">
+        <div class="col list-display-container">
             <ArtistCard class="card-hover" v-for="(item, index) in artistStyles" :key="item.artist.id"
                 :artist="item.artist" :style="item.style" :listIndex="index" :centerIndex="centerIndex" />
         </div>
@@ -81,37 +81,4 @@ function stopScrolling() {
     </div>
 </template>
 
-<style scoped>
-.artist-display-container {
-    overflow: hidden;
-    position: relative;
-    height: 380px;
-    width: 100%;
-}
-
-.artist-display-container>* {
-    flex: 0 0 auto;
-    position: absolute;
-}
-
-.card-hover {
-    transition: transform 0.4s, z-index 0.4s, box-shadow 0.3s;
-    /* Combine transitions */
-}
-
-.card-hover:hover {
-    box-shadow: 0px 0px 30px rgba(0, 0, 0, 1);
-}
-
-.artist-display-container::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to right, #121212 0%, transparent 25%, transparent 75%, #121212 100%);
-    pointer-events: none;
-    z-index: 200;
-}
-</style>
+<style scoped></style>

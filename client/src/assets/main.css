@@ -24,6 +24,20 @@ body {
   color: white !important;
 }
 
+.btn-secondary {
+  background-color: #323231 !important;
+  border-color: #323231 !important;
+  color: white !important;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active {
+  background-color: #242424 !important;
+  border-color: #242424 !important;
+  color: white !important;
+}
+
 h1 {
   color: white;
 }
@@ -42,11 +56,10 @@ p.fs-4 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 50px; /* Adjust size as needed */
-  height: 50px; /* Adjust size as needed */
+  width: 50px;
+  height: 50px;
 }
 
-/* Add this to your main.css or another global stylesheet */
 .v-popper--theme-tooltip-top .v-popper__inner {
   background: #1db954 !important;
   color: white !important;
@@ -58,4 +71,91 @@ p.fs-4 {
 
 .v-popper--theme-tooltip-top .v-popper__arrow-outer {
   border-color: #1db954 !important;
+}
+
+.list-display-container {
+  overflow: hidden;
+  position: relative;
+  height: 380px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  height: 380px;
+}
+
+.list-display-container > * {
+  flex: 0 0 auto;
+  position: absolute;
+}
+
+.card-hover {
+  transition:
+    transform 0.4s,
+    z-index 0.4s,
+    box-shadow 0.3s;
+}
+
+.card-hover:hover {
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 1);
+}
+
+.list-display-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to right, #121212 0%, transparent 25%, transparent 75%, #121212 100%);
+  pointer-events: none;
+  z-index: 200;
+}
+
+.card {
+  background: linear-gradient(to bottom, #242424 0%, #242424 75%, #323231 100%);
+  border-radius: 20px;
+  border: 2px solid rgb(60, 60, 60);
+  overflow: hidden;
+  height: 380px;
+  box-shadow: 0px 0px 4px rgba(30, 30, 30, 1);
+}
+
+.card-body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 0.6rem;
+}
+
+.artist-image {
+  width: 12rem;
+  height: 12rem;
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 1);
+}
+
+.truncate {
+  position: absolute;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 2rem);
+  line-height: 1.2em;
+  padding-bottom: 0.2em;
+}
+
+.truncate-event {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 1.5rem;
+  line-height: 1.5em;
+  width: 100%;
+}
+
+.colon {
+  white-space: nowrap;
 }

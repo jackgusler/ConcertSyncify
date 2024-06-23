@@ -101,7 +101,7 @@ router.get("/top-genres", async (req, res) => {
       });
     });
 
-    // Step 3: Search for Artists by Genre and Extract First Artist's Image in Parallel
+    // Step 3: Search for Artists by Genre and Extract First Artist in Parallel
     let searchPromises = Array.from(genres).map((genre) =>
       axios
         .get(`https://api.spotify.com/v1/search`, {
@@ -114,36 +114,24 @@ router.get("/top-genres", async (req, res) => {
             limit: 1,
           },
         })
-        .then((response) => ({ genre, response }))
+        .then((response) => ({ genre, artist: response.data.artists.items[0] })) // Directly using the artist object from Spotify
         .catch((error) => {
           console.error(`Error searching for genre ${genre}:`, error);
-          return { genre, response: null }; // Handle errors gracefully
+          return { genre, artist: null }; // Handle errors gracefully
         })
     );
 
     // Wait for all search requests to complete
     let results = await Promise.all(searchPromises);
 
-    // Process results
-    let genreImageMap = {};
-    results.forEach(({ genre, response }) => {
-      if (response && response.data.artists.items.length > 0) {
-        const artist = response.data.artists.items[0];
-        if (artist.images.length > 0) {
-          genreImageMap[genre] = artist.images[0].url;
-        }
-      }
-    });
+    // Step 4: Prepare the Response Data (Modified to send only top 10 genres)
+    let genreArtistMap = results.filter(({ artist }) => artist !== null);
 
-    // Step 4: Prepare the Response Data
-    const topGenres = Object.keys(genreImageMap)
-      .map((genre) => ({
-        genre: genre,
-        image: genreImageMap[genre],
-      }))
-      .slice(0, 10); // Limit to top 10 genres
+    // Assuming genres are already in the desired order or no specific order is required
+    // If you need to sort them based on a criterion, do it before slicing
+    let top10Genres = genreArtistMap.slice(0, 10);
 
-    res.json({ topGenres });
+    res.json({ genres: top10Genres });
   } catch (error) {
     console.error("Error fetching top genres:", error);
     res.status(500).send(error.message);
