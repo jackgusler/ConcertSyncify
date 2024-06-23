@@ -70,3 +70,21 @@ export const getTopArtists = async () => {
     }
   }
 }
+
+export const getTopGenres = async () => {
+  const authStore = useAuthStore()
+  const accessToken = authStore.accessToken
+  if (accessToken) {
+    try {
+      const response = await axios.get('/api/spotify/top-genres', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      console.log(response.data.topGenres) // Corrected from response.data.items to response.data.topGenres
+      return response.data.topGenres // Corrected from response.data.items to response.data.topGenres
+    } catch (error) {
+      console.error('Error fetching top genres:', error)
+    }
+  }
+}

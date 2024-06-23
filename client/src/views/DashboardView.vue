@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { type Artist, getTopArtists } from '@/model/spotify';
 import ArtistCardList from '../components/ArtistCardList.vue';
+import GenreCardList from '../components/GenreCardList.vue';
 </script>
 
 <template>
@@ -33,7 +34,7 @@ import ArtistCardList from '../components/ArtistCardList.vue';
                                 </div>
                             </div>
                         </div>
-                        <ArtistCardList />
+                        <!-- <ArtistCardList /> -->
                     </div>
                 </div>
                 <div class="row flex-grow-1" style="height: calc(50vh - .8rem);">
@@ -52,7 +53,7 @@ import ArtistCardList from '../components/ArtistCardList.vue';
                                 </div>
                             </div>
                         </div>
-                        
+                        <GenreCardList />
                     </div>
                 </div>
             </div>

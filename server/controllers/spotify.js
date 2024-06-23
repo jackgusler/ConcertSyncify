@@ -80,4 +80,36 @@ router.get("/top-artists", async (req, res) => {
   }
 });
 
+router.get("/top-genres", async (req, res) => {
+  const access_token = req.headers.authorization.split(" ")[1];
+  try {
+    // Step 1: Get the User's Top Artists
+    const topArtistsResponse = await axios.get('https://api.spotify.com/v1/me/top/artists', {
+      headers: {
+        'Authorization': `Bearer ${access_token}`
+      }
+    });
+
+    // Step 2: Extract Genres
+    const genres = topArtistsResponse.data.items.flatMap(artist => artist.genres);
+
+    // Step 3: Aggregate and Determine Top Genres
+    // This example simply counts occurrences of each genre and sorts them
+    const genreCounts = genres.reduce((acc, genre) => {
+      acc[genre] = (acc[genre] || 0) + 1;
+      return acc;
+    }, {});
+
+    const sortedGenres = Object.keys(genreCounts).sort((a, b) => genreCounts[b] - genreCounts[a]);
+
+    // Optionally, limit the number of top genres returned
+    const topGenres = sortedGenres.slice(0, 10); // Adjust the number as needed
+
+    res.json({ topGenres });
+  } catch (error) {
+    console.error('Error fetching top genres:', error);
+    res.status(500).send(error.message);
+  }
+});
+
 module.exports = router;
