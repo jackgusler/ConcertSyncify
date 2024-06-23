@@ -48,7 +48,7 @@ const handleLogout = async () => {
                         <button v-else @click="handleLogout" class="btn btn-success mb-2">
                             Logout
                         </button>
-                        <router-link v-if="loggedIn" to="/stats" class="btn btn-success">Dashboard</router-link>
+                        <router-link v-if="loggedIn" to="/dashboard" class="btn btn-success">Dashboard</router-link>
                     </div>
                 </div>
             </div>

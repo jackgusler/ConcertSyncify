@@ -54,7 +54,7 @@ router.get("/callback", async (req, res) => {
       { headers: auth_options.headers }
     );
     const { access_token, refresh_token } = response.data;
-    const redirect_url = `http://localhost:5173/stats?access_token=${access_token}&refresh_token=${refresh_token}`;
+    const redirect_url = `http://localhost:5173/dashboard?access_token=${access_token}&refresh_token=${refresh_token}`;
     res.redirect(redirect_url);
   } catch (error) {
     const redirect_url = `http://localhost:5173/error`;

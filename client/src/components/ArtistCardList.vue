@@ -64,17 +64,17 @@ function stopScrolling() {
     <div class="row mt-2 align-items-center justify-content-center" style="position: relative;">
         <div class="col-auto">
             <button class="btn btn-secondary circle-btn" @mousedown="startScrolling(scrollLeft)"
-                @mouseup="stopScrolling" @mouseleave="stopScrolling">
+                @mouseup="stopScrolling" @mouseleave="stopScrolling" :disabled="centerIndex === 0">
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
         </div>
         <div class="col artist-display-container" style="overflow: hidden; position: relative; height: 380px;">
-            <ArtistCard class="card-hover" v-for="(item, index) in artistStyles" :key="item.artist.id" :artist="item.artist"
-                :style="item.style" :listIndex="index" :centerIndex="centerIndex" />
+            <ArtistCard class="card-hover" v-for="(item, index) in artistStyles" :key="item.artist.id"
+                :artist="item.artist" :style="item.style" :listIndex="index" :centerIndex="centerIndex" />
         </div>
         <div class="col-auto">
             <button class="btn btn-secondary circle-btn" @mousedown="startScrolling(scrollRight)"
-                @mouseup="stopScrolling" @mouseleave="stopScrolling">
+                @mouseup="stopScrolling" @mouseleave="stopScrolling" :disabled="centerIndex === allArtists.length - 1">
                 <i class="fa-solid fa-chevron-right"></i>
             </button>
         </div>
@@ -89,13 +89,14 @@ function stopScrolling() {
     width: 100%;
 }
 
-.artist-display-container > * {
+.artist-display-container>* {
     flex: 0 0 auto;
     position: absolute;
 }
 
 .card-hover {
-    transition: transform 0.4s, z-index 0.4s, box-shadow 0.3s; /* Combine transitions */
+    transition: transform 0.4s, z-index 0.4s, box-shadow 0.3s;
+    /* Combine transitions */
 }
 
 .card-hover:hover {

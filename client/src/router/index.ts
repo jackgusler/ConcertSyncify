@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import MainView from '../views/MainView.vue'
-import StatsView from '../views/StatsView.vue'
+import DashboardView from '../views/DashboardView.vue'
 import ErrorView from '@/views/ErrorView.vue'
 
 const router = createRouter({
@@ -12,9 +12,9 @@ const router = createRouter({
       component: MainView
     },
     {
-      path: '/stats',
-      name: 'stats',
-      component: StatsView
+      path: '/dashboard',
+      name: 'dashboard',
+      component: DashboardView
     },
     {
       path: '/error',
