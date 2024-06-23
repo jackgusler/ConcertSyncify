@@ -59,13 +59,13 @@ function scrollRight() {
 </script>
 
 <template>
-    <div class="row align-items-center justify-content-center" style="position: relative;">
+    <div class="row mt-2 align-items-center justify-content-center" style="position: relative;">
         <div class="col-auto">
             <button class="btn btn-secondary circle-btn" @click="scrollRight">
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
         </div>
-        <div class="col artist-display-container" style="overflow: hidden; position: relative; height: 399px;">
+        <div class="col artist-display-container" style="overflow: hidden; position: relative; height: 380px;">
             <ArtistCard 
                 v-for="{ artist, style } in artistStyles" 
                 :key="artist.id" 
@@ -85,7 +85,7 @@ function scrollRight() {
 .artist-display-container {
     overflow: hidden;
     position: relative;
-    height: 399px;
+    height: 380px;
     width: 100%;
 }
 
