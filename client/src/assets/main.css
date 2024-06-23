@@ -6,7 +6,6 @@ body {
 }
 
 .box,
-.card,
 .spotify-auth {
   background: #121212;
 }
@@ -45,4 +44,18 @@ p.fs-4 {
   justify-content: center;
   width: 50px; /* Adjust size as needed */
   height: 50px; /* Adjust size as needed */
+}
+
+/* Add this to your main.css or another global stylesheet */
+.v-popper--theme-tooltip-top .v-popper__inner {
+  background: #1db954 !important;
+  color: white !important;
+  font-weight: bold !important;
+  padding: 10px 20px !important;
+  border-radius: 40px !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 1) !important;
+}
+
+.v-popper--theme-tooltip-top .v-popper__arrow-outer {
+  border-color: #1db954 !important;
 }

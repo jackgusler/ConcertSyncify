@@ -14,6 +14,7 @@ export const getEvents = async (artistName: string) => {
     return response.data._embedded.events
   } catch (error) {
     console.error('Error fetching events:', error)
+    return []
   }
 }
 
