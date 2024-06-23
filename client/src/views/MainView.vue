@@ -1,9 +1,23 @@
 <script setup lang="ts">
-import { login, logout } from '../model/spotify'
-import { useAuthStore } from '@/stores/auth';
+import { login, logout, isLoggedIn } from '../model/spotify'
+// import { useAuthStore } from '@/stores/auth';
 import logo from '../assets/logos/Spotify_Logo_RGB_Green.png'
+import { onMounted, ref } from 'vue';
 
-const authStore = useAuthStore();
+// const authStore = useAuthStore();
+
+// console.log(authStore.accessToken)
+
+const loggedIn = ref(false)
+onMounted(async () => {
+    const isLogged = await isLoggedIn()
+    loggedIn.value = isLogged
+})
+const handleLogout = async () => {
+    logout();
+    const isLogged = await isLoggedIn();
+    loggedIn.value = isLogged;
+};
 
 </script>
 
@@ -28,14 +42,13 @@ const authStore = useAuthStore();
                 <div class="box h-100 rounded-3 d-flex flex-column align-items-center">
                     <img :src="logo" alt="Spotify Logo" class="img-fluid mb-3">
                     <div class="p-3 d-flex flex-column">
-                        <button v-if="!authStore.accessToken" @click="login" class="btn btn-success mb-2">
+                        <button v-if="!loggedIn" @click="login" class="btn btn-success mb-2">
                             Login with Spotify
                         </button>
-                        <button v-else @click="logout" class="btn btn-success mb-2">
+                        <button v-else @click="handleLogout" class="btn btn-success mb-2">
                             Logout
                         </button>
-                        <router-link v-if="authStore.accessToken" to="/stats"
-                            class="btn btn-success">Dashboard</router-link>
+                        <router-link v-if="loggedIn" to="/stats" class="btn btn-success">Dashboard</router-link>
                     </div>
                 </div>
             </div>

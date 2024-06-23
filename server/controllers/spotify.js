@@ -17,6 +17,21 @@ router.get("/login", (req, res) => {
   res.redirect(auth_url);
 });
 
+router.get("/logged-in", async (req, res) => {
+  const access_token = req.headers.authorization.split(" ")[1];
+  try {
+    // Use the access token to get the user's profile info
+    await axios.get("https://api.spotify.com/v1/me", {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    });
+    res.json({ logged_in: true });
+  } catch (error) {
+    res.json({ logged_in: false });
+  }
+});
+
 router.get("/callback", async (req, res) => {
   const auth_options = {
     url: "https://accounts.spotify.com/api/token",

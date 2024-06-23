@@ -35,6 +35,25 @@ export const logout = async () => {
   router.push('/')
 };
 
+export const isLoggedIn = async () => {
+  const authStore = useAuthStore();
+  const accessToken = authStore.accessToken;
+  if (accessToken) {
+    try {
+      const response = await axios.get('/api/spotify/logged-in', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      return response.data.logged_in;
+    } catch (error) {
+      console.error('Error checking login status:', error);
+      return false;
+    }
+  }
+  return false;
+};
+
 export const getTopArtists = async () => {
   const authStore = useAuthStore()
   const accessToken = authStore.accessToken
