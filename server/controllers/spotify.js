@@ -4,6 +4,7 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 const querystring = require("querystring");
+const cache = require("../cache");
 
 const redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
 const client_id = process.env.SPOTIFY_CLIENT_ID;
@@ -65,7 +66,21 @@ router.get("/callback", async (req, res) => {
 
 router.get("/top-artists", async (req, res) => {
   const access_token = req.headers.authorization.split(" ")[1];
+  if (!access_token) {
+    return res.status(401).send("Unauthorized");
+  }
+
+  const cacheKey = `spotify:top-artists:${access_token}`;
+
   try {
+    // Check if the data is already cached
+    const cachedData = await cache.get(cacheKey);
+    if (cachedData) {
+      console.log("Returning cached data for top artists");
+      return res.json(cachedData);
+    }
+
+    // If not cached, fetch the top artists from Spotify API
     const response = await axios.get(
       "https://api.spotify.com/v1/me/top/artists",
       {
@@ -74,34 +89,59 @@ router.get("/top-artists", async (req, res) => {
         },
       }
     );
+
+    // Cache the fetched data with an expiration (e.g., 1 hour)
+    cache.set(cacheKey, response.data, 3600);
+
     res.json(response.data);
   } catch (error) {
+    console.error("Error fetching top artists:", error.message);
     res.status(500).send(error.message);
   }
 });
 
 router.get("/top-genres", async (req, res) => {
   const access_token = req.headers.authorization.split(" ")[1];
-  try {
-    // Step 1: Get the User's Top Artists
-    const topArtistsResponse = await axios.get(
-      "https://api.spotify.com/v1/me/top/artists",
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
+  if (!access_token) {
+    return res.status(401).send("Unauthorized");
+  }
 
-    // Step 2: Extract Genres
+  const topGenresCacheKey = `spotify:top-genres:${access_token}`;
+
+  try {
+    // Check if the top genres data is already cached
+    let cachedTopGenres = await cache.get(topGenresCacheKey);
+    if (cachedTopGenres) {
+      console.log("Returning cached data for top genres");
+      return res.json({ genres: cachedTopGenres });
+    }
+
+    const cacheKey = `spotify:top-artists:${access_token}`;
+    let topArtistsData = await cache.get(cacheKey);
+    if (!topArtistsData) {
+      const response = await axios.get(
+        "https://api.spotify.com/v1/me/top/artists",
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      );
+      topArtistsData = response.data;
+      // Optionally cache this data if you want to cache it here as well
+      console.log("Caching top artists data inside top-genres endpoint");
+      cache.set(cacheKey, topArtistsData, 3600);
+    }
+
+    // Extract Genres
     let genres = new Set();
-    topArtistsResponse.data.items.forEach((artist) => {
+    topArtistsData.items.forEach((artist) => {
       artist.genres.forEach((genre) => {
         genres.add(genre);
       });
     });
 
-    // Step 3: Search for Artists by Genre and Extract First Artist in Parallel
+    // Search for Artists by Genre and Extract First Artist in Parallel
     let searchPromises = Array.from(genres).map((genre) =>
       axios
         .get(`https://api.spotify.com/v1/search`, {
@@ -114,22 +154,19 @@ router.get("/top-genres", async (req, res) => {
             limit: 1,
           },
         })
-        .then((response) => ({ genre, artist: response.data.artists.items[0] })) // Directly using the artist object from Spotify
+        .then((response) => ({ genre, artist: response.data.artists.items[0] }))
         .catch((error) => {
           console.error(`Error searching for genre ${genre}:`, error);
-          return { genre, artist: null }; // Handle errors gracefully
+          return { genre, artist: null };
         })
     );
 
-    // Wait for all search requests to complete
     let results = await Promise.all(searchPromises);
-
-    // Step 4: Prepare the Response Data (Modified to send only top 10 genres)
     let genreArtistMap = results.filter(({ artist }) => artist !== null);
-
-    // Assuming genres are already in the desired order or no specific order is required
-    // If you need to sort them based on a criterion, do it before slicing
     let top10Genres = genreArtistMap.slice(0, 10);
+
+    // Cache the top genres data
+    cache.set(topGenresCacheKey, top10Genres, 3600); // Adjust the expiration as needed
 
     res.json({ genres: top10Genres });
   } catch (error) {

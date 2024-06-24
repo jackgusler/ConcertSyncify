@@ -13,13 +13,13 @@ const events = ref<Event[]>([]);
 const hasEvents = ref(false);
 
 onMounted(async () => {
-    // if (props.artist && props.artist.name) {
-    //     const artistEvents = await getEvents(props.artist.name);
-    //     if (artistEvents && artistEvents.length > 0) {
-    //         events.value = artistEvents;
-    //         hasEvents.value = true;
-    //     }
-    // }
+    if (props.artist && props.artist.name) {
+        const artistEvents = await getEvents(props.artist.name);
+        if (artistEvents && artistEvents.length > 0) {
+            events.value = artistEvents;
+            hasEvents.value = true;
+        }
+    }
 });
 
 </script>
@@ -38,7 +38,7 @@ onMounted(async () => {
                     class="artist-image" style="margin-top: 2.5rem;" alt="Artist Image">
             </template>
         </a>
-        <!-- <div v-if="hasEvents" class="card-body pt-0 d-flex flex-column justify-content-end align-items-center"
+        <div v-if="hasEvents" class="card-body pt-0 d-flex flex-column justify-content-end align-items-center"
             style="height: 100%;">
             <p class="my-2">
             <div class="truncate-event">
@@ -57,7 +57,7 @@ onMounted(async () => {
         </div>
         <div v-else class="card-body d-flex flex-column justify-content-end align-items-center">
             <button class="btn btn-secondary" disabled>No Events</button>
-        </div> -->
+        </div>
     </div>
 </template>
 
