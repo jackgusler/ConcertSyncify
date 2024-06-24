@@ -8,6 +8,7 @@ const props = defineProps<{
     listIndex: number;
     centerIndex: number;
 }>();
+
 const events = ref<Event[]>([]);
 
 const hasEvents = ref(false);
@@ -55,8 +56,11 @@ onMounted(async () => {
             </p>
             <button class="btn btn-success mt-auto">View Events</button>
         </div>
-        <div v-else class="card-body d-flex flex-column justify-content-end align-items-center">
-            <button class="btn btn-secondary" disabled>No Events</button>
+        <div v-else class="card-body pt-0 d-flex flex-column justify-content-end align-items-center">
+            <p class="my-4">
+                <span style="color: #6d6d6d;">No upcoming events</span>
+            </p>
+            <button class="btn btn-success">View Genre Events</button>
         </div>
     </div>
 </template>
