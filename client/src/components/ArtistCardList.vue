@@ -81,7 +81,7 @@ function handleEmitFromEvent(data: Event) {
 function handleSelected() {
     console.log(selectedEvents.value);
     // Reset center index in EventCardList
-    
+
 }
 </script>
 
@@ -94,15 +94,16 @@ function handleSelected() {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <EventCardList ref="eventCardListRef" :events="eventList" v-if="eventList.length > 0" @data="handleEmitFromEvent"/>
+                    <EventCardList ref="eventCardListRef" :events="eventList" v-if="eventList.length > 0"
+                        @data="handleEmitFromEvent" />
                 </div>
                 <div class="modal-footer d-flex align-items-center justify-content-between">
                     <div>
                         <button type="button" class="btn btn-secondary me-3">Filter by date</button>
                         <button type="button" class="btn btn-secondary">Filter by distance</button>
                     </div>
-                    <button type="button" class="btn btn-success" @click="handleSelected">Add selected to
-                        calendar</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" @click="handleSelected">Add
+                        selected to calendar</button>
                 </div>
             </div>
         </div>
@@ -148,5 +149,11 @@ function handleSelected() {
 
 .btn-close {
     filter: invert(1);
+}
+
+.btn-close:focus,
+.btn-close:hover,
+.btn-close:active {
+    box-shadow: none;
 }
 </style>
