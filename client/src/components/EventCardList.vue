@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type Event } from '@/model/ticketmaster';
-import { onUnmounted, ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import EventCard from './EventCard.vue';
 
 const props = defineProps<{
@@ -70,10 +70,6 @@ function stopScrolling() {
         clearInterval(scrollInterval);
         scrollInterval = null;
     }
-}
-
-function resetCenterIndex() {
-    centerIndex.value = 0;
 }
 </script>
 

@@ -16,6 +16,17 @@ const buttonStyle = ref({
     color: '#ffffff'
 });
 
+const modal = document.getElementById('eventModal');
+
+onMounted(() => {
+    modal?.addEventListener('hidden.bs.modal', () => {
+        isChecked.value = false;
+        buttonStyle.value.backgroundColor = '#111111';
+        buttonStyle.value.borderColor = '#111111';
+        buttonStyle.value.color = '#ffffff';
+    });
+});
+
 const biggestImage = computed(() => {
     if (!props.event.images) return '';
 
