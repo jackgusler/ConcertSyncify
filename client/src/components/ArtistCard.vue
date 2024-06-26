@@ -15,8 +15,17 @@ const hasEvents = ref(false);
 
 const emit = defineEmits(['data']);
 
-const emitData = () => {
-    emit('data', { events: events.value, modalTitle: props.artist.name });
+const emitData = async () => {
+    if (hasEvents.value) {
+        emit('data', { events: events.value, modalTitle: props.artist.name });
+    } else if (props.artist.genres && props.artist.genres.length > 0) {
+        const genre = getAlternativeGenre(props.artist.genres[0]);
+        const genreEvents = await getEvents(genre);
+        if (genreEvents && genreEvents.length > 0) {
+            events.value = genreEvents;
+            emit('data', { events: events.value, modalTitle: genre });
+        }
+    }
 };
 
 onMounted(async () => {
@@ -28,6 +37,19 @@ onMounted(async () => {
         }
     }
 });
+
+function getAlternativeGenre(initialGenre: string) {
+    // Implement logic to determine an alternative genre
+    // For simplicity, this example uses a static mapping
+    const alternativeGenres: { [key: string]: string } = {
+        "pov: indie": "Indie",
+        "springfield mo indie": "Indie",
+        "electropop": "Electro Pop",
+        // Add more mappings or logic as needed
+    };
+
+    return alternativeGenres[initialGenre] || "Alternative"; // Fallback to "Alternative" if no mapping found
+}
 </script>
 
 <template>
@@ -68,7 +90,8 @@ onMounted(async () => {
             <p class="my-4">
                 <span style="color: #6d6d6d;">No upcoming events</span>
             </p>
-            <button class="btn btn-success">View Genre Events</button>
+            <button @click="emitData" class="btn btn-success mt-auto" data-bs-toggle="modal"
+                data-bs-target="#eventArtistModal">View Genre Events</button>
         </div>
     </div>
 </template>
