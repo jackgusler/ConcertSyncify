@@ -73,7 +73,8 @@ const toggleCheckbox = () => {
 <template>
     <div class="card d-flex flex-column align-items-center" style="width: 14rem; position: relative;">
         <h5 class="mt-2 mx-3 text-center truncate">{{ props.event.name }}</h5>
-        <a :href="props.event.url" target="_blank" class="text-decoration-none text-dark">
+        <a :href="props.event.url" target="_blank" class="text-decoration-none text-dark"
+            :class="{ disabled: props.listIndex !== props.centerIndex }">
             <template v-if="props.listIndex === props.centerIndex">
                 <div v-tooltip="{ content: 'Buy Tickets', theme: 'tooltip-top' }" class="image-container"
                     style="margin-top: 2.5rem;">
@@ -103,7 +104,7 @@ const toggleCheckbox = () => {
                         props.event._embedded?.venues[0]?.country.name : 'Unknown') }}
             </span>
             </p>
-            <div class="form-check mt-auto">
+            <div class="form-check mt-auto me-4">
                 <label :for="checkboxId" :class="['btn', isChecked ? 'btn-success' : 'btn-black', 'circle-button']"
                     :style="buttonStyle">
                     <input class="form-check-input" type="checkbox" :id="checkboxId" style="display: none;"
@@ -124,6 +125,11 @@ const toggleCheckbox = () => {
 </template>
 
 <style scoped>
+.disabled {
+    cursor: default;
+    pointer-events: none;
+}
+
 .circle-button {
     width: 120px;
     transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;

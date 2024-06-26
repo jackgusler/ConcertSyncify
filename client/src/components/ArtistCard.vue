@@ -55,7 +55,8 @@ function getAlternativeGenre(initialGenre: string) {
 <template>
     <div class="card d-flex flex-column align-items-center" style="width: 14rem; position: relative;">
         <h5 class="mt-2 mx-3 text-center truncate">{{ props.artist.name }}</h5>
-        <a :href="props.artist.external_urls.spotify" target="_blank" class="text-decoration-none text-dark">
+        <a :href="props.artist.external_urls.spotify" target="_blank" class="text-decoration-none text-dark"
+            :class="{ disabled: props.listIndex !== props.centerIndex }">
             <template v-if="props.listIndex === props.centerIndex">
                 <img v-tooltip="{ content: 'Open Spotify', theme: 'tooltip-top' }"
                     v-if="props.artist.images && props.artist.images.length > 0" :src="props.artist.images[0].url"
@@ -83,20 +84,43 @@ function getAlternativeGenre(initialGenre: string) {
             </span>
             </p>
             <button @click="emitData" class="btn btn-success mt-auto" data-bs-toggle="modal"
-                data-bs-target="#eventArtistModal">View
-                Events</button>
+                data-bs-target="#eventArtistModal"
+                :class="{ 'btn-disabled': props.listIndex !== props.centerIndex, 'btn-enabled': props.listIndex === props.centerIndex }"
+                :disabled="props.listIndex !== props.centerIndex">
+                View Events
+            </button>
         </div>
         <div v-else class="card-body pt-0 d-flex flex-column justify-content-end align-items-center">
             <p class="my-4">
                 <span style="color: #6d6d6d;">No upcoming events</span>
             </p>
             <button @click="emitData" class="btn btn-success mt-auto" data-bs-toggle="modal"
-                data-bs-target="#eventArtistModal">View Genre Events</button>
+                data-bs-target="#eventArtistModal"
+                :class="{ 'btn-disabled': props.listIndex !== props.centerIndex, 'btn-enabled': props.listIndex === props.centerIndex }"
+                :disabled="props.listIndex !== props.centerIndex">
+                View Genre Events
+            </button>
         </div>
     </div>
 </template>
 
 <style scoped>
+.disabled {
+    cursor: default;
+    pointer-events: none;
+}
+
+.btn-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transition: opacity 0.5s ease;
+}
+
+.btn-enabled {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
 .card-title,
 h5,
 p {

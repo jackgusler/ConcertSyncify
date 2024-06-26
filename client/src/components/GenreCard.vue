@@ -68,7 +68,8 @@ function formatGenre(genre: string) {
 <template>
     <div class="card d-flex flex-column align-items-center" style="width: 14rem; position: relative;">
         <h5 class="mt-2 mx-3 text-center truncate">{{ formatGenre(props.genre.genre) }}</h5>
-        <a :href="props.genre.artist.external_urls.spotify" target="_blank" class="text-decoration-none text-dark">
+        <a :href="props.genre.artist.external_urls.spotify" target="_blank" class="text-decoration-none text-dark"
+            :class="{ disabled: props.listIndex !== props.centerIndex }">
             <template v-if="props.listIndex === props.centerIndex">
                 <img v-tooltip="{ content: 'Open Spotify', theme: 'tooltip-top' }"
                     v-if="props.genre.artist.images && props.genre.artist.images.length > 0"
@@ -97,8 +98,11 @@ function formatGenre(genre: string) {
             </span>
             </p>
             <button @click="emitData" class="btn btn-success mt-auto" data-bs-toggle="modal"
-                data-bs-target="#eventGenreModal">View
-                Events</button>
+                data-bs-target="#eventGenreModal"
+                :class="{ 'btn-disabled': props.listIndex !== props.centerIndex, 'btn-enabled': props.listIndex === props.centerIndex }"
+                :disabled="props.listIndex !== props.centerIndex">
+                View Events
+            </button>
         </div>
         <div v-else class="card-body d-flex flex-column justify-content-end align-items-center">
             <button class="btn btn-secondary" disabled>No Events</button>
@@ -107,6 +111,22 @@ function formatGenre(genre: string) {
 </template>
 
 <style scoped>
+.disabled {
+    cursor: default;
+    pointer-events: none;
+}
+
+.btn-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transition: opacity 0.5s ease;
+}
+
+.btn-enabled {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
 .card-title,
 h5,
 p {
