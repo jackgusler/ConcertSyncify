@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { type Artist, getTopArtists } from '@/model/spotify';
+import { type Event } from '@/model/ticketmaster';
 import ArtistCard from './ArtistCard.vue';
+import EventCardList from './EventCardList.vue';
+
+const eventList = ref<Event[]>([]);
+const modalTitle = ref('');
+const selectedEvents = ref<Event[]>([]);
 
 const allArtists = ref<Artist[]>([]);
 const centerIndex = ref(0);
@@ -30,7 +36,7 @@ const artistStyles = computed(() => {
             style: {
                 transform: `scale(${scale}) translateX(${translateX}px)`,
                 zIndex: zIndex,
-                left: '196px',
+                left: '194px',
                 top: 0,
                 position: 'absolute',
             }
@@ -58,9 +64,50 @@ function stopScrolling() {
         scrollInterval = null;
     }
 }
+
+function handleEmitFromArtist(data: { events: Event[]; modalTitle: string }) {
+    eventList.value = data.events;
+    modalTitle.value = data.modalTitle;
+}
+
+function handleEmitFromEvent(data: Event) {
+    if (selectedEvents.value.includes(data)) {
+        selectedEvents.value = selectedEvents.value.filter(event => event !== data);
+    } else {
+        selectedEvents.value = [...selectedEvents.value, data];
+    }
+}
+
+function handleSelected() {
+    console.log(selectedEvents.value);
+    // Reset center index in EventCardList
+    
+}
 </script>
 
 <template>
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="eventModalLabel">Events for {{ modalTitle }}</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <EventCardList ref="eventCardListRef" :events="eventList" v-if="eventList.length > 0" @data="handleEmitFromEvent"/>
+                </div>
+                <div class="modal-footer d-flex align-items-center justify-content-between">
+                    <div>
+                        <button type="button" class="btn btn-secondary me-3">Filter by date</button>
+                        <button type="button" class="btn btn-secondary">Filter by distance</button>
+                    </div>
+                    <button type="button" class="btn btn-success" @click="handleSelected">Add selected to
+                        calendar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row mt-2 align-items-center justify-content-center" style="position: relative;">
         <div class="col-auto">
             <button class="btn btn-secondary circle-btn" @mousedown="startScrolling(scrollLeft)"
@@ -70,7 +117,8 @@ function stopScrolling() {
         </div>
         <div class="col list-display-container">
             <ArtistCard class="card-hover" v-for="(item, index) in artistStyles" :key="item.artist.id"
-                :artist="item.artist" :style="item.style" :listIndex="index" :centerIndex="centerIndex" />
+                :artist="item.artist" :style="item.style" :listIndex="index" :centerIndex="centerIndex"
+                @data="handleEmitFromArtist" />
         </div>
         <div class="col-auto">
             <button class="btn btn-secondary circle-btn" @mousedown="startScrolling(scrollRight)"
@@ -81,4 +129,24 @@ function stopScrolling() {
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.modal-title {
+    font-weight: bold;
+}
+
+.modal-content {
+    background: #121212;
+}
+
+.modal-header {
+    border-bottom: 1px solid #242424;
+}
+
+.modal-footer {
+    border-top: 1px solid #242424;
+}
+
+.btn-close {
+    filter: invert(1);
+}
+</style>

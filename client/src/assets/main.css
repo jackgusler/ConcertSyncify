@@ -38,6 +38,20 @@ body {
   color: white !important;
 }
 
+.btn-black {
+  background-color: #111111 !important;
+  border-color: #111111 !important;
+  color: white !important;
+}
+
+.btn-black:hover,
+.btn-black:focus,
+.btn-black:active {
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+  color: white !important;
+}
+
 h1 {
   color: white;
 }

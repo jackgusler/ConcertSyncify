@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { login, logout, isLoggedIn } from '../model/spotify'
-// import { useAuthStore } from '@/stores/auth';
 import logo from '../assets/logos/Spotify_Logo_RGB_Green.png'
 import { onMounted, ref } from 'vue';
-
-// const authStore = useAuthStore();
-
-// console.log(authStore.accessToken)
 
 const loggedIn = ref(false)
 onMounted(async () => {

@@ -12,8 +12,6 @@ const props = defineProps<{
 const events = ref<Event[]>([]);
 
 const hasEvents = ref(false);
-// Example genre mapping function or alternative genre logic
-
 
 onMounted(async () => {
   if (props.genre && props.genre.genre) {

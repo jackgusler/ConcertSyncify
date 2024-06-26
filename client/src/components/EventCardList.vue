@@ -1,36 +1,49 @@
 <script setup lang="ts">
-import { type Genre, getTopGenres } from '@/model/spotify';
-import { onMounted, ref, computed } from 'vue';
-import GenreCard from './GenreCard.vue';
+import { type Event } from '@/model/ticketmaster';
+import { onUnmounted, ref, computed, onMounted } from 'vue';
+import EventCard from './EventCard.vue';
 
-const allGenres = ref<Genre[]>([]);
+const props = defineProps<{
+    events: Event[];
+}>();
+
+const emit = defineEmits(['data']);
+
+// center index is the prop
 const centerIndex = ref(0);
 const baseScale = 1.0;
 const scaleDecrement = 0.11;
 const minimumScale = 0.6;
 let scrollInterval: number | null | undefined = null;
 
-onMounted(async () => {
-    const genres = await getTopGenres();
-    allGenres.value = genres;
+const modal = document.getElementById('eventModal');
+
+onMounted(() => {
+    modal?.addEventListener('hidden.bs.modal', () => {
+        centerIndex.value = 0;
+    });
 });
+
+function handleEmit(event: Event) {
+    emit('data', event);
+}
 
 function calculateScale(index: number) {
     const distanceFromCenter = Math.abs(index - centerIndex.value);
     return Math.max(baseScale - scaleDecrement * distanceFromCenter, minimumScale);
 }
 
-const genreStyles = computed(() => {
-    return allGenres.value.map((genre, index) => {
+const eventStyles = computed(() => {
+    return props.events.map((event, index) => {
         const scale = calculateScale(index);
         const zIndex = index === centerIndex.value ? 200 : 100 - Math.abs(index - centerIndex.value);
         const translateX = (index - centerIndex.value) * 110;
         return {
-            genre,
+            event,
             style: {
                 transform: `scale(${scale}) translateX(${translateX}px)`,
                 zIndex: zIndex,
-                left: '194px',
+                left: '209px',
                 top: 0,
                 position: 'absolute',
             }
@@ -43,7 +56,7 @@ function scrollLeft() {
 }
 
 function scrollRight() {
-    if (centerIndex.value < allGenres.value.length - 1) centerIndex.value++;
+    if (centerIndex.value < props.events.length - 1) centerIndex.value++;
 }
 
 function startScrolling(directionFunction: () => void) {
@@ -58,6 +71,10 @@ function stopScrolling() {
         scrollInterval = null;
     }
 }
+
+function resetCenterIndex() {
+    centerIndex.value = 0;
+}
 </script>
 
 <template>
@@ -69,12 +86,13 @@ function stopScrolling() {
             </button>
         </div>
         <div class="col list-display-container">
-            <GenreCard class="card-hover" v-for="(item, index) in genreStyles" :key="item.genre.artist.id"
-                :genre="item.genre" :style="item.style" :listIndex="index" :centerIndex="centerIndex" />
+            <EventCard class="card-hover" v-for="(item, index) in eventStyles" :key="item.event.id" :event="item.event"
+                :style="item.style" :listIndex="index" :centerIndex="centerIndex" @data="handleEmit" />
         </div>
         <div class="col-auto">
             <button class="btn btn-secondary circle-btn" @mousedown="startScrolling(scrollRight)"
-                @mouseup="stopScrolling" @mouseleave="stopScrolling" :disabled="centerIndex === allGenres.length - 1">
+                @mouseup="stopScrolling" @mouseleave="stopScrolling"
+                :disabled="centerIndex === props.events.length - 1">
                 <i class="fa-solid fa-chevron-right"></i>
             </button>
         </div>
