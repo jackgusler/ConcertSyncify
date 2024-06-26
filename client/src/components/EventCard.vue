@@ -4,6 +4,8 @@ import { onMounted, ref, computed } from 'vue';
 
 const props = defineProps<{
     event: Event;
+    listIndex: number;
+    centerIndex: number;
 }>();
 
 const emit = defineEmits(['data']);
@@ -72,10 +74,19 @@ const toggleCheckbox = () => {
     <div class="card d-flex flex-column align-items-center" style="width: 14rem; position: relative;">
         <h5 class="mt-2 mx-3 text-center truncate">{{ props.event.name }}</h5>
         <a :href="props.event.url" target="_blank" class="text-decoration-none text-dark">
-            <div class="image-container" style="margin-top: 2.5rem;">
-                <img v-if="props.event.images && props.event.images.length > 0" :src="biggestImage" class="event-image"
-                    alt="Event Image">
-            </div>
+            <template v-if="props.listIndex === props.centerIndex">
+                <div v-tooltip="{ content: 'Buy Tickets', theme: 'tooltip-top' }" class="image-container"
+                    style="margin-top: 2.5rem;">
+                    <img v-if="props.event.images && props.event.images.length > 0" :src="biggestImage"
+                        class="event-image" alt="Event Image">
+                </div>
+            </template>
+            <template v-else>
+                <div class="image-container" style="margin-top: 2.5rem;">
+                    <img v-if="props.event.images && props.event.images.length > 0" :src="biggestImage"
+                        class="event-image" alt="Event Image">
+                </div>
+            </template>
         </a>
         <div class="card-body pt-0 d-flex flex-column justify-content-end align-items-center" style="height: 100%;">
             <p class="my-2">

@@ -79,12 +79,13 @@ function handleEmitFromEvent(data: Event) {
 }
 
 function handleSelected() {
-
+    selectedEvents.value = [];
 }
 </script>
 
 <template>
-    <div class="modal fade" id="eventArtistModal" tabindex="-1" aria-labelledby="eventArtistModalLabel" aria-hidden="true">
+    <div class="modal fade" id="eventArtistModal" tabindex="-1" aria-labelledby="eventArtistModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -100,8 +101,9 @@ function handleSelected() {
                         <button type="button" class="btn btn-secondary me-3">Filter by date</button>
                         <button type="button" class="btn btn-secondary">Filter by distance</button>
                     </div>
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" @click="handleSelected">Add
-                        selected to calendar</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal"
+                        :disabled="selectedEvents.length === 0" @click="handleSelected">Add selected to
+                        calendar</button>
                 </div>
             </div>
         </div>

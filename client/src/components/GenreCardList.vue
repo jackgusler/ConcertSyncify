@@ -81,7 +81,7 @@ function handleEmitFromEvent(data: Event) {
 }
 
 function handleSelected() {
-    
+    selectedEvents.value = [];
 }
 
 function formatGenre(genre: string) {
@@ -102,7 +102,8 @@ function formatGenre(genre: string) {
 </script>
 
 <template>
-    <div class="modal fade" id="eventGenreModal" tabindex="-1" aria-labelledby="eventGenreModalLabel" aria-hidden="true">
+    <div class="modal fade" id="eventGenreModal" tabindex="-1" aria-labelledby="eventGenreModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -110,15 +111,15 @@ function formatGenre(genre: string) {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <EventCardList :events="eventList" v-if="eventList.length > 0"
-                        @data="handleEmitFromEvent" />
+                    <EventCardList :events="eventList" v-if="eventList.length > 0" @data="handleEmitFromEvent" />
                 </div>
                 <div class="modal-footer d-flex align-items-center justify-content-between">
                     <div>
                         <button type="button" class="btn btn-secondary me-3">Filter by date</button>
                         <button type="button" class="btn btn-secondary">Filter by distance</button>
                     </div>
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" @click="handleSelected">Add
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal"
+                        :disabled="selectedEvents.length === 0" @click="handleSelected">Add
                         selected to calendar</button>
                 </div>
             </div>
