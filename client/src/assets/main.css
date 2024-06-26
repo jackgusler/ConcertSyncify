@@ -173,3 +173,29 @@ p.fs-4 {
 .colon {
   white-space: nowrap;
 }
+
+.modal-title {
+  font-weight: bold;
+}
+
+.modal-content {
+  background: #121212;
+}
+
+.modal-header {
+  border-bottom: 1px solid #242424;
+}
+
+.modal-footer {
+  border-top: 1px solid #242424;
+}
+
+.btn-close {
+  filter: invert(1);
+}
+
+.btn-close:focus,
+.btn-close:hover,
+.btn-close:active {
+  box-shadow: none;
+}

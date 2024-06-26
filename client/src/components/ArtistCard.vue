@@ -15,6 +15,10 @@ const hasEvents = ref(false);
 
 const emit = defineEmits(['data']);
 
+const emitData = () => {
+    emit('data', { events: events.value, modalTitle: props.artist.name });
+};
+
 onMounted(async () => {
     if (props.artist && props.artist.name) {
         const artistEvents = await getEvents(props.artist.name);
@@ -24,10 +28,6 @@ onMounted(async () => {
         }
     }
 });
-
-const emitData = () => {
-    emit('data', { events: events.value, modalTitle: props.artist.name });
-};
 </script>
 
 <template>
@@ -61,7 +61,7 @@ const emitData = () => {
             </span>
             </p>
             <button @click="emitData" class="btn btn-success mt-auto" data-bs-toggle="modal"
-                data-bs-target="#eventModal">View
+                data-bs-target="#eventArtistModal">View
                 Events</button>
         </div>
         <div v-else class="card-body pt-0 d-flex flex-column justify-content-end align-items-center">

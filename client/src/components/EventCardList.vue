@@ -16,10 +16,14 @@ const scaleDecrement = 0.11;
 const minimumScale = 0.6;
 let scrollInterval: number | null | undefined = null;
 
-const modal = document.getElementById('eventModal');
+const artistModal = document.getElementById('eventArtistModal');
+const genreModal = document.getElementById('eventGenreModal');
 
 onMounted(() => {
-    modal?.addEventListener('hidden.bs.modal', () => {
+    artistModal?.addEventListener('hidden.bs.modal', () => {
+        centerIndex.value = 0;
+    });
+    genreModal?.addEventListener('hidden.bs.modal', () => {
         centerIndex.value = 0;
     });
 });

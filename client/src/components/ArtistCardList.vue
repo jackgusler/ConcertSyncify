@@ -79,18 +79,16 @@ function handleEmitFromEvent(data: Event) {
 }
 
 function handleSelected() {
-    console.log(selectedEvents.value);
-    // Reset center index in EventCardList
 
 }
 </script>
 
 <template>
-    <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+    <div class="modal fade" id="eventArtistModal" tabindex="-1" aria-labelledby="eventArtistModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="eventModalLabel">Events for {{ modalTitle }}</h1>
+                    <h1 class="modal-title fs-5" id="eventArtistModalLabel">Events for {{ modalTitle }}</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -130,30 +128,4 @@ function handleSelected() {
     </div>
 </template>
 
-<style scoped>
-.modal-title {
-    font-weight: bold;
-}
-
-.modal-content {
-    background: #121212;
-}
-
-.modal-header {
-    border-bottom: 1px solid #242424;
-}
-
-.modal-footer {
-    border-top: 1px solid #242424;
-}
-
-.btn-close {
-    filter: invert(1);
-}
-
-.btn-close:focus,
-.btn-close:hover,
-.btn-close:active {
-    box-shadow: none;
-}
-</style>
+<style scoped></style>

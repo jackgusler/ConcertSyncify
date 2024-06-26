@@ -13,33 +13,39 @@ const events = ref<Event[]>([]);
 
 const hasEvents = ref(false);
 
-onMounted(async () => {
-  if (props.genre && props.genre.genre) {
-    let genreEvents = await getEvents(props.genre.genre);
-    if (!genreEvents || genreEvents.length === 0) {
-      // Try fetching events for an alternative genre if the initial fetch is empty
-      const alternativeGenre = getAlternativeGenre(props.genre.genre);
-      genreEvents = await getEvents(alternativeGenre);
-    }
+const emit = defineEmits(['data']);
 
-    if (genreEvents && genreEvents.length > 0) {
-      events.value = genreEvents;
-      hasEvents.value = true;
+const emitData = () => {
+    emit('data', { events: events.value, modalTitle: props.genre.genre });
+};
+
+onMounted(async () => {
+    if (props.genre && props.genre.genre) {
+        let genreEvents = await getEvents(props.genre.genre);
+        if (!genreEvents || genreEvents.length === 0) {
+            // Try fetching events for an alternative genre if the initial fetch is empty
+            const alternativeGenre = getAlternativeGenre(props.genre.genre);
+            genreEvents = await getEvents(alternativeGenre);
+        }
+
+        if (genreEvents && genreEvents.length > 0) {
+            events.value = genreEvents;
+            hasEvents.value = true;
+        }
     }
-  }
 });
 
-function getAlternativeGenre(initialGenre:string) {
-  // Implement logic to determine an alternative genre
-  // For simplicity, this example uses a static mapping
-  const alternativeGenres: { [key: string]: string } = {
-    "pov: indie": "Indie",
-    "springfield mo indie": "Indie",
-    "electropop": "electric pop",
-    // Add more mappings or logic as needed
-  };
+function getAlternativeGenre(initialGenre: string) {
+    // Implement logic to determine an alternative genre
+    // For simplicity, this example uses a static mapping
+    const alternativeGenres: { [key: string]: string } = {
+        "pov: indie": "Indie",
+        "springfield mo indie": "Indie",
+        "electropop": "electric pop",
+        // Add more mappings or logic as needed
+    };
 
-  return alternativeGenres[initialGenre] || "Alternative"; // Fallback to "Alternative" if no mapping found
+    return alternativeGenres[initialGenre] || "Alternative"; // Fallback to "Alternative" if no mapping found
 }
 
 function formatGenre(genre: string) {
@@ -90,7 +96,9 @@ function formatGenre(genre: string) {
                         events[0]._embedded?.venues[0]?.country.name : 'Unknown') }}
             </span>
             </p>
-            <button class="btn btn-success mt-auto">View Events</button>
+            <button @click="emitData" class="btn btn-success mt-auto" data-bs-toggle="modal"
+                data-bs-target="#eventGenreModal">View
+                Events</button>
         </div>
         <div v-else class="card-body d-flex flex-column justify-content-end align-items-center">
             <button class="btn btn-secondary" disabled>No Events</button>

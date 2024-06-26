@@ -16,10 +16,17 @@ const buttonStyle = ref({
     color: '#ffffff'
 });
 
-const modal = document.getElementById('eventModal');
+const artistModal = document.getElementById('eventArtistModal');
+const genreModal = document.getElementById('eventGenreModal');
 
 onMounted(() => {
-    modal?.addEventListener('hidden.bs.modal', () => {
+    artistModal?.addEventListener('hidden.bs.modal', () => {
+        isChecked.value = false;
+        buttonStyle.value.backgroundColor = '#111111';
+        buttonStyle.value.borderColor = '#111111';
+        buttonStyle.value.color = '#ffffff';
+    });
+    genreModal?.addEventListener('hidden.bs.modal', () => {
         isChecked.value = false;
         buttonStyle.value.backgroundColor = '#111111';
         buttonStyle.value.borderColor = '#111111';
