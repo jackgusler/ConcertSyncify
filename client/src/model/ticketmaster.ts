@@ -1,22 +1,5 @@
 import axios from '../myAxios'
 
-export const getEvents = async (keyword: string) => {
-  try {
-    const response = await axios.get('/api/ticketmaster/events', {
-      params: {
-        keyword
-      }
-    })
-    if (!response.data._embedded) {
-      return []
-    }
-    return response.data._embedded.events
-  } catch (error) {
-    console.error('Error fetching events:', error)
-    return []
-  }
-}
-
 export interface Event {
   _embedded: {
     venues: [
@@ -171,4 +154,21 @@ export interface Event {
   test: boolean
   type: string
   url: string
+}
+
+export const getEvents = async (keyword: string) => {
+  try {
+    const response = await axios.get('/api/ticketmaster/events', {
+      params: {
+        keyword
+      }
+    })
+    if (!response.data._embedded) {
+      return []
+    }
+    return response.data._embedded.events
+  } catch (error) {
+    console.error('Error fetching events:', error)
+    return []
+  }
 }

@@ -20,6 +20,7 @@
     "floating-vue": "^5.2.2",
     "pinia": "^2.1.7",
     "vue": "^3.4.29",
+    "vue-cal": "^4.8.1",
     "vue-router": "^4.3.3"
   },
   "devDependencies": {

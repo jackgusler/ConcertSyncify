@@ -54,6 +54,30 @@ router.get("/logged-in", async (req, res) => {
   }
 });
 
+router.get("/events", async (req, res) => {
+  const tokens = cache.get("google_tokens");
+  if (!tokens) {
+    return res.status(401).send("Unauthorized");
+  }
+
+  oauth2Client.setCredentials(tokens);
+
+  const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+
+  try {
+    const response = await calendar.events.list({
+      calendarId: "primary",
+      timeMin: new Date().toISOString(),
+      maxResults: 10,
+      singleEvents: true,
+      orderBy: "startTime",
+    });
+    res.status(200).send(response.data);
+  } catch (error) {
+    res.status(500).send("Error fetching events: " + error.message);
+  }
+});
+
 router.post("/create-event", async (req, res) => {
   const { summary, description, location, start, end } = req.body;
   const tokens = cache.get("google_tokens");
