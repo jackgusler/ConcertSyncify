@@ -12,25 +12,8 @@ const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 
 router.get("/login", (req, res) => {
   const scope = "user-read-private user-read-email user-top-read";
-
   const auth_url = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}`;
-
   res.redirect(auth_url);
-});
-
-router.get("/logged-in", async (req, res) => {
-  const access_token = req.headers.authorization.split(" ")[1];
-  try {
-    // Use the access token to get the user's profile info
-    await axios.get("https://api.spotify.com/v1/me", {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
-    res.json({ logged_in: true });
-  } catch (error) {
-    res.json({ logged_in: false });
-  }
 });
 
 router.get("/callback", async (req, res) => {
@@ -55,17 +38,41 @@ router.get("/callback", async (req, res) => {
       { headers: auth_options.headers }
     );
     const { access_token, refresh_token } = response.data;
-    const redirect_url = `http://localhost:5173/dashboard?access_token=${access_token}&refresh_token=${refresh_token}`;
-    res.redirect(redirect_url);
+    cache.set("spotify_tokens", { access_token, refresh_token }, 3600);
+    res.redirect("http://localhost:5173/dashboard");
   } catch (error) {
-    const redirect_url = `http://localhost:5173/error`;
-    res.redirect(redirect_url);
-    return redirect_url;
+    console.error("Error during callback:", error);
+    res.redirect("http://localhost:5173/error");
+  }
+});
+
+router.get("/logout", (req, res) => {
+  cache.del("spotify_tokens");
+  res.json({ redirectUrl: "/" });
+});
+
+router.get("/logged-in", async (req, res) => {
+  const tokens = cache.get("spotify_tokens");
+  const access_token = tokens ? tokens.access_token : null;
+  if (!access_token) {
+    return res.json({ logged_in: false });
+  }
+
+  try {
+    await axios.get("https://api.spotify.com/v1/me", {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    });
+    res.json({ logged_in: true });
+  } catch (error) {
+    res.json({ logged_in: false });
   }
 });
 
 router.get("/top-artists", async (req, res) => {
-  const access_token = req.headers.authorization.split(" ")[1];
+  const tokens = cache.get("spotify_tokens");
+  const access_token = tokens ? tokens.access_token : null;
   if (!access_token) {
     return res.status(401).send("Unauthorized");
   }
@@ -73,14 +80,11 @@ router.get("/top-artists", async (req, res) => {
   const cacheKey = `spotify:top-artists:${access_token}`;
 
   try {
-    // Check if the data is already cached
     const cachedData = await cache.get(cacheKey);
     if (cachedData) {
-      console.log("Returning cached data for top artists");
       return res.json(cachedData);
     }
 
-    // If not cached, fetch the top artists from Spotify API
     const response = await axios.get(
       "https://api.spotify.com/v1/me/top/artists",
       {
@@ -90,18 +94,17 @@ router.get("/top-artists", async (req, res) => {
       }
     );
 
-    // Cache the fetched data with an expiration (e.g., 1 hour)
     cache.set(cacheKey, response.data, 3600);
 
     res.json(response.data);
   } catch (error) {
-    console.error("Error fetching top artists:", error.message);
     res.status(500).send(error.message);
   }
 });
 
 router.get("/top-genres", async (req, res) => {
-  const access_token = req.headers.authorization.split(" ")[1];
+  const tokens = cache.get("spotify_tokens");
+  const access_token = tokens ? tokens.access_token : null;
   if (!access_token) {
     return res.status(401).send("Unauthorized");
   }
@@ -109,10 +112,8 @@ router.get("/top-genres", async (req, res) => {
   const topGenresCacheKey = `spotify:top-genres:${access_token}`;
 
   try {
-    // Check if the top genres data is already cached
     let cachedTopGenres = await cache.get(topGenresCacheKey);
     if (cachedTopGenres) {
-      console.log("Returning cached data for top genres");
       return res.json({ genres: cachedTopGenres });
     }
 
@@ -128,12 +129,9 @@ router.get("/top-genres", async (req, res) => {
         }
       );
       topArtistsData = response.data;
-      // Optionally cache this data if you want to cache it here as well
-      console.log("Caching top artists data inside top-genres endpoint");
       cache.set(cacheKey, topArtistsData, 3600);
     }
 
-    // Extract Genres
     let genres = new Set();
     topArtistsData.items.forEach((artist) => {
       artist.genres.forEach((genre) => {
@@ -141,7 +139,6 @@ router.get("/top-genres", async (req, res) => {
       });
     });
 
-    // Search for Artists by Genre and Extract First Artist in Parallel
     let searchPromises = Array.from(genres).map((genre) =>
       axios
         .get(`https://api.spotify.com/v1/search`, {
@@ -165,8 +162,7 @@ router.get("/top-genres", async (req, res) => {
     let genreArtistMap = results.filter(({ artist }) => artist !== null);
     let top10Genres = genreArtistMap.slice(0, 10);
 
-    // Cache the top genres data
-    cache.set(topGenresCacheKey, top10Genres, 3600); // Adjust the expiration as needed
+    cache.set(topGenresCacheKey, top10Genres, 3600);
 
     res.json({ genres: top10Genres });
   } catch (error) {

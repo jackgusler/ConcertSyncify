@@ -6,7 +6,7 @@ const cache = require("../cache");
 
 const consumer_key = process.env.TICKETMASTER_CONSUMER_KEY;
 
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const fetchWithRetry = async (url, retries = 3, delayTime = 1000) => {
   for (let i = 0; i < retries; i++) {
@@ -15,7 +15,6 @@ const fetchWithRetry = async (url, retries = 3, delayTime = 1000) => {
       return response;
     } catch (error) {
       if (error.response && error.response.status === 429 && i < retries - 1) {
-        console.warn(`Rate limited, retrying after ${delayTime}ms...`);
         await delay(delayTime);
         delayTime *= 2; // Exponential backoff
       } else {
@@ -23,7 +22,7 @@ const fetchWithRetry = async (url, retries = 3, delayTime = 1000) => {
       }
     }
   }
-  throw new Error('Max retries exceeded');
+  throw new Error("Max retries exceeded");
 };
 
 router.get("/events", async (req, res) => {
@@ -39,8 +38,7 @@ router.get("/events", async (req, res) => {
     // Try to fetch data from NodeCache cache first
     const cachedData = await cache.get(cacheKey);
     if (cachedData) {
-      console.log('Returning cached data');
-      return res.json(cachedData)
+      return res.json(cachedData);
     }
 
     // If not in cache, fetch from API

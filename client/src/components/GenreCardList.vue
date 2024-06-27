@@ -69,7 +69,6 @@ function handleEmitFromGenre(data: { events: Event[]; modalTitle: string }) {
     eventList.value = data.events;
     modalTitle.value = data.modalTitle;
 
-    console.log(data);
 }
 
 function handleEmitFromEvent(data: Event) {

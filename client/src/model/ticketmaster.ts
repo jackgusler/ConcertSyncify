@@ -1,4 +1,3 @@
-// ticketmaster.ts
 import axios from '../myAxios'
 
 export const getEvents = async (keyword: string) => {

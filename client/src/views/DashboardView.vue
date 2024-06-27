@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { type Artist, getTopArtists } from '@/model/spotify';
 import ArtistCardList from '../components/ArtistCardList.vue';
 import GenreCardList from '../components/GenreCardList.vue';
+import Calendar from '../components/Calendar.vue';
 
 const artistSearchBar = ref(false);
 const genreSearchBar = ref(false);
@@ -86,7 +86,10 @@ onMounted(async () => {
 
             <div class="col-md-4 d-flex">
                 <div class="box px-3 py-2 rounded-3 w-100">
-                    <h1>Calendar</h1>
+                    <div class="col-auto">
+                        <h1>Calendar</h1>
+                    </div>
+                    <Calendar />
                 </div>
             </div>
 
@@ -136,7 +139,7 @@ onMounted(async () => {
     transition: color 0.3s;
 }
 
-.search-icon-container:hover{
+.search-icon-container:hover {
     color: white;
 }
 

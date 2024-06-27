@@ -1,12 +1,13 @@
-import axios from 'axios';
+import axios from 'axios'
 
-const root: string = import.meta.env.VITE_API_ROOT;
+const root: string = import.meta.env.VITE_API_ROOT
 
 const instance = axios.create({
-    baseURL: root,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
+  baseURL: root,
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  withCredentials: true // Include credentials in requests
+})
 
-export default instance;
+export default instance
