@@ -20,8 +20,10 @@ onMounted(async () => {
     loggedIn.value = isLogged;
     if (loggedIn.value) {
         const googleEvents = await getGoogleEvents();
+        console.log("Fetched Google Events:", googleEvents); // Log fetched events
         events.value = googleEvents;
         formatEvents();
+        console.log("Formatted Events:", formattedEvents.value); // Log formatted events
     }
 });
 
@@ -34,11 +36,19 @@ const handleLogout = async () => {
 };
 
 const formatEvents = () => {
-    formattedEvents.value = events.value.map(event => ({
-        start: event.start.dateTime || event.start.date,
-        end: event.end.dateTime || event.end.date,
-        title: event.summary,
-    }));
+    formattedEvents.value = events.value.map(event => {
+        const start = new Date(event.start.dateTime || event.start.date);
+        const end = new Date(event.end.dateTime || event.end.date);
+
+        return {
+            start: start,
+            end: end,
+            title: event.summary,
+            from: start.getHours() * 60 + start.getMinutes(), // Convert to minutes from midnight
+            to: end.getHours() * 60 + end.getMinutes(), // Convert to minutes from midnight
+            label: event.summary,
+        };
+    });
 };
 </script>
 
@@ -48,7 +58,7 @@ const formatEvents = () => {
         <button v-else @click="handleLogout" class="btn btn-success">Logout</button>
 
         <div v-if="loggedIn" class="calendar-wrapper">
-            <vue-cal class="custom-calendar" :events="formattedEvents" />
+            <vue-cal :time-from="9 * 60" :time-to="24 * 60" class="custom-calendar" :events="formattedEvents" />
         </div>
     </div>
 </template>
@@ -75,8 +85,10 @@ const formatEvents = () => {
 }
 
 .custom-calendar {
-    width: 100%; /* Adjust width as needed */
-    height: 100%; /* Adjust height as needed */
+    width: 100%;
+    /* Adjust width as needed */
+    height: 100%;
+    /* Adjust height as needed */
     max-height: 83vh;
 }
 </style>
