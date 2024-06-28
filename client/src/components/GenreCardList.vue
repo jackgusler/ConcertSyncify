@@ -12,7 +12,7 @@ const selectedEvents = ref<Event[]>([]);
 const allGenres = ref<Genre[]>([]);
 const centerIndex = ref(0);
 const baseScale = 1.0;
-const scaleDecrement = 0.11;
+const scaleDecrement = 0.101;
 const minimumScale = 0.6;
 let scrollInterval: number | null | undefined = null;
 

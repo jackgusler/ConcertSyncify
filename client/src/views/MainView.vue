@@ -8,11 +8,6 @@ onMounted(async () => {
     const isLogged = await isLoggedInSpotify()
     loggedIn.value = isLogged
 })
-const handleLogout = async () => {
-    await spotifyLogout();
-    const isLogged = await isLoggedInSpotify();
-    loggedIn.value = isLogged;
-};
 
 </script>
 
@@ -40,7 +35,7 @@ const handleLogout = async () => {
                         <button v-if="!loggedIn" @click="spotifyLogin" class="btn btn-success mb-2">
                             Login with Spotify
                         </button>
-                        <button v-else @click="handleLogout" class="btn btn-success mb-2">
+                        <button v-else @click="spotifyLogout" class="btn btn-success mb-2">
                             Logout
                         </button>
                         <router-link v-if="loggedIn" to="/dashboard" class="btn btn-success">Dashboard</router-link>

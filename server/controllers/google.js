@@ -68,7 +68,6 @@ router.get("/events", async (req, res) => {
     const response = await calendar.events.list({
       calendarId: "primary",
       timeMin: new Date().toISOString(),
-      maxResults: 10,
       singleEvents: true,
       orderBy: "startTime",
     });
@@ -79,7 +78,7 @@ router.get("/events", async (req, res) => {
 });
 
 router.post("/create-event", async (req, res) => {
-  const { summary, description, location, start, end } = req.body;
+  const { summary, description, location, start, timeZone } = req.body;
   const tokens = cache.get("google_tokens");
   if (!tokens) {
     return res.status(401).send("Unauthorized");
@@ -89,17 +88,21 @@ router.post("/create-event", async (req, res) => {
 
   const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
+  // Calculate end time as 2 hours after start time
+  const endTime = new Date(start);
+  endTime.setHours(endTime.getHours() + 3); // Default duration of 2 hours
+
   const event = {
     summary: summary,
     description: description,
     location: location,
     start: {
       dateTime: start,
-      timeZone: "America/Los_Angeles",
+      timeZone: timeZone,
     },
     end: {
-      dateTime: end,
-      timeZone: "America/Los_Angeles",
+      dateTime: endTime.toISOString(), // Convert to ISO string format
+      timeZone: timeZone,
     },
   };
 

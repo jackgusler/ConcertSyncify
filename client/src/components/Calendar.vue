@@ -15,22 +15,28 @@ interface FormattedEvent {
 
 const formattedEvents = ref<FormattedEvent[]>([]);
 
+const fetchAndFormatEvents = async () => {
+    const googleEvents = await getGoogleEvents();
+    events.value = googleEvents;
+    formatEvents();
+};
+
 onMounted(async () => {
     const isLogged = await isLoggedInGoogle();
     loggedIn.value = isLogged;
     if (loggedIn.value) {
-        const googleEvents = await getGoogleEvents();
-        console.log("Fetched Google Events:", googleEvents); // Log fetched events
-        events.value = googleEvents;
-        formatEvents();
-        console.log("Formatted Events:", formattedEvents.value); // Log formatted events
+        await fetchAndFormatEvents();
     }
+
+    window.addEventListener('update-google-events', async (event) => {
+        const customEvent = event as CustomEvent<GoogleEvent[]>; // Assuming event.detail is of type GoogleEvent[]
+        events.value = customEvent.detail;
+        formatEvents();
+    });
 });
 
 const handleLogout = async () => {
-    await googleLogout();
-    const isLogged = await isLoggedInGoogle();
-    loggedIn.value = isLogged;
+    googleLogout();
     events.value = [];
     formattedEvents.value = [];
 };
@@ -58,7 +64,10 @@ const formatEvents = () => {
         <button v-else @click="handleLogout" class="btn btn-success">Logout</button>
 
         <div v-if="loggedIn" class="calendar-wrapper">
-            <vue-cal :time-from="9 * 60" :time-to="24 * 60" class="custom-calendar" :events="formattedEvents" />
+            <vue-cal class="vuecal--rounded-theme vuecal--full-height-delete" xsmall hide-view-selector :time="false" active-view="month"
+                :disable-views="['week']" :events="formattedEvents" :editable-events="{ delete: true }"
+                >
+            </vue-cal>
         </div>
     </div>
 </template>
@@ -82,6 +91,9 @@ const formatEvents = () => {
     height: 100%;
     max-height: 100%;
     max-width: 100%;
+    border: 2px solid #1db954;
+    border-radius: 2rem;
+    overflow: hidden;
 }
 
 .custom-calendar {

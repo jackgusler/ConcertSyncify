@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { type Artist, getTopArtists } from '@/model/spotify';
 import { type Event } from '@/model/ticketmaster';
+import { type GoogleEventInput, googleLogin, isLoggedInGoogle, createGoogleEvent, getGoogleEvents } from '@/model/google';
 import ArtistCard from './ArtistCard.vue';
 import EventCardList from './EventCardList.vue';
 
@@ -9,16 +10,21 @@ const eventList = ref<Event[]>([]);
 const modalTitle = ref('');
 const selectedEvents = ref<Event[]>([]);
 
+const loggedIn = ref(false);
+
 const allArtists = ref<Artist[]>([]);
 const centerIndex = ref(0);
 const baseScale = 1.0;
-const scaleDecrement = 0.11;
+const scaleDecrement = 0.101;
 const minimumScale = 0.6;
 let scrollInterval: number | null | undefined = null;
 
 onMounted(async () => {
     const artists = await getTopArtists();
     allArtists.value = artists;
+
+    const isLogged = await isLoggedInGoogle();
+    loggedIn.value = isLogged;
 });
 
 function calculateScale(index: number) {
@@ -71,15 +77,35 @@ function handleEmitFromArtist(data: { events: Event[]; modalTitle: string }) {
 }
 
 function handleEmitFromEvent(data: Event) {
-    if (selectedEvents.value.includes(data)) {
-        selectedEvents.value = selectedEvents.value.filter(event => event !== data);
+    const dataIndex = selectedEvents.value.findIndex(event => event.id === data.id);
+    if (dataIndex !== -1) {
+        selectedEvents.value.splice(dataIndex, 1);
     } else {
-        selectedEvents.value = [...selectedEvents.value, data];
+        selectedEvents.value.push(data);
     }
 }
 
-function handleSelected() {
+async function handleSelected() {
+    // Wait for all events to be created before proceeding
+    await Promise.all(selectedEvents.value.map(async (event: any) => {
+        console.log(event);
+        const googleEvent: GoogleEventInput = {
+            summary: event.name,
+            description: event.info,
+            location: event.venue,
+            start: event.dates.start.dateTime,
+            timeZone: event.dates.timezone
+        };
+
+        await createGoogleEvent(googleEvent);
+    }));
+
     selectedEvents.value = [];
+
+    // Refetch events from Google Calendar after all events have been created
+    const googleEvents = await getGoogleEvents();
+    // Emit event to parent to update calendar
+    window.dispatchEvent(new CustomEvent('update-google-events', { detail: googleEvents }));
 }
 </script>
 
@@ -101,9 +127,13 @@ function handleSelected() {
                         <button type="button" class="btn btn-secondary me-3">Filter by date</button>
                         <button type="button" class="btn btn-secondary">Filter by distance</button>
                     </div>
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal"
-                        :disabled="selectedEvents.length === 0" @click="handleSelected">Add selected to
-                        calendar</button>
+                    <button v-if="loggedIn" type="button" class="btn btn-success" data-bs-dismiss="modal"
+                        :disabled="selectedEvents.length === 0" @click="handleSelected">
+                        Add selected to calendar
+                    </button>
+                    <button v-else type="button" class="btn btn-success" data-bs-dismiss="modal" @click="googleLogin">
+                        Login with Google to add events
+                    </button>
                 </div>
             </div>
         </div>

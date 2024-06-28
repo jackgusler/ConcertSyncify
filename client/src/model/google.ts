@@ -170,6 +170,14 @@ export interface GoogleEvent {
   eventType: string
 }
 
+export interface GoogleEventInput {
+  summary: string;
+  description: string;
+  location: string;
+  start: string; // ISO string format for date-time
+  timeZone: string;
+}
+
 export const googleLogin = async () => {
   window.location.href = axios.defaults.baseURL + '/api/google/login'
 }
@@ -178,6 +186,7 @@ export const googleLogout = async () => {
   try {
     const response = await axios.get('/api/google/logout')
     router.push(response.data.redirectUrl)
+    window.location.reload()
   } catch (error) {
     console.error('Error logging out:', error)
   }
@@ -202,3 +211,14 @@ export const getGoogleEvents = async () => {
     return []
   }
 }
+
+export const createGoogleEvent = async (event: GoogleEventInput) => {
+  try {
+    const response = await axios.post('/api/google/create-event', event);
+    console.log('Event created:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating Google event:', error);
+    throw error; // Rethrow the error if you want to handle it outside this function
+  }
+};

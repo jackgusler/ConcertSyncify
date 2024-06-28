@@ -135,12 +135,8 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     cursor: pointer;
-    color: #323231;
-    transition: color 0.3s;
-}
-
-.search-icon-container:hover {
     color: white;
+    transition: color 0.3s;
 }
 
 .search-icon-container .fa-magnifying-glass {

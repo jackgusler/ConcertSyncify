@@ -202,27 +202,111 @@ p.fs-4 {
 
 .vuecal__menu,
 .vuecal__cell-events-count {
-  background-color: #42b983 !important;
+  background-color: #1db954 !important;
 }
 .vuecal__title-bar {
-  background-color: #e4f5ef !important;
+  background-color: #323231 !important;
 }
-.vuecal__cell--today,
-.vuecal__cell--current {
-  background-color: rgba(240, 240, 255, 0.4) !important;
+.vuecal__flex.vuecal__title button,
+.vuecal__flex.vuecal__title span {
+  font-size: 2rem !important;
+  color: white !important;
 }
+
+.vuecal__arrow.vuecal__arrow--prev {
+  padding-left: 5rem;
+  font-size: 1.5rem !important;
+  color: white !important;
+}
+
+.vuecal__arrow.vuecal__arrow--next {
+  padding-right: 5rem;
+  font-size: 1.5rem !important;
+  color: white !important;
+}
+
+.vuecal__title-bar {
+  padding: 1rem;
+}
+
 .vuecal:not(.vuecal--day-view) .vuecal__cell--selected {
-  background-color: rgba(235, 255, 245, 0.4) !important;
+  background-color: rgba(255, 255, 255, 0.4) !important;
 }
 .vuecal__cell--selected:before {
-  border-color: rgba(66, 185, 131, 0.5) !important;
+  border-color: rgba(26, 163, 74, 0.5) !important;
 }
-/* Cells and buttons get highlighted when an event is dragged over it. */
-.vuecal__cell--highlighted:not(.vuecal__cell--has-splits),
-.vuecal__cell-split--highlighted {
-  background-color: rgba(195, 255, 225, 0.5) !important;
+
+.vuecal__view-btn {
+  color: white !important;
+  font-size: 1.8rem !important;
 }
-.vuecal__arrow.vuecal__arrow--highlighted,
-.vuecal__view-btn.vuecal__view-btn--highlighted {
-  background-color: rgba(136, 236, 191, 0.25) !important;
+
+.vuecal__flex.vuecal__weekdays-headings {
+  background-color: #242424 !important;
+  color: white !important;
+  font-size: 1.2rem !important;
+}
+
+.vuecal__flex.vuecal__cell-content .vuecal__cell-date {
+  font-size: 1.5rem !important;
+}
+
+.vuecal--rounded-theme .vuecal__cell-content {
+  color: white !important;
+  background-color: #242424 !important;
+  border: 2px solid #3c3c3c !important;
+  width: calc(100% - 2rem) !important;
+  height: calc(100% - 2rem) !important;
+}
+
+.vuecal--month-view .vuecal__cell-content {
+  border-radius: 100% !important;
+  width: 5rem !important;
+  height: 5rem !important;
+}
+
+.vuecal--rounded-theme .vuecal__cell--today .vuecal__cell-content {
+  border-color: #1db954 !important;
+}
+
+.vuecal--rounded-theme .vuecal__cell--selected .vuecal__cell-content {
+  border-color: #1db954 !important;
+}
+
+.vuecal__cell.vuecal__cell--selected:before {
+  background-color: white !important;
+  opacity: 0.3 !important;
+}
+
+.vuecal--day-view.vuecal--no-time .vuecal__cell:not(.vuecal__cell--has-splits) {
+  display: flex !important;
+}
+
+.vuecal--rounded-theme.vuecal--day-view .vuecal__cell-content{
+  font-size: 1.2rem !important;
+  overflow: hidden !important;
+  border: 2px solid #1db954 !important;
+}
+
+.vuecal__event{
+  padding: 1rem;
+  border-bottom: 2px solid #1db954 !important;
+  color: white !important;
+}
+
+.vuecal__cell-events .vuecal__event:nth-child(odd){
+  background-color: #444444 !important;
+}
+
+.vuecal__cell-events .vuecal__event:nth-child(even){
+  background-color: #323231 !important;
+}
+
+.vuecal__cell-events-count{
+  color: white !important;
+  font-size: 1rem !important;
+  top: 70% !important;
+  width: 1.1rem !important;
+  height: 1.1rem !important;
+  line-height: 1.1rem !important;
 }

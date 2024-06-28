@@ -35,6 +35,7 @@ export const spotifyLogin = async () => {
 export const spotifyLogout = async () => {
   try {
     const response = await axios.get('/api/spotify/logout')
+    window.location.reload()
     router.push(response.data.redirectUrl)
   } catch (error) {
     console.error('Error logging out:', error)
