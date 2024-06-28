@@ -64,7 +64,7 @@ const formatEvents = () => {
         <button v-else @click="handleLogout" class="btn btn-success">Logout</button>
 
         <div v-if="loggedIn" class="calendar-wrapper">
-            <vue-cal class="vuecal--rounded-theme vuecal--full-height-delete" xsmall hide-view-selector :time="false" active-view="month"
+            <vue-cal class="vuecal--rounded-theme" xsmall hide-view-selector :time="false" active-view="month"
                 :disable-views="['week']" :events="formattedEvents" :editable-events="{ delete: true }"
                 >
             </vue-cal>
