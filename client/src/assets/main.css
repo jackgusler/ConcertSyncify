@@ -209,18 +209,16 @@ p.fs-4 {
 }
 .vuecal__flex.vuecal__title button,
 .vuecal__flex.vuecal__title span {
-  font-size: 2rem !important;
+  font-size: 1.5rem !important;
   color: white !important;
 }
 
 .vuecal__arrow.vuecal__arrow--prev {
-  padding-left: 5rem;
   font-size: 1.5rem !important;
   color: white !important;
 }
 
 .vuecal__arrow.vuecal__arrow--next {
-  padding-right: 5rem;
   font-size: 1.5rem !important;
   color: white !important;
 }
@@ -236,33 +234,26 @@ p.fs-4 {
   border-color: rgba(26, 163, 74, 0.5) !important;
 }
 
-.vuecal__view-btn {
-  color: white !important;
-  font-size: 1.8rem !important;
-}
-
 .vuecal__flex.vuecal__weekdays-headings {
-  background-color: #242424 !important;
+  background-color: #171717 !important;
   color: white !important;
-  font-size: 1.2rem !important;
+  font-size: 1rem !important;
 }
 
 .vuecal__flex.vuecal__cell-content .vuecal__cell-date {
-  font-size: 1.5rem !important;
+  font-size: 1rem !important;
 }
 
 .vuecal--rounded-theme .vuecal__cell-content {
   color: white !important;
-  background-color: #242424 !important;
+  background-color: #171717 !important;
   border: 2px solid #3c3c3c !important;
-  width: calc(100% - 2rem) !important;
-  height: calc(100% - 2rem) !important;
 }
 
 .vuecal--month-view .vuecal__cell-content {
   border-radius: 100% !important;
-  width: 5rem !important;
-  height: 5rem !important;
+  width: 2.8rem !important;
+  height: 2.8rem !important;
 }
 
 .vuecal--rounded-theme .vuecal__cell--today .vuecal__cell-content {
@@ -282,31 +273,54 @@ p.fs-4 {
   display: flex !important;
 }
 
-.vuecal--rounded-theme.vuecal--day-view .vuecal__cell-content{
+.vuecal--rounded-theme.vuecal--day-view .vuecal__cell-content {
   font-size: 1.2rem !important;
   overflow: hidden !important;
-  border: 2px solid #1db954 !important;
+  border: 2px solid rgb(60, 60, 60) !important;
 }
 
-.vuecal__event{
+.vuecal__event {
   padding: 1rem;
-  border-bottom: 2px solid #1db954 !important;
+  border-bottom: 2px solid rgb(60, 60, 60) !important;
   color: white !important;
 }
 
-.vuecal__cell-events .vuecal__event:nth-child(odd){
+.vuecal__cell-events .vuecal__event:nth-child(odd) {
   background-color: #444444 !important;
 }
 
-.vuecal__cell-events .vuecal__event:nth-child(even){
+.vuecal__cell-events .vuecal__event:nth-child(even) {
   background-color: #323231 !important;
 }
 
-.vuecal__cell-events-count{
-  color: white !important;
-  font-size: 1rem !important;
-  top: 70% !important;
-  width: 1.1rem !important;
-  height: 1.1rem !important;
-  line-height: 1.1rem !important;
+.vuecal__cell-events-count {
+  width: 18px !important;
+  height: 2px !important;
+  top: 75% !important;
+  color: transparent !important;
+}
+
+.vuecal__flex.vuecal__body {
+  background: linear-gradient(to bottom, #242424 0%, #242424 75%, #323231 100%) !important;
+}
+
+.vuecal__flex.vuecal__cells.day-view .vuecal__flex.vuecal__cell-content {
+  height: 90% !important;
+  width: 90% !important;
+}
+
+.vuecal__flex.vuecal__cells.years-view
+  .vuecal__flex
+  .vuecal__cell
+  .vuecal__flex.vuecal__cell-content {
+  width: 70px !important;
+  height: 50px;
+}
+
+.vuecal__flex.vuecal__cells.year-view
+  .vuecal__flex
+  .vuecal__cell
+  .vuecal__flex.vuecal__cell-content {
+  width: 100px !important;
+  height: 60px;
 }

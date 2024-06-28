@@ -26,6 +26,9 @@ onMounted(async () => {
     loggedIn.value = isLogged;
     if (loggedIn.value) {
         await fetchAndFormatEvents();
+    } else {
+        events.value = [];
+        formattedEvents.value = [];
     }
 
     window.addEventListener('update-google-events', async (event) => {
@@ -34,12 +37,6 @@ onMounted(async () => {
         formatEvents();
     });
 });
-
-const handleLogout = async () => {
-    googleLogout();
-    events.value = [];
-    formattedEvents.value = [];
-};
 
 const formatEvents = () => {
     formattedEvents.value = events.value.map(event => {
@@ -59,48 +56,32 @@ const formatEvents = () => {
 </script>
 
 <template>
-    <div class="calendar-container">
+    <div class="my-container">
         <button v-if="!loggedIn" @click="googleLogin" class="btn btn-success">Login with Google</button>
-        <button v-else @click="handleLogout" class="btn btn-success">Logout</button>
-
+        <!-- <button v-else @click="handleLogout" class="btn btn-success">Logout</button> -->
         <div v-if="loggedIn" class="calendar-wrapper">
             <vue-cal class="vuecal--rounded-theme" xsmall hide-view-selector :time="false" active-view="month"
-                :disable-views="['week']" :events="formattedEvents" :editable-events="{ delete: true }"
-                >
+                :disable-views="['week']" style="width: 375px; height: 450px;" :events="formattedEvents">
             </vue-cal>
         </div>
     </div>
 </template>
 
 <style scoped>
-.calendar-container {
+.my-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 90%;
-    width: 100%;
-    padding: 1rem;
+    height: calc(100vh - 10rem);
 }
 
 .calendar-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 100%;
-    max-height: 100%;
-    max-width: 100%;
-    border: 2px solid #1db954;
+    border: 2px solid rgb(60, 60, 60);
     border-radius: 2rem;
     overflow: hidden;
-}
-
-.custom-calendar {
-    width: 100%;
-    /* Adjust width as needed */
-    height: 100%;
-    /* Adjust height as needed */
-    max-height: 83vh;
 }
 </style>

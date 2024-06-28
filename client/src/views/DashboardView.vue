@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { googleLogout, isLoggedInGoogle } from '../model/google';
 import ArtistCardList from '../components/ArtistCardList.vue';
 import GenreCardList from '../components/GenreCardList.vue';
 import Calendar from '../components/Calendar.vue';
@@ -7,7 +8,12 @@ import Calendar from '../components/Calendar.vue';
 const artistSearchBar = ref(false);
 const genreSearchBar = ref(false);
 
+const loggedIn = ref(false);
+
 onMounted(async () => {
+    const isLogged = await isLoggedInGoogle();
+    loggedIn.value = isLogged;
+
     artistSearchBar.value = false;
     genreSearchBar.value = false;
 });
@@ -86,8 +92,9 @@ onMounted(async () => {
 
             <div class="col-md-4 d-flex">
                 <div class="box px-3 py-2 rounded-3 w-100">
-                    <div class="col-auto">
+                    <div class="col-auto d-flex justify-content-between align-items-center">
                         <h1>Calendar</h1>
+                        <button v-if="loggedIn" @click="googleLogout" class="btn btn-success">Logout</button>
                     </div>
                     <Calendar />
                 </div>
