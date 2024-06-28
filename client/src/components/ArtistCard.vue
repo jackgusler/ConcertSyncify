@@ -39,13 +39,11 @@ onMounted(async () => {
 });
 
 function getAlternativeGenre(initialGenre: string) {
-    // Implement logic to determine an alternative genre
-    // For simplicity, this example uses a static mapping
     const alternativeGenres: { [key: string]: string } = {
         "pov: indie": "Indie",
         "springfield mo indie": "Indie",
         "electropop": "Electro Pop",
-        // Add more mappings or logic as needed
+        // Add more mappings
     };
 
     return alternativeGenres[initialGenre] || "Alternative"; // Fallback to "Alternative" if no mapping found

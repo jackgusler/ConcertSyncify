@@ -19,12 +19,18 @@ const scaleDecrement = 0.101;
 const minimumScale = 0.6;
 let scrollInterval: number | null | undefined = null;
 
+const eventArtistModal = ref<HTMLElement | null>(null);
+
 onMounted(async () => {
     const artists = await getTopArtists();
     allArtists.value = artists;
 
     const isLogged = await isLoggedInGoogle();
     loggedIn.value = isLogged;
+
+    eventArtistModal.value?.addEventListener('hidden.bs.modal', () => {
+        selectedEvents.value = [];
+    });
 });
 
 function calculateScale(index: number) {
@@ -88,7 +94,6 @@ function handleEmitFromEvent(data: Event) {
 async function handleSelected() {
     // Wait for all events to be created before proceeding
     await Promise.all(selectedEvents.value.map(async (event: any) => {
-        console.log(event);
         const googleEvent: GoogleEventInput = {
             summary: event.name,
             description: event.info,
@@ -101,17 +106,14 @@ async function handleSelected() {
     }));
 
     selectedEvents.value = [];
-
-    // Refetch events from Google Calendar after all events have been created
     const googleEvents = await getGoogleEvents();
-    // Emit event to parent to update calendar
     window.dispatchEvent(new CustomEvent('update-google-events', { detail: googleEvents }));
 }
 </script>
 
 <template>
-    <div class="modal fade" id="eventArtistModal" tabindex="-1" aria-labelledby="eventArtistModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="eventArtistModal" ref="eventArtistModal" tabindex="-1"
+        aria-labelledby="eventArtistModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -119,8 +121,7 @@ async function handleSelected() {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <EventCardList ref="eventCardListRef" :events="eventList" v-if="eventList.length > 0"
-                        @data="handleEmitFromEvent" />
+                    <EventCardList :events="eventList" v-if="eventList.length > 0" @data="handleEmitFromEvent" />
                 </div>
                 <div class="modal-footer d-flex align-items-center justify-content-between">
                     <div>

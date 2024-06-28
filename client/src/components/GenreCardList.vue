@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { type Genre, getTopGenres } from '@/model/spotify';
 import { onMounted, ref, computed } from 'vue';
+import { type Genre, getTopGenres } from '@/model/spotify';
 import { type Event } from '@/model/ticketmaster';
+import { type GoogleEventInput, googleLogin, isLoggedInGoogle, createGoogleEvent, getGoogleEvents } from '@/model/google';
 import GenreCard from './GenreCard.vue';
 import EventCardList from './EventCardList.vue';
 
 const eventList = ref<Event[]>([]);
 const modalTitle = ref('');
 const selectedEvents = ref<Event[]>([]);
+
+const loggedIn = ref(false);
 
 const allGenres = ref<Genre[]>([]);
 const centerIndex = ref(0);
@@ -16,9 +19,18 @@ const scaleDecrement = 0.101;
 const minimumScale = 0.6;
 let scrollInterval: number | null | undefined = null;
 
+const eventGenreModal = ref<HTMLElement | null>(null);
+
 onMounted(async () => {
     const genres = await getTopGenres();
     allGenres.value = genres;
+
+    const isLogged = await isLoggedInGoogle();
+    loggedIn.value = isLogged;
+
+    eventGenreModal.value?.addEventListener('hidden.bs.modal', () => {
+        selectedEvents.value = [];
+    });
 });
 
 function calculateScale(index: number) {
@@ -79,8 +91,23 @@ function handleEmitFromEvent(data: Event) {
     }
 }
 
-function handleSelected() {
+async function handleSelected() {
+    // Wait for all events to be created before proceeding
+    await Promise.all(selectedEvents.value.map(async (event: any) => {
+        const googleEvent: GoogleEventInput = {
+            summary: event.name,
+            description: event.info,
+            location: event.venue,
+            start: event.dates.start.dateTime,
+            timeZone: event.dates.timezone
+        };
+
+        await createGoogleEvent(googleEvent);
+    }));
+
     selectedEvents.value = [];
+    const googleEvents = await getGoogleEvents();
+    window.dispatchEvent(new CustomEvent('update-google-events', { detail: googleEvents }));
 }
 
 function formatGenre(genre: string) {
@@ -101,8 +128,8 @@ function formatGenre(genre: string) {
 </script>
 
 <template>
-    <div class="modal fade" id="eventGenreModal" tabindex="-1" aria-labelledby="eventGenreModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="eventGenreModal" ref="eventGenreModal" tabindex="-1"
+        aria-labelledby="eventGenreModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -117,9 +144,13 @@ function formatGenre(genre: string) {
                         <button type="button" class="btn btn-secondary me-3">Filter by date</button>
                         <button type="button" class="btn btn-secondary">Filter by distance</button>
                     </div>
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal"
-                        :disabled="selectedEvents.length === 0" @click="handleSelected">Add
-                        selected to calendar</button>
+                    <button v-if="loggedIn" type="button" class="btn btn-success" data-bs-dismiss="modal"
+                        :disabled="selectedEvents.length === 0" @click="handleSelected">
+                        Add selected to calendar
+                    </button>
+                    <button v-else type="button" class="btn btn-success" data-bs-dismiss="modal" @click="googleLogin">
+                        Login with Google to add events
+                    </button>
                 </div>
             </div>
         </div>

@@ -23,7 +23,6 @@ onMounted(async () => {
     if (props.genre && props.genre.genre) {
         let genreEvents = await getEvents(props.genre.genre);
         if (!genreEvents || genreEvents.length === 0) {
-            // Try fetching events for an alternative genre if the initial fetch is empty
             const alternativeGenre = getAlternativeGenre(props.genre.genre);
             genreEvents = await getEvents(alternativeGenre);
         }
@@ -36,13 +35,11 @@ onMounted(async () => {
 });
 
 function getAlternativeGenre(initialGenre: string) {
-    // Implement logic to determine an alternative genre
-    // For simplicity, this example uses a static mapping
     const alternativeGenres: { [key: string]: string } = {
         "pov: indie": "Indie",
         "springfield mo indie": "Indie",
         "electropop": "electric pop",
-        // Add more mappings or logic as needed
+        // Add more mappings
     };
 
     return alternativeGenres[initialGenre] || "Alternative"; // Fallback to "Alternative" if no mapping found
@@ -53,11 +50,9 @@ function formatGenre(genre: string) {
     return genre
         .split(' ')
         .map(word => {
-            // Check if the word is an exception
             if (exceptions.includes(word.toLowerCase())) {
-                return word.toUpperCase(); // Return the word in uppercase if it's an exception
+                return word.toUpperCase();
             } else {
-                // Capitalize the first letter of the word and make the rest lowercase
                 return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
             }
         })

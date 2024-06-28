@@ -32,7 +32,7 @@ onMounted(async () => {
     }
 
     window.addEventListener('update-google-events', async (event) => {
-        const customEvent = event as CustomEvent<GoogleEvent[]>; // Assuming event.detail is of type GoogleEvent[]
+        const customEvent = event as CustomEvent<GoogleEvent[]>;
         events.value = customEvent.detail;
         formatEvents();
     });

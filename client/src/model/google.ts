@@ -215,7 +215,6 @@ export const getGoogleEvents = async () => {
 export const createGoogleEvent = async (event: GoogleEventInput) => {
   try {
     const response = await axios.post('/api/google/create-event', event);
-    console.log('Event created:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error creating Google event:', error);
