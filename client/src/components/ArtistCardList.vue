@@ -130,7 +130,7 @@ async function handleSelected() {
                         <button type="button" class="btn btn-secondary">Filter by distance</button>
                     </div>
                     <button v-if="loggedIn" type="button" class="btn btn-success"
-                        :disabled="selectedEvents.length === 0" @click="handleSelected">
+                        :class="{ 'btn-disabled': selectedEvents.length === 0 }" @click="handleSelected">
                         Add selected to calendar
                     </button>
                     <button v-else type="button" class="btn btn-success" data-bs-dismiss="modal" @click="googleLogin">
@@ -162,4 +162,17 @@ async function handleSelected() {
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.btn-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transition: opacity 0.3s ease;
+}
+
+/* Ensure the button is styled correctly when not disabled */
+button:not(.btn-disabled) {
+    opacity: 1;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+</style>
