@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
 import { type Genre } from '@/model/spotify';
 import { type Event, getEvents } from '@/model/ticketmaster';
-import { onMounted, ref } from 'vue';
 
 const props = defineProps<{
     genre: Genre;

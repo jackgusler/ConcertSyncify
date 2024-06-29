@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { type Genre, getTopGenres } from '@/model/spotify';
 import { type Event } from '@/model/ticketmaster';
-import { type GoogleEventInput, googleLogin, isLoggedInGoogle, createGoogleEvent, getGoogleEvents } from '@/model/google';
+import { type GoogleEventInput, googleLogin, isLoggedInGoogle, getGoogleEvents, createGoogleEvent } from '@/model/google';
 import GenreCard from './GenreCard.vue';
 import EventCardList from './EventCardList.vue';
 
@@ -97,10 +97,11 @@ async function handleSelected() {
         const googleEvent: GoogleEventInput = {
             summary: event.name,
             description: event.info,
-            location: event.venue,
+            location: event._embedded?.venues[0].name,
             start: event.dates.start.dateTime,
-            timeZone: event.dates.timezone
-        };
+            timeZone: event.dates.timezone,
+            eventId: event.id
+        }
 
         await createGoogleEvent(googleEvent);
     }));

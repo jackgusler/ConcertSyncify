@@ -4,6 +4,7 @@ const express = require("express");
 const router = express.Router();
 const cache = require("../cache");
 const { google } = require("googleapis");
+const e = require("express");
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -71,6 +72,15 @@ router.get("/events", async (req, res) => {
       singleEvents: true,
       orderBy: "startTime",
     });
+    
+    response.data.items.forEach((event) => {
+      const eventId = event.extendedProperties?.private?.eventId;
+      if (eventId && !cache.has(eventId)) {
+        // Check if eventId is not already in cache
+        cache.set(eventId, event.id, 3600);
+      }
+    });
+
     res.status(200).send(response.data);
   } catch (error) {
     res.status(500).send("Error fetching events: " + error.message);
@@ -78,7 +88,7 @@ router.get("/events", async (req, res) => {
 });
 
 router.post("/create-event", async (req, res) => {
-  const { summary, description, location, start, timeZone } = req.body;
+  const { summary, description, location, start, timeZone, eventId } = req.body;
   const tokens = cache.get("google_tokens");
   if (!tokens) {
     return res.status(401).send("Unauthorized");
@@ -88,9 +98,9 @@ router.post("/create-event", async (req, res) => {
 
   const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
-  // Calculate end time as 2 hours after start time
+  // Calculate end time as 3 hours after start time
   const endTime = new Date(start);
-  endTime.setHours(endTime.getHours() + 3); // Default duration of 2 hours
+  endTime.setHours(endTime.getHours() + 3); // Default duration of 3 hours
 
   const event = {
     summary: summary,
@@ -104,6 +114,11 @@ router.post("/create-event", async (req, res) => {
       dateTime: endTime.toISOString(), // Convert to ISO string format
       timeZone: timeZone,
     },
+    extendedProperties: {
+      private: {
+        eventId: eventId,
+      },
+    },
   };
 
   try {
@@ -111,9 +126,57 @@ router.post("/create-event", async (req, res) => {
       calendarId: "primary",
       resource: event,
     });
+    const validEventId = String(eventId); // Convert eventId to string to ensure it meets the key type requirement
+    cache.set(validEventId, response.data.id, 3600);
     res.status(200).send(response.data);
   } catch (error) {
     res.status(500).send("Error creating event: " + error.message);
+  }
+});
+
+router.get("/event-exists", async (req, res) => {
+  const { eventId } = req.query;
+  const googleEventId = cache.get(eventId);
+  if (!googleEventId) {
+    return res.json({ exists: false });
+  }
+  res.json({ exists: true });
+});
+
+router.delete("/delete-event", async (req, res) => {
+  const { eventId } = req.body;
+  const googleEventId = cache.get(eventId);
+  if (!googleEventId) {
+    return res.status(404).send("Event not found");
+  }
+
+  const tokens = cache.get("google_tokens");
+  if (!tokens) {
+    return res.status(401).send("Unauthorized");
+  }
+
+  oauth2Client.setCredentials(tokens);
+
+  const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+
+  try {
+    await calendar.events.delete({
+      calendarId: "primary",
+      eventId: googleEventId,
+    });
+    cache.del(eventId);
+    res.status(200).send("Event deleted successfully");
+  } catch (error) {
+    console.error(
+      "Google Calendar API Error:",
+      error.response ? error.response.data : error.message
+    );
+    res
+      .status(500)
+      .send(
+        "Error deleting event: " +
+          (error.response ? error.response.data.error.message : error.message)
+      );
   }
 });
 

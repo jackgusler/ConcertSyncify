@@ -176,6 +176,7 @@ export interface GoogleEventInput {
   location: string;
   start: string; // ISO string format for date-time
   timeZone: string;
+  eventId: string;
 }
 
 export const googleLogin = async () => {
@@ -205,6 +206,7 @@ export const isLoggedInGoogle = async () => {
 export const getGoogleEvents = async () => {
   try {
     const response = await axios.get('/api/google/events')
+    console.log(response.data.items)
     return response.data.items
   } catch (error) {
     console.error('Error fetching events:', error)
@@ -221,3 +223,31 @@ export const createGoogleEvent = async (event: GoogleEventInput) => {
     throw error; // Rethrow the error if you want to handle it outside this function
   }
 };
+
+export const googleEventExists = async (eventId: string) => {
+  try {
+    const response = await axios.get('/api/google/event-exists', {
+      params: {
+        eventId
+      }
+    })
+    return response.data.exists
+  } catch (error) {
+    console.error('Error checking if Google event exists:', error)
+    return false
+  }
+}
+
+export const deleteGoogleEvent = async (eventId: string) => {
+  try {
+    const response = await axios.delete('/api/google/delete-event', {
+      data: {
+        eventId
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error deleting Google event:', error)
+    throw error
+  }
+}

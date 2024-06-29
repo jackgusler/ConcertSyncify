@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ref, onMounted, computed } from 'vue';
 import { type Event } from '@/model/ticketmaster';
-import { ref, computed, onMounted } from 'vue';
 import EventCard from './EventCard.vue';
 
 const props = defineProps<{

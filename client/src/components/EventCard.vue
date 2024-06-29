@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { ref, onMounted, computed } from 'vue';
 import { type Event } from '@/model/ticketmaster';
-import { onMounted, ref, computed } from 'vue';
+import { getGoogleEvents, deleteGoogleEvent, googleEventExists } from '@/model/google';
 
 const props = defineProps<{
     event: Event;
@@ -10,6 +11,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['data']);
 
+const isAlreadyAdded = ref(false);
 const isChecked = ref(false);
 const checkboxId = `addEventCheckbox-${props.event.id}`;
 const buttonStyle = ref({
@@ -22,11 +24,19 @@ const artistModal = document.getElementById('eventArtistModal');
 const genreModal = document.getElementById('eventGenreModal');
 
 onMounted(() => {
+    checkIfAlreadyAdded();
+    artistModal?.addEventListener('show.bs.modal', () => {
+        checkIfAlreadyAdded();
+    });
     artistModal?.addEventListener('hidden.bs.modal', () => {
         isChecked.value = false;
         buttonStyle.value.backgroundColor = '#111111';
         buttonStyle.value.borderColor = '#111111';
         buttonStyle.value.color = '#ffffff';
+    });
+
+    genreModal?.addEventListener('show.bs.modal', () => {
+        checkIfAlreadyAdded();
     });
     genreModal?.addEventListener('hidden.bs.modal', () => {
         isChecked.value = false;
@@ -34,7 +44,30 @@ onMounted(() => {
         buttonStyle.value.borderColor = '#111111';
         buttonStyle.value.color = '#ffffff';
     });
+
+    window.addEventListener('update-google-events', () => {
+        checkIfAlreadyAdded();
+    });
 });
+
+const checkIfAlreadyAdded = async () => {
+    isAlreadyAdded.value = await googleEventExists(props.event.id);
+
+    if (!isAlreadyAdded.value) {
+        isChecked.value = false;
+        buttonStyle.value.backgroundColor = '#111111';
+        buttonStyle.value.borderColor = '#111111';
+        buttonStyle.value.color = '#ffffff';
+    }
+}
+
+const handleDeleteGoogleEvent = async () => {
+    await deleteGoogleEvent(props.event.id);
+    checkIfAlreadyAdded();
+
+    const googleEvents = await getGoogleEvents();
+    window.dispatchEvent(new CustomEvent('update-google-events', { detail: googleEvents }));
+};
 
 const biggestImage = computed(() => {
     if (!props.event.images) return '';
@@ -71,7 +104,8 @@ const toggleCheckbox = () => {
 </script>
 
 <template>
-    <div class="card d-flex flex-column align-items-center" style="width: 14rem; position: relative;">
+    <div class="card d-flex flex-column align-items-center" style="width: 14rem; position: relative;"
+        :class="{ 'card-added': isAlreadyAdded }">
         <h5 class="mt-2 mx-3 text-center truncate">{{ props.event.name }}</h5>
         <a :href="props.event.url" target="_blank" class="text-decoration-none text-dark"
             :class="{ disabled: props.listIndex !== props.centerIndex }">
@@ -105,8 +139,23 @@ const toggleCheckbox = () => {
             </span>
             </p>
             <div class="form-check mt-auto me-4">
-                <label :for="checkboxId" :class="['btn', isChecked ? 'btn-success' : 'btn-black', 'circle-button']"
-                    :style="buttonStyle">
+                <div v-if="isAlreadyAdded" class="d-flex justify-content-center">
+                    <template v-if="props.listIndex === props.centerIndex">
+                        <button v-tooltip="{ content: 'Remove from calendar', theme: 'tooltip-top' }" type="button"
+                            class="btn btn-success circle-button-remove" @click="handleDeleteGoogleEvent">
+                            <i class="fa-solid fa-calendar-xmark"></i>
+                            Remove
+                        </button>
+                    </template>
+                    <template v-else>
+                        <button type="button" class="btn btn-success circle-button-remove" disabled>
+                            <i class="fa-solid fa-calendar-xmark"></i>
+                            Remove
+                        </button>
+                    </template>
+                </div>
+                <label v-else :for="checkboxId"
+                    :class="['btn', isChecked ? 'btn-success' : 'btn-black', 'circle-button']" :style="buttonStyle">
                     <input class="form-check-input" type="checkbox" :id="checkboxId" style="display: none;"
                         @change="toggleCheckbox">
                     <transition name="icon-switch" mode="out-in">
@@ -125,13 +174,17 @@ const toggleCheckbox = () => {
 </template>
 
 <style scoped>
-.disabled {
-    cursor: default;
-    pointer-events: none;
+.card-added {
+    border: 2px solid #1db954 !important;
 }
 
 .circle-button {
     width: 120px;
+    transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+}
+
+.circle-button-remove {
+    width: 140px;
     transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
 }
 
