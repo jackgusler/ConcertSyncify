@@ -50,6 +50,31 @@ onMounted(() => {
     });
 });
 
+const buttonProps = computed(() => {
+    if (isAlreadyAdded.value) {
+        return {
+            btnClass: 'btn-success',
+            iconClass: 'fa-calendar-xmark',
+            text: 'Remove',
+            action: handleDeleteGoogleEvent,
+        };
+    } else if (isChecked.value) {
+        return {
+            btnClass: 'btn-success',
+            iconClass: 'fa-check',
+            text: 'Added',
+            action: toggleCheckbox,
+        };
+    } else {
+        return {
+            btnClass: 'btn-black',
+            iconClass: 'fa-plus',
+            text: 'Add',
+            action: toggleCheckbox,
+        };
+    }
+});
+
 const checkIfAlreadyAdded = async () => {
     isAlreadyAdded.value = await googleEventExists(props.event.id);
 
@@ -139,73 +164,39 @@ const toggleCheckbox = () => {
             </span>
             </p>
             <div class="form-check mt-auto me-4">
-                <div v-if="isAlreadyAdded" class="d-flex justify-content-center">
-                    <template v-if="props.listIndex === props.centerIndex">
-                        <button v-tooltip="{ content: 'Remove from calendar', theme: 'tooltip-top' }" type="button"
-                            class="btn btn-success circle-button-remove" @click="handleDeleteGoogleEvent">
-                            <i class="fa-solid fa-calendar-xmark"></i>
-                            Remove
-                        </button>
-                    </template>
-                    <template v-else>
-                        <button type="button" class="btn btn-success circle-button-remove" disabled>
-                            <i class="fa-solid fa-calendar-xmark"></i>
-                            Remove
-                        </button>
-                    </template>
+                <div class="d-flex justify-content-center">
+                    <button :class="['btn', buttonProps.btnClass, 'circle-button']" @click="buttonProps.action">
+                        <transition name="fade" mode="out-in">
+                            <div :key="buttonProps.text">
+                                <i :class="['fa-solid', buttonProps.iconClass]" v-if="buttonProps.iconClass"></i>
+                                {{ buttonProps.text }}
+                            </div>
+                        </transition>
+                    </button>
                 </div>
-                <label v-else :for="checkboxId"
-                    :class="['btn', isChecked ? 'btn-success' : 'btn-black', 'circle-button']" :style="buttonStyle">
-                    <input class="form-check-input" type="checkbox" :id="checkboxId" style="display: none;"
-                        @change="toggleCheckbox">
-                    <transition name="icon-switch" mode="out-in">
-                        <i :key="isChecked ? 'checked' : 'not-checked'"
-                            :class="isChecked ? 'fa-solid fa-check me-2' : 'fa-solid fa-plus me-2'"></i>
-                    </transition>
-                    <transition name="text-fade" mode="out-in">
-                        <span :key="isChecked ? 'Added' : 'Add'">
-                            {{ isChecked ? 'Added' : 'Add' }}
-                        </span>
-                    </transition>
-                </label>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped>
-.card-added {
-    border: 2px solid #1db954 !important;
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
 }
 
 .circle-button {
-    width: 120px;
-    transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
-}
-
-.circle-button-remove {
     width: 140px;
-    transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+    transition: background-color 0.5s ease, border-color 0.5s ease;
 }
 
-.icon-switch-enter-active,
-.icon-switch-leave-active {
-    transition: opacity 0.3s;
-}
-
-.icon-switch-enter,
-.icon-switch-leave-to {
-    opacity: 0;
-}
-
-.text-fade-enter-active,
-.text-fade-leave-active {
-    transition: opacity 0.3s;
-}
-
-.text-fade-enter,
-.text-fade-leave-to {
-    opacity: 0;
+.card-added {
+    border: 2px solid #1db954 !important;
 }
 
 .image-container {

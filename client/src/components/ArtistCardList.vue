@@ -149,7 +149,7 @@ async function handleSelected() {
             </button>
         </div>
         <div class="col list-display-container">
-            <ArtistCard class="card-hover" v-for="(item, index) in artistStyles" :key="item.artist.id"
+            <ArtistCard v-for="(item, index) in artistStyles" :key="item.artist.id"
                 :artist="item.artist" :style="item.style" :listIndex="index" :centerIndex="centerIndex"
                 @data="handleEmitFromArtist" />
         </div>

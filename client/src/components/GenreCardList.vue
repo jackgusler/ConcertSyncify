@@ -165,7 +165,7 @@ function formatGenre(genre: string) {
             </button>
         </div>
         <div class="col list-display-container">
-            <GenreCard class="card-hover" v-for="(item, index) in genreStyles" :key="item.genre.artist.id"
+            <GenreCard v-for="(item, index) in genreStyles" :key="item.genre.artist.id"
                 :genre="item.genre" :style="item.style" :listIndex="index" :centerIndex="centerIndex"
                 @data="handleEmitFromGenre" />
         </div>

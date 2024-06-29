@@ -83,5 +83,10 @@ const formatEvents = () => {
     border: 2px solid rgb(60, 60, 60);
     border-radius: 2rem;
     overflow: hidden;
+    transition: border-color 0.5s ease;
+}
+
+.calendar-wrapper:hover {
+    border-color: #1db954;
 }
 </style>

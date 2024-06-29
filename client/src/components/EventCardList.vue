@@ -86,7 +86,7 @@ function stopScrolling() {
             </button>
         </div>
         <div class="col list-display-container">
-            <EventCard class="card-hover" v-for="(item, index) in eventStyles" :key="item.event.id" :event="item.event"
+            <EventCard v-for="(item, index) in eventStyles" :key="item.event.id" :event="item.event"
                 :style="item.style" :listIndex="index" :centerIndex="centerIndex" @data="handleEmit" />
         </div>
         <div class="col-auto">
