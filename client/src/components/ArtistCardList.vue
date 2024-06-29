@@ -129,8 +129,8 @@ async function handleSelected() {
                         <button type="button" class="btn btn-secondary me-3">Filter by date</button>
                         <button type="button" class="btn btn-secondary">Filter by distance</button>
                     </div>
-                    <button v-if="loggedIn" type="button" class="btn btn-success"
-                        :class="{ 'btn-disabled': selectedEvents.length === 0 }" @click="handleSelected">
+                    <button v-if="loggedIn" type="button" class="btn btn-success add-to-calendar-btn"
+                        :class="{ 'btn-disabled': selectedEvents.length === 0 }" @click="handleSelected()">
                         Add selected to calendar
                     </button>
                     <button v-else type="button" class="btn btn-success" data-bs-dismiss="modal" @click="googleLogin">
@@ -149,9 +149,8 @@ async function handleSelected() {
             </button>
         </div>
         <div class="col list-display-container">
-            <ArtistCard v-for="(item, index) in artistStyles" :key="item.artist.id"
-                :artist="item.artist" :style="item.style" :listIndex="index" :centerIndex="centerIndex"
-                @data="handleEmitFromArtist" />
+            <ArtistCard v-for="(item, index) in artistStyles" :key="item.artist.id" :artist="item.artist"
+                :style="item.style" :listIndex="index" :centerIndex="centerIndex" @data="handleEmitFromArtist" />
         </div>
         <div class="col-auto">
             <button class="btn btn-secondary circle-btn" @mousedown="startScrolling(scrollRight)"
@@ -163,14 +162,14 @@ async function handleSelected() {
 </template>
 
 <style scoped>
-.btn-disabled {
+.add-to-calendar-btn.btn-disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    pointer-events: none;
     transition: opacity 0.3s ease;
 }
 
-/* Ensure the button is styled correctly when not disabled */
-button:not(.btn-disabled) {
+.add-to-calendar-btn:not(.btn-disabled) {
     opacity: 1;
     cursor: pointer;
     transition: opacity 0.3s ease;

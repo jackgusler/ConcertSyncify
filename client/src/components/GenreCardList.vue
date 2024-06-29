@@ -145,8 +145,8 @@ function formatGenre(genre: string) {
                         <button type="button" class="btn btn-secondary me-3">Filter by date</button>
                         <button type="button" class="btn btn-secondary">Filter by distance</button>
                     </div>
-                    <button v-if="loggedIn" type="button" class="btn btn-success" data-bs-dismiss="modal"
-                        :disabled="selectedEvents.length === 0" @click="handleSelected">
+                    <button v-if="loggedIn" type="button" class="btn btn-success add-to-calendar-btn"
+                        :class="{ 'btn-disabled': selectedEvents.length === 0 }" @click="handleSelected()">
                         Add selected to calendar
                     </button>
                     <button v-else type="button" class="btn btn-success" data-bs-dismiss="modal" @click="googleLogin">
@@ -165,9 +165,8 @@ function formatGenre(genre: string) {
             </button>
         </div>
         <div class="col list-display-container">
-            <GenreCard v-for="(item, index) in genreStyles" :key="item.genre.artist.id"
-                :genre="item.genre" :style="item.style" :listIndex="index" :centerIndex="centerIndex"
-                @data="handleEmitFromGenre" />
+            <GenreCard v-for="(item, index) in genreStyles" :key="item.genre.artist.id" :genre="item.genre"
+                :style="item.style" :listIndex="index" :centerIndex="centerIndex" @data="handleEmitFromGenre" />
         </div>
         <div class="col-auto">
             <button class="btn btn-secondary circle-btn" @mousedown="startScrolling(scrollRight)"
@@ -178,4 +177,17 @@ function formatGenre(genre: string) {
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.add-to-calendar-btn.btn-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.add-to-calendar-btn:not(.btn-disabled) {
+    opacity: 1;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+</style>

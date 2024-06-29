@@ -103,6 +103,18 @@ function getAlternativeGenre(initialGenre: string) {
 </template>
 
 <style scoped>
+.btn,
+.btn.btn-disabled,
+.btn.btn-enabled {
+    transition: background-color 0.5s ease, opacity 0.5s ease;
+}
+
+.btn.btn-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 .disabled {
     cursor: default;
     pointer-events: none;
