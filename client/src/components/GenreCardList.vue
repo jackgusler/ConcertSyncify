@@ -145,8 +145,8 @@ function formatGenre(genre: string) {
                         <button type="button" class="btn btn-secondary me-3">Filter by date</button>
                         <button type="button" class="btn btn-secondary">Filter by distance</button>
                     </div>
-                    <button v-if="loggedIn" type="button" class="btn btn-success add-to-calendar-btn"
-                        :class="{ 'btn-disabled': selectedEvents.length === 0 }" @click="handleSelected()">
+                    <button v-if="loggedIn" type="button" class="btn btn-success"
+                        :disabled="selectedEvents.length === 0" @click="handleSelected()">
                         Add selected to calendar
                     </button>
                     <button v-else type="button" class="btn btn-success" data-bs-dismiss="modal" @click="googleLogin">
@@ -178,16 +178,13 @@ function formatGenre(genre: string) {
 </template>
 
 <style scoped>
-.add-to-calendar-btn.btn-disabled {
+.btn {
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+.btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.add-to-calendar-btn:not(.btn-disabled) {
-    opacity: 1;
-    cursor: pointer;
-    transition: opacity 0.3s ease;
 }
 </style>

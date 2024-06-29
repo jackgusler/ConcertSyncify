@@ -17,7 +17,6 @@ body {
 }
 
 .btn-success:hover,
-.btn-success:focus,
 .btn-success:active {
   background-color: #1aa34a !important;
   border-color: #1aa34a !important;
@@ -31,7 +30,6 @@ body {
 }
 
 .btn-secondary:hover,
-.btn-secondary:focus,
 .btn-secondary:active {
   background-color: #242424 !important;
   border-color: #242424 !important;
@@ -45,7 +43,6 @@ body {
 }
 
 .btn-black:hover,
-.btn-black:focus,
 .btn-black:active {
   background-color: #000000 !important;
   border-color: #000000 !important;

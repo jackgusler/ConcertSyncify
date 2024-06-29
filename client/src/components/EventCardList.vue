@@ -99,4 +99,14 @@ function stopScrolling() {
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.btn {
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none; /* Prevents interaction */
+}
+</style>
