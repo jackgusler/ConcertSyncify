@@ -10,10 +10,12 @@ import SearchResults from '../components/SearchResults.vue';
 const artistSearchBar = ref(false);
 const artistSearchInput = ref('');
 const artistSearchResults = ref<Artist[]>([]);
+const artistSearchInputRef = ref<HTMLInputElement | null>(null);
 
 const genreSearchBar = ref(false);
 const genreSearchInput = ref('');
 const genreSearchResults = ref<Artist[]>([]);
+const genreSearchInputRef = ref<HTMLInputElement | null>(null);
 
 const loggedIn = ref(false);
 
@@ -28,7 +30,7 @@ onMounted(async () => {
 watch(artistSearchInput, async (newVal) => {
     if (newVal.length > 2) {
         const artists = await searchSpotify(newVal, 'artist');
-        artistSearchResults.value = artists
+        artistSearchResults.value = artists;
 
         console.log(artistSearchResults.value);
     } else {
@@ -46,6 +48,24 @@ watch(genreSearchInput, async (newVal) => {
         genreSearchResults.value = [];
     }
 });
+
+const toggleArtistSearchbar = () => {
+    artistSearchBar.value = !artistSearchBar.value;
+    if (artistSearchBar.value) {
+        setTimeout(() => {
+            artistSearchInputRef.value?.focus();
+        }, 500);
+    }
+};
+
+const toggleGenreSearchbar = () => {
+    genreSearchBar.value = !genreSearchBar.value;
+    if (genreSearchBar.value) {
+        setTimeout(() => {
+            genreSearchInputRef.value?.focus();
+        }, 500);
+    }
+};
 </script>
 
 <template>
@@ -60,7 +80,7 @@ watch(genreSearchInput, async (newVal) => {
                 </div>
             </div>
 
-            <div class="col-md-7 d-flex flex-column">
+            <div class="col-md-7 d-flex flex-column position-relative">
                 <div class="row flex-grow-1" style="height: calc(50vh - .8rem); margin-bottom: .6rem;">
                     <div class="box px-3 py-2 rounded-3">
                         <div class="row align-items-center overflow-hidden">
@@ -73,21 +93,23 @@ watch(genreSearchInput, async (newVal) => {
                                     <div class="search-icon-container">
                                         <i v-if="!artistSearchBar" class="fa-solid fa-caret-left arrow-left"></i>
                                         <i class="fa-solid fa-magnifying-glass fa-2x search-icon"
-                                            @click="artistSearchBar = !artistSearchBar"></i>
+                                            @click="toggleArtistSearchbar"></i>
                                         <i v-if="artistSearchBar" class="fa-solid fa-caret-right arrow-right"></i>
                                     </div>
                                     <div class="search-bar-container"
                                         :class="{ 'hidden': !artistSearchBar, 'visible': artistSearchBar }">
-                                        <input type="text" class="form-control" placeholder="Search for artists"
+                                        <input ref="artistSearchInputRef" type="text" class="form-control"
+                                            placeholder="Search for artists"
+                                            :class="{ 'input-to-component': artistSearchInput.length > 2 }"
                                             v-model="artistSearchInput">
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <SearchResults v-if="artistSearchInput.length > 0" :results="artistSearchResults" />
                         <ArtistCardList />
                     </div>
                 </div>
+                <SearchResults v-if="artistSearchInput.length > 2" :results="artistSearchResults" />
                 <div class="row flex-grow-1" style="height: calc(50vh - .8rem);">
                     <div class="box px-3 py-2 rounded-3">
                         <div class="row align-items-center overflow-hidden">
@@ -101,23 +123,25 @@ watch(genreSearchInput, async (newVal) => {
                                     <div class="search-icon-container">
                                         <i v-if="!genreSearchBar" class="fa-solid fa-caret-left arrow-left"></i>
                                         <i class="fa-solid fa-magnifying-glass fa-2x search-icon"
-                                            @click="genreSearchBar = !genreSearchBar"></i>
+                                            @click="toggleGenreSearchbar"></i>
                                         <i v-if="genreSearchBar" class="fa-solid fa-caret-right arrow-right"></i>
                                     </div>
 
                                     <div class="search-bar-container"
                                         :class="{ 'hidden': !genreSearchBar, 'visible': genreSearchBar }">
-                                        <input type="text" class="form-control" placeholder="Search for genres"
+                                        <input ref="genreSearchInputRef" type="text" class="form-control"
+                                            placeholder="Search for genres"
+                                            :class="{ 'input-to-component': genreSearchInput.length > 2 }"
                                             v-model="genreSearchInput">
                                     </div>
 
                                 </div>
                             </div>
                         </div>
-                        <SearchResults v-if="genreSearchInput.length > 0" :results="genreSearchResults" />
                         <GenreCardList />
                     </div>
                 </div>
+                <SearchResults v-if="genreSearchInput.length > 2" :results="genreSearchResults" />
             </div>
 
             <div class="col-md-4 d-flex">
@@ -135,6 +159,18 @@ watch(genreSearchInput, async (newVal) => {
 </template>
 
 <style scoped>
+input {
+    border: 2px solid rgb(0, 0, 0) !important;
+}
+
+.input-to-component {
+    border: 2px solid rgb(60, 60, 60) !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-top-left-radius: 20px !important;
+    border-top-right-radius: 20px !important;
+}
+
 .container {
     display: flex;
     flex-direction: column;
