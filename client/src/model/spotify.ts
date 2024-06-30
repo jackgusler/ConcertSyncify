@@ -69,3 +69,17 @@ export const getTopGenres = async () => {
     console.error('Error fetching top genres:', error)
   }
 }
+
+export const searchSpotify = async (q: string, type: string) => {
+  try {
+    const response = await axios.get('/api/spotify/search', {
+      params: {
+        q,
+        type
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error searching Spotify:', error)
+  }
+}

@@ -171,4 +171,41 @@ router.get("/top-genres", async (req, res) => {
   }
 });
 
+router.get("/search", async (req, res) => {
+  let { q, type = "artist" } = req.query;
+  if (!q) {
+    return res.status(400).send("Missing query parameter 'q'");
+  }
+  // Adjust the query if the type is genre
+  if (type === "genre") {
+    q = `genre:"${q}"`; // Format the query to include genre filter
+    type = "artist"; // Reset type to artist since genre search applies to artists
+  }
+
+  const tokens = cache.get("spotify_tokens");
+  const access_token = tokens ? tokens.access_token : null;
+  if (!access_token) {
+    return res.status(401).send("Unauthorized");
+  }
+
+  try {
+    const response = await axios.get("https://api.spotify.com/v1/search", {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      params: {
+        q,
+        type: "artist",
+        limit: 10,
+      },
+    });
+
+    // Assuming response.data.artists.items or response.data.tracks.items based on the type
+    const items = response.data.artists ? response.data.artists.items : [];
+    res.json(items.slice(0, 10)); // Return the first 10 results
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
 module.exports = router;

@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
+import { type Artist, searchSpotify } from '@/model/spotify';
 import { googleLogout, isLoggedInGoogle } from '../model/google';
 import ArtistCardList from '../components/ArtistCardList.vue';
 import GenreCardList from '../components/GenreCardList.vue';
 import Calendar from '../components/Calendar.vue';
+import SearchResults from '../components/SearchResults.vue';
 
 const artistSearchBar = ref(false);
+const artistSearchInput = ref('');
+const artistSearchResults = ref<Artist[]>([]);
+
 const genreSearchBar = ref(false);
+const genreSearchInput = ref('');
+const genreSearchResults = ref<Artist[]>([]);
 
 const loggedIn = ref(false);
 
@@ -16,6 +23,28 @@ onMounted(async () => {
 
     artistSearchBar.value = false;
     genreSearchBar.value = false;
+});
+
+watch(artistSearchInput, async (newVal) => {
+    if (newVal.length > 2) {
+        const artists = await searchSpotify(newVal, 'artist');
+        artistSearchResults.value = artists
+
+        console.log(artistSearchResults.value);
+    } else {
+        artistSearchResults.value = [];
+    }
+});
+
+watch(genreSearchInput, async (newVal) => {
+    if (newVal.length > 2) {
+        const genres = await searchSpotify(newVal, 'genre');
+        genreSearchResults.value = genres;
+
+        console.log(genreSearchResults.value);
+    } else {
+        genreSearchResults.value = [];
+    }
 });
 </script>
 
@@ -41,22 +70,21 @@ onMounted(async () => {
                             <div class="search-container col">
                                 <div class="search-content"
                                     :class="['position-relative', { 'start': artistSearchBar, 'end': !artistSearchBar }]">
-
                                     <div class="search-icon-container">
                                         <i v-if="!artistSearchBar" class="fa-solid fa-caret-left arrow-left"></i>
                                         <i class="fa-solid fa-magnifying-glass fa-2x search-icon"
                                             @click="artistSearchBar = !artistSearchBar"></i>
                                         <i v-if="artistSearchBar" class="fa-solid fa-caret-right arrow-right"></i>
                                     </div>
-
                                     <div class="search-bar-container"
                                         :class="{ 'hidden': !artistSearchBar, 'visible': artistSearchBar }">
-                                        <input type="text" class="form-control" placeholder="Search for artists">
+                                        <input type="text" class="form-control" placeholder="Search for artists"
+                                            v-model="artistSearchInput">
                                     </div>
-
                                 </div>
                             </div>
                         </div>
+                        <SearchResults v-if="artistSearchInput.length > 0" :results="artistSearchResults" />
                         <ArtistCardList />
                     </div>
                 </div>
@@ -79,12 +107,14 @@ onMounted(async () => {
 
                                     <div class="search-bar-container"
                                         :class="{ 'hidden': !genreSearchBar, 'visible': genreSearchBar }">
-                                        <input type="text" class="form-control" placeholder="Search for genres">
+                                        <input type="text" class="form-control" placeholder="Search for genres"
+                                            v-model="genreSearchInput">
                                     </div>
 
                                 </div>
                             </div>
                         </div>
+                        <SearchResults v-if="genreSearchInput.length > 0" :results="genreSearchResults" />
                         <GenreCardList />
                     </div>
                 </div>
