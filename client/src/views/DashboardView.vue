@@ -56,6 +56,10 @@ const toggleArtistSearchbar = () => {
             artistSearchInputRef.value?.focus();
         }, 500);
     }
+
+    if (!artistSearchBar.value) {
+        artistSearchInput.value = '';
+    }
 };
 
 const toggleGenreSearchbar = () => {
@@ -64,6 +68,10 @@ const toggleGenreSearchbar = () => {
         setTimeout(() => {
             genreSearchInputRef.value?.focus();
         }, 500);
+    }
+
+    if (!genreSearchBar.value) {
+        genreSearchInput.value = '';
     }
 };
 </script>
@@ -109,7 +117,7 @@ const toggleGenreSearchbar = () => {
                         <ArtistCardList />
                     </div>
                 </div>
-                <SearchResults v-if="artistSearchInput.length > 2" :results="artistSearchResults" />
+                <SearchResults v-if="artistSearchInput.length > 2 && artistSearchBar" :results="artistSearchResults" />
                 <div class="row flex-grow-1" style="height: calc(50vh - .8rem);">
                     <div class="box px-3 py-2 rounded-3">
                         <div class="row align-items-center overflow-hidden">
@@ -141,7 +149,7 @@ const toggleGenreSearchbar = () => {
                         <GenreCardList />
                     </div>
                 </div>
-                <SearchResults v-if="genreSearchInput.length > 2" :results="genreSearchResults" />
+                <SearchResults v-if="genreSearchInput.length > 2 && genreSearchBar" :results="genreSearchResults" />
             </div>
 
             <div class="col-md-4 d-flex">
