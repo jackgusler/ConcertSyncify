@@ -166,6 +166,18 @@ p.fs-4 {
   width: 100%;
 }
 
+.truncate-event-body {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 3rem;
+  line-height: 1.5em;
+  width: 100%;
+  color: #6d6d6d;
+}
+
 .colon {
   white-space: nowrap;
 }

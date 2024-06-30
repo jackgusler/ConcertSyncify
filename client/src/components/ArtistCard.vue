@@ -67,24 +67,23 @@ function getAlternativeGenre(initialGenre: string) {
         </a>
         <div v-if="hasEvents" class="card-body pt-0 d-flex flex-column justify-content-end align-items-center"
             style="height: 100%;">
-            <p class="my-2">
+            <p class="my-2 w-100">
             <div class="truncate-event">
                 <span class="name-with-colon">{{ events[0].name }}:</span>
             </div>
-            <span style="color: #6d6d6d;">
+            <div class="truncate-event-body">
                 {{ events[0].dates.start.localDate }}
                 in
-                {{ events[0]._embedded?.venues[0]?.city?.name || 'Unknown' }},
+                {{ events[0]._embedded?.venues[0]?.city?.name || 'TBA' }},
                 {{ events[0]._embedded?.venues[0]?.state?.stateCode ?
                     events[0]._embedded?.venues[0]?.state?.stateCode :
                     (events[0]._embedded?.venues[0]?.country ?
-                        events[0]._embedded?.venues[0]?.country.name : 'Unknown') }}
-            </span>
+                        events[0]._embedded?.venues[0]?.country.name : 'TBA') }}
+            </div>
             </p>
             <button @click="emitData" class="btn btn-success mt-auto" data-bs-toggle="modal"
                 data-bs-target="#eventArtistModal"
-                :class="{ 'btn-disabled': props.listIndex !== props.centerIndex, 'btn-enabled': props.listIndex === props.centerIndex }"
-                :disabled="props.listIndex !== props.centerIndex">
+                :class="{ 'btn-disabled': props.listIndex !== props.centerIndex, 'btn-enabled': props.listIndex === props.centerIndex }">
                 View Events
             </button>
         </div>
@@ -94,8 +93,7 @@ function getAlternativeGenre(initialGenre: string) {
             </p>
             <button @click="emitData" class="btn btn-success mt-auto" data-bs-toggle="modal"
                 data-bs-target="#eventArtistModal"
-                :class="{ 'btn-disabled': props.listIndex !== props.centerIndex, 'btn-enabled': props.listIndex === props.centerIndex }"
-                :disabled="props.listIndex !== props.centerIndex">
+                :class="{ 'btn-disabled': props.listIndex !== props.centerIndex, 'btn-enabled': props.listIndex === props.centerIndex }">
                 View Genre Events
             </button>
         </div>

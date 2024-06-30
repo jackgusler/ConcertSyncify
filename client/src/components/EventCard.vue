@@ -149,19 +149,19 @@ const toggleCheckbox = () => {
             </template>
         </a>
         <div class="card-body pt-0 d-flex flex-column justify-content-end align-items-center" style="height: 100%;">
-            <p class="my-2">
+            <p class="my-2 w-100">
             <div class="truncate-event">
                 <span class="name-with-colon">{{ props.event.name }}:</span>
             </div>
-            <span style="color: #6d6d6d;">
+            <div class="truncate-event-body">
                 {{ props.event.dates.start.localDate }}
                 in
-                {{ props.event._embedded?.venues[0]?.city?.name || 'Unknown' }},
+                {{ props.event._embedded?.venues[0]?.city?.name || 'TBA' }},
                 {{ props.event._embedded?.venues[0]?.state?.stateCode ?
                     props.event._embedded?.venues[0]?.state?.stateCode :
                     (props.event._embedded?.venues[0]?.country ?
-                        props.event._embedded?.venues[0]?.country.name : 'Unknown') }}
-            </span>
+                        props.event._embedded?.venues[0]?.country.name : 'TBA') }}
+            </div>
             </p>
             <div class="form-check mt-auto me-4">
                 <div class="d-flex justify-content-center">

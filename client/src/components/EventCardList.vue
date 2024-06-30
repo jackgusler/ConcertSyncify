@@ -86,8 +86,8 @@ function stopScrolling() {
             </button>
         </div>
         <div class="col list-display-container">
-            <EventCard v-for="(item, index) in eventStyles" :key="item.event.id" :event="item.event"
-                :style="item.style" :listIndex="index" :centerIndex="centerIndex" @data="handleEmit" />
+            <EventCard v-for="(item, index) in eventStyles" :key="item.event.id" :event="item.event" :style="item.style"
+                :listIndex="index" :centerIndex="centerIndex" @data="handleEmit" />
         </div>
         <div class="col-auto">
             <button class="btn btn-secondary circle-btn" @mousedown="startScrolling(scrollRight)"
@@ -107,6 +107,6 @@ function stopScrolling() {
 .btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    pointer-events: none; /* Prevents interaction */
+    pointer-events: none;
 }
 </style>

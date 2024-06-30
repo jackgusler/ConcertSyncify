@@ -110,6 +110,65 @@ async function handleSelected() {
     const googleEvents = await getGoogleEvents();
     window.dispatchEvent(new CustomEvent('update-google-events', { detail: googleEvents }));
 }
+
+function sortByDate() {
+    eventList.value.sort((a, b) => {
+        const dateA = new Date(a.dates.start.dateTime);
+        const dateB = new Date(b.dates.start.dateTime);
+        return dateA.getTime() - dateB.getTime();
+    });
+}
+
+function sortByDistance() {
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                const distances = eventList.value.map(event => ({
+                    event,
+                    distance: getEventDistance(event, latitude, longitude)
+                }));
+                distances.sort((a, b) => a.distance - b.distance);
+                eventList.value = distances.map(item => item.event);
+            },
+            (error) => {
+                console.error("Error getting location:", error);
+                // Handle location errors (e.g., user denied location access)
+                // FUTURE TOAST ERROR MESSAGE
+            }
+        );
+    } else {
+        console.error("Geolocation is not supported by this browser.");
+        // Handle case where Geolocation API is not supported
+        // FUTURE TOAST ERROR MESSAGE
+    }
+}
+
+function haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371; // Radius of the Earth in kilometers
+    const toRadians = (angle: number) => angle * (Math.PI / 180);
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+    const lat1Rad = toRadians(lat1);
+    const lat2Rad = toRadians(lat2);
+
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1Rad) * Math.cos(lat2Rad);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in kilometers
+}
+
+function getEventDistance(event: any, userLat: number, userLon: number): number {
+    const venueLat = parseFloat(event._embedded?.venues?.[0]?.location?.latitude);
+    const venueLon = parseFloat(event._embedded?.venues?.[0]?.location?.longitude);
+
+    if (!isNaN(venueLat) && !isNaN(venueLon)) {
+        return haversine(userLat, userLon, venueLat, venueLon);
+    } else {
+        return Number.MAX_VALUE;
+    }
+}
+
 </script>
 
 <template>
@@ -126,8 +185,10 @@ async function handleSelected() {
                 </div>
                 <div class="modal-footer d-flex align-items-center justify-content-between">
                     <div>
-                        <button type="button" class="btn btn-secondary me-3">Filter by date</button>
-                        <button type="button" class="btn btn-secondary">Filter by distance</button>
+                        <button type="button" class="btn btn-secondary me-3" @click="sortByDate">Sort by
+                            date</button>
+                        <button type="button" class="btn btn-secondary" @click="sortByDistance">Sort by
+                            distance</button>
                     </div>
                     <button v-if="loggedIn" type="button" class="btn btn-success"
                         :disabled="selectedEvents.length === 0" @click="handleSelected()">
