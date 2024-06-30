@@ -56,13 +56,17 @@ function getAlternativeGenre(initialGenre: string) {
         <a :href="props.artist.external_urls.spotify" target="_blank" class="text-decoration-none text-dark"
             :class="{ disabled: props.listIndex !== props.centerIndex }">
             <template v-if="props.listIndex === props.centerIndex">
-                <img v-tooltip="{ content: 'Open Spotify', theme: 'tooltip-top' }"
-                    v-if="props.artist.images && props.artist.images.length > 0" :src="props.artist.images[0].url"
-                    class="artist-image" style="margin-top: 2.5rem;" alt="Artist Image">
+                <div class="image-container" style="margin-top: 2.5rem;">
+                    <img v-tooltip="{ content: 'Open Spotify', theme: 'tooltip-top' }"
+                        v-if="props.artist.images && props.artist.images.length > 0" :src="props.artist.images[0].url"
+                        class="artist-image" alt="Artist Image">
+                </div>
             </template>
             <template v-else>
-                <img v-if="props.artist.images && props.artist.images.length > 0" :src="props.artist.images[0].url"
-                    class="artist-image" style="margin-top: 2.5rem;" alt="Artist Image">
+                <div class="image-container" style="margin-top: 2.5rem;">
+                    <img v-if="props.artist.images && props.artist.images.length > 0" :src="props.artist.images[0].url"
+                        class="artist-image" alt="Artist Image">
+                </div>
             </template>
         </a>
         <div v-if="hasEvents" class="card-body pt-0 d-flex flex-column justify-content-end align-items-center"
@@ -127,6 +131,23 @@ function getAlternativeGenre(initialGenre: string) {
 .btn-enabled {
     opacity: 1;
     transition: opacity 0.5s ease;
+}
+
+.image-container {
+    width: 12rem;
+    height: 12rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: black;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 1);
+}
+
+.artist-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 .card-title,
