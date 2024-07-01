@@ -128,7 +128,7 @@ const toggleGenreSearchbar = () => {
                                         <input ref="artistSearchInputRef" type="text" class="form-control"
                                             placeholder="Search for artists"
                                             :class="{ 'input-to-component': artistSearchInput.length > 2 }"
-                                            v-model="artistSearchInput">
+                                            v-model="artistSearchInput" @blur="toggleArtistSearchbar" />
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +159,7 @@ const toggleGenreSearchbar = () => {
                                         <input ref="genreSearchInputRef" type="text" class="form-control"
                                             placeholder="Search for genres"
                                             :class="{ 'input-to-component': genreSearchInput.length > 2 }"
-                                            v-model="genreSearchInput">
+                                            v-model="genreSearchInput" @blur="toggleGenreSearchbar">
                                     </div>
 
                                 </div>
