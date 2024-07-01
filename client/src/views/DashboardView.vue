@@ -50,6 +50,14 @@ watch(genreSearchInput, async (newVal) => {
 });
 
 const toggleArtistSearchbar = () => {
+    if (genreSearchBar.value) {
+        toggleGenreSearchbar();
+    }
+
+    if (artistSearchBar.value) {
+        window.dispatchEvent(new Event('resize'));
+    }
+
     artistSearchBar.value = !artistSearchBar.value;
     if (artistSearchBar.value) {
         setTimeout(() => {
@@ -58,11 +66,20 @@ const toggleArtistSearchbar = () => {
     }
 
     if (!artistSearchBar.value) {
-        artistSearchInput.value = '';
+        setTimeout(() => {
+            artistSearchInput.value = '';
+        }, 500);
     }
 };
 
 const toggleGenreSearchbar = () => {
+    if (artistSearchBar.value) {
+        toggleArtistSearchbar();
+    }
+    
+    if (genreSearchBar.value) {
+        window.dispatchEvent(new Event('resize'));
+    }
     genreSearchBar.value = !genreSearchBar.value;
     if (genreSearchBar.value) {
         setTimeout(() => {
@@ -71,7 +88,9 @@ const toggleGenreSearchbar = () => {
     }
 
     if (!genreSearchBar.value) {
-        genreSearchInput.value = '';
+        setTimeout(() => {
+            genreSearchInput.value = '';
+        }, 500);
     }
 };
 </script>
@@ -88,10 +107,10 @@ const toggleGenreSearchbar = () => {
                 </div>
             </div>
 
-            <div class="col-md-7 d-flex flex-column position-relative">
+            <div class="col-md-7 d-flex flex-column position-relative overflow-hidden">
                 <div class="row flex-grow-1" style="height: calc(50vh - .8rem); margin-bottom: .6rem;">
                     <div class="box px-3 py-2 rounded-3">
-                        <div class="row align-items-center overflow-hidden">
+                        <div class="row align-items-center">
                             <div class="col-auto">
                                 <h1>Artists</h1>
                             </div>
@@ -117,10 +136,10 @@ const toggleGenreSearchbar = () => {
                         <ArtistCardList />
                     </div>
                 </div>
-                <SearchResults v-if="artistSearchInput.length > 2 && artistSearchBar" :results="artistSearchResults" />
+                <SearchResults v-if="artistSearchInput.length > 2" :type="'artist'" :results="artistSearchResults" />
                 <div class="row flex-grow-1" style="height: calc(50vh - .8rem);">
                     <div class="box px-3 py-2 rounded-3">
-                        <div class="row align-items-center overflow-hidden">
+                        <div class="row align-items-center">
                             <div class="col-auto">
                                 <h1>Genres</h1>
                             </div>
@@ -149,7 +168,7 @@ const toggleGenreSearchbar = () => {
                         <GenreCardList />
                     </div>
                 </div>
-                <SearchResults v-if="genreSearchInput.length > 2 && genreSearchBar" :results="genreSearchResults" />
+                <SearchResults v-if="genreSearchInput.length > 2" :type="'genre'" :results="genreSearchResults" />
             </div>
 
             <div class="col-md-4 d-flex">
