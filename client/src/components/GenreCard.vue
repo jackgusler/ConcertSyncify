@@ -16,7 +16,7 @@ const hasEvents = ref(false);
 const emit = defineEmits(['data']);
 
 const emitData = () => {
-    emit('data', { events: events.value, modalTitle: props.genre.genre });
+    emit('data', { type: 'genre', events: events.value, modalTitle: props.genre.genre });
 };
 
 onMounted(async () => {
@@ -95,7 +95,7 @@ function formatGenre(genre: string) {
             </div>
             </p>
             <button @click="emitData" class="btn btn-success mt-auto" data-bs-toggle="modal"
-                data-bs-target="#eventGenreModal"
+                data-bs-target="#eventModal"
                 :class="{ 'btn-disabled': props.listIndex !== props.centerIndex, 'btn-enabled': props.listIndex === props.centerIndex }">
                 View Events
             </button>

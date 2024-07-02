@@ -12,18 +12,14 @@ const emit = defineEmits(['data']);
 // center index is the prop
 const centerIndex = ref(0);
 const baseScale = 1.0;
-const scaleDecrement = 0.11;
+const scaleDecrement = 0.101;
 const minimumScale = 0.6;
 let scrollInterval: number | null | undefined = null;
 
-const artistModal = document.getElementById('eventArtistModal');
-const genreModal = document.getElementById('eventGenreModal');
+const eventModal = document.getElementById('eventModal');
 
 onMounted(() => {
-    artistModal?.addEventListener('hidden.bs.modal', () => {
-        centerIndex.value = 0;
-    });
-    genreModal?.addEventListener('hidden.bs.modal', () => {
+    eventModal?.addEventListener('hidden.bs.modal', () => {
         centerIndex.value = 0;
     });
 });

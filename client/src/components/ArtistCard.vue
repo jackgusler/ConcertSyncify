@@ -17,13 +17,13 @@ const emit = defineEmits(['data']);
 
 const emitData = async () => {
     if (hasEvents.value) {
-        emit('data', { events: events.value, modalTitle: props.artist.name });
+        emit('data', { type: 'artist', events: events.value, modalTitle: props.artist.name });
     } else if (props.artist.genres && props.artist.genres.length > 0) {
         const genre = getAlternativeGenre(props.artist.genres[0]);
         const genreEvents = await getEvents(genre);
         if (genreEvents && genreEvents.length > 0) {
             events.value = genreEvents;
-            emit('data', { events: events.value, modalTitle: genre });
+            emit('data', { type: 'artist', events: events.value, modalTitle: genre });
         }
     }
 };
@@ -86,7 +86,7 @@ function getAlternativeGenre(initialGenre: string) {
             </div>
             </p>
             <button @click="emitData" class="btn btn-success mt-auto" data-bs-toggle="modal"
-                data-bs-target="#eventArtistModal"
+                data-bs-target="#eventModal"
                 :class="{ 'btn-disabled': props.listIndex !== props.centerIndex, 'btn-enabled': props.listIndex === props.centerIndex }">
                 View Events
             </button>
@@ -96,7 +96,7 @@ function getAlternativeGenre(initialGenre: string) {
                 <span style="color: #6d6d6d;">No upcoming events</span>
             </p>
             <button @click="emitData" class="btn btn-success mt-auto" data-bs-toggle="modal"
-                data-bs-target="#eventArtistModal"
+                data-bs-target="#eventModal"
                 :class="{ 'btn-disabled': props.listIndex !== props.centerIndex, 'btn-enabled': props.listIndex === props.centerIndex }">
                 View Genre Events
             </button>

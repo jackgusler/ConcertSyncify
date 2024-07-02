@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import { type Artist, searchSpotify } from '@/model/spotify';
+import { type Event } from '@/model/ticketmaster';
 import { googleLogout, isLoggedInGoogle } from '../model/google';
-import ArtistCardList from '../components/ArtistCardList.vue';
-import GenreCardList from '../components/GenreCardList.vue';
+import EventListModal from '../components/EventListModal.vue';
+import CardList from '../components/CardList.vue';
 import Calendar from '../components/Calendar.vue';
-import SearchResults from '../components/SearchResults.vue';
+
+const modalVisible = ref(false);
+const type = ref('');
+const eventList = ref<Event[]>([]);
+const modalTitle = ref('');
 
 const artistSearchBar = ref(false);
 const artistSearchInput = ref('');
@@ -76,7 +81,7 @@ const toggleGenreSearchbar = () => {
     if (artistSearchBar.value) {
         toggleArtistSearchbar();
     }
-    
+
     if (genreSearchBar.value) {
         window.dispatchEvent(new Event('resize'));
     }
@@ -93,9 +98,24 @@ const toggleGenreSearchbar = () => {
         }, 500);
     }
 };
+
+const handleEmit = (data: { type: string, events: Event[]; modalTitle: string }) => {
+    modalVisible.value = true;
+
+    type.value = data.type;
+    eventList.value = data.events;
+    modalTitle.value = data.modalTitle;
+};
 </script>
 
 <template>
+    <div class="modal fade" id="eventModal" ref="eventModal" tabindex="-1" aria-labelledby="eventModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <EventListModal v-if="modalVisible" :type="type" :events="eventList" :modalTitle="modalTitle" />
+        </div>
+    </div>
+
     <div class="container mt-2">
         <div class="row h-100">
 
@@ -117,10 +137,9 @@ const toggleGenreSearchbar = () => {
                             <div class="search-container col">
                                 <div class="search-content"
                                     :class="['position-relative', { 'start': artistSearchBar, 'end': !artistSearchBar }]">
-                                    <div class="search-icon-container">
+                                    <div class="search-icon-container" @click="toggleArtistSearchbar">
                                         <i v-if="!artistSearchBar" class="fa-solid fa-caret-left arrow-left"></i>
-                                        <i class="fa-solid fa-magnifying-glass fa-2x search-icon"
-                                            @click="toggleArtistSearchbar"></i>
+                                        <i class="fa-solid fa-magnifying-glass fa-2x search-icon"></i>
                                         <i v-if="artistSearchBar" class="fa-solid fa-caret-right arrow-right"></i>
                                     </div>
                                     <div class="search-bar-container"
@@ -128,15 +147,14 @@ const toggleGenreSearchbar = () => {
                                         <input ref="artistSearchInputRef" type="text" class="form-control"
                                             placeholder="Search for artists"
                                             :class="{ 'input-to-component': artistSearchInput.length > 2 }"
-                                            v-model="artistSearchInput" @blur="toggleArtistSearchbar" />
+                                            v-model="artistSearchInput" />
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <ArtistCardList />
+                        <CardList :type="'artist'" @data="handleEmit" />
                     </div>
                 </div>
-                <SearchResults v-if="artistSearchInput.length > 2" :type="'artist'" :results="artistSearchResults" />
                 <div class="row flex-grow-1" style="height: calc(50vh - .8rem);">
                     <div class="box px-3 py-2 rounded-3">
                         <div class="row align-items-center">
@@ -147,10 +165,9 @@ const toggleGenreSearchbar = () => {
                                 <div class="search-content"
                                     :class="{ 'start': genreSearchBar, 'end': !genreSearchBar }">
 
-                                    <div class="search-icon-container">
+                                    <div class="search-icon-container" @click="toggleGenreSearchbar">
                                         <i v-if="!genreSearchBar" class="fa-solid fa-caret-left arrow-left"></i>
-                                        <i class="fa-solid fa-magnifying-glass fa-2x search-icon"
-                                            @click="toggleGenreSearchbar"></i>
+                                        <i class="fa-solid fa-magnifying-glass fa-2x search-icon"></i>
                                         <i v-if="genreSearchBar" class="fa-solid fa-caret-right arrow-right"></i>
                                     </div>
 
@@ -159,16 +176,15 @@ const toggleGenreSearchbar = () => {
                                         <input ref="genreSearchInputRef" type="text" class="form-control"
                                             placeholder="Search for genres"
                                             :class="{ 'input-to-component': genreSearchInput.length > 2 }"
-                                            v-model="genreSearchInput" @blur="toggleGenreSearchbar">
+                                            v-model="genreSearchInput" />
                                     </div>
 
                                 </div>
                             </div>
                         </div>
-                        <GenreCardList />
+                        <CardList :type="'genre'" @data="handleEmit" />
                     </div>
                 </div>
-                <SearchResults v-if="genreSearchInput.length > 2" :type="'genre'" :results="genreSearchResults" />
             </div>
 
             <div class="col-md-4 d-flex">
