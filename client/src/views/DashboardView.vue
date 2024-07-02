@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
-import { type Artist, searchSpotify } from '@/model/spotify';
+import { ref, onMounted } from 'vue';
+import { type Artist } from '@/model/spotify';
 import { type Event } from '@/model/ticketmaster';
 import { googleLogout, isLoggedInGoogle } from '../model/google';
 import EventListModal from '../components/EventListModal.vue';
@@ -62,7 +62,7 @@ const handleEmit = (data: { type: string, events: Event[]; modalTitle: string })
                                 <h1>Artists</h1>
                             </div>
                             <div class="search-container col">
-                                <SearchBar :type="'artist'" @search-result="artistSearchResults"/>
+                                <SearchBar :type="'artist'" @search-result="artistSearchResults" />
                             </div>
                         </div>
                         <CardList :type="'artist'" @data="handleEmit" />
@@ -75,7 +75,7 @@ const handleEmit = (data: { type: string, events: Event[]; modalTitle: string })
                                 <h1>Genres</h1>
                             </div>
                             <div class="search-container col">
-                                <SearchBar :type="'genre'" @search-result="genreSearchResults"/>
+                                <SearchBar :type="'genre'" @search-result="genreSearchResults" />
                             </div>
                         </div>
                         <CardList :type="'genre'" @data="handleEmit" />

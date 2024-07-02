@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { type GoogleEvent, googleLogin, isLoggedInGoogle, getGoogleEvents } from '@/model/google';
-import { onMounted, ref } from 'vue';
 import VueCal from 'vue-cal';
 import 'vue-cal/dist/vuecal.css';
 

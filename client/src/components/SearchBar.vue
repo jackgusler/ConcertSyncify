@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { searchSpotify } from '@/model/spotify';
 import { ref, watch } from 'vue';
+import { searchSpotify } from '@/model/spotify';
 
 const props = defineProps<{
     type: string;
