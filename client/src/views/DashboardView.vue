@@ -36,8 +36,6 @@ watch(artistSearchInput, async (newVal) => {
     if (newVal.length > 2) {
         const artists = await searchSpotify(newVal, 'artist');
         artistSearchResults.value = artists;
-
-        console.log(artistSearchResults.value);
     } else {
         artistSearchResults.value = [];
     }
@@ -47,8 +45,6 @@ watch(genreSearchInput, async (newVal) => {
     if (newVal.length > 2) {
         const genres = await searchSpotify(newVal, 'genre');
         genreSearchResults.value = genres;
-
-        console.log(genreSearchResults.value);
     } else {
         genreSearchResults.value = [];
     }
@@ -106,13 +102,15 @@ const handleEmit = (data: { type: string, events: Event[]; modalTitle: string })
     eventList.value = data.events;
     modalTitle.value = data.modalTitle;
 };
+
 </script>
 
 <template>
     <div class="modal fade" id="eventModal" ref="eventModal" tabindex="-1" aria-labelledby="eventModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <EventListModal v-if="modalVisible" :type="type" :events="eventList" :modalTitle="modalTitle" />
+            <EventListModal v-if="modalVisible" :type="type" :events="eventList" :modalTitle="modalTitle"
+                @modal-closed="modalVisible = false" />
         </div>
     </div>
 
@@ -202,18 +200,6 @@ const handleEmit = (data: { type: string, events: Event[]; modalTitle: string })
 </template>
 
 <style scoped>
-input {
-    border: 2px solid rgb(0, 0, 0) !important;
-}
-
-.input-to-component {
-    border: 2px solid rgb(60, 60, 60) !important;
-    border-bottom-left-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
-    border-top-left-radius: 20px !important;
-    border-top-right-radius: 20px !important;
-}
-
 .container {
     display: flex;
     flex-direction: column;

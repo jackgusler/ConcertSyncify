@@ -13,13 +13,19 @@ const props = defineProps<{
 const eventList = ref(props.events);
 const selectedEvents = ref<Event[]>([]);
 
+const eventModal = document.getElementById('eventModal');
+
+const emit = defineEmits(['modal-closed']);
+
 const loggedIn = ref(false);
 
 onMounted(async () => {
     const isLogged = await isLoggedInGoogle();
     loggedIn.value = isLogged;
 
-    console.log(props.events);
+    eventModal?.addEventListener('hidden.bs.modal', () => {
+        emit('modal-closed');
+    });
 });
 
 const handleSelected = async () => {
@@ -155,4 +161,14 @@ const getEventDistance = (event: any, userLat: number, userLon: number): number 
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.btn {
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+</style>

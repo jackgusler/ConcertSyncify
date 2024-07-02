@@ -43,7 +43,10 @@ onMounted(async () => {
 
     eventModal?.addEventListener('hidden.bs.modal', () => {
         selectedEvents.value = [];
-        centerIndex.value = 0;
+
+        if (props.type === 'event') {
+            centerIndex.value = 0;
+        }
     });
 });
 
