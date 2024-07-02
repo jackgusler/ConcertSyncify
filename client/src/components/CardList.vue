@@ -3,9 +3,7 @@ import { ref, onMounted, computed } from 'vue';
 import { type Artist, type Genre, getTopArtists, getTopGenres } from '@/model/spotify';
 import { type Event } from '@/model/ticketmaster';
 import { isLoggedInGoogle } from '@/model/google';
-import ArtistCard from './ArtistCard.vue';
-import GenreCard from './GenreCard.vue';
-import EventCard from './EventCard.vue';
+import Card from './Card.vue';
 
 const props = defineProps<{
     type: string;
@@ -151,15 +149,16 @@ function handleEmitEvent(event: Event) {
             </button>
         </div>
         <div class="col list-display-container">
-            <ArtistCard v-if="props.type === 'artist'" v-for="(item, index) in artistStyles" :key="item.artist.id"
-                :artist="item.artist" :style="item.style" :listIndex="index" :centerIndex="centerIndex"
-                @data="handleEmit" />
-            <GenreCard v-if="props.type === 'genre'" v-for="(item, index) in genreStyles" :key="item.genre.artist.id"
-                :genre="item.genre" :style="item.style" :listIndex="index" :centerIndex="centerIndex"
-                @data="handleEmit" />
-            <EventCard v-if="props.type === 'event'" v-for="(item, index) in eventStyles" :key="item.event.id"
-                :event="item.event" :style="item.style" :listIndex="index" :centerIndex="centerIndex"
-                @data="handleEmitEvent" />
+            <Card v-if="props.type === 'artist'" v-for="(item, index) in artistStyles" :type="props.type"
+                :artist="item.artist" :listIndex="index" :centerIndex="centerIndex" :style="item.style"
+                :key="item.artist.id" @data="handleEmit" />
+            <Card v-if="props.type === 'genre'" v-for="(item, index) in genreStyles" :type="props.type"
+                :genre="item.genre" :listIndex="index" :centerIndex="centerIndex" :key="item.genre.artist.id"
+                :style="item.style" @data="handleEmit" />
+
+            <Card v-if="props.type === 'event'" v-for="(item, index) in eventStyles" :type="props.type"
+                :event="item.event" :listIndex="index" :centerIndex="centerIndex" :key="item.event.id"
+                :style="item.style" @data="handleEmitEvent" />
         </div>
         <div class="col-auto">
             <button class="btn btn-secondary circle-btn" @mousedown="startScrolling(scrollRight)"
