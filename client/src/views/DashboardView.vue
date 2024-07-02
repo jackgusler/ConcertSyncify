@@ -6,94 +6,23 @@ import { googleLogout, isLoggedInGoogle } from '../model/google';
 import EventListModal from '../components/EventListModal.vue';
 import CardList from '../components/CardList.vue';
 import Calendar from '../components/Calendar.vue';
+import SearchBar from '../components/SearchBar.vue';
 
 const modalVisible = ref(false);
 const type = ref('');
 const eventList = ref<Event[]>([]);
 const modalTitle = ref('');
 
-const artistSearchBar = ref(false);
-const artistSearchInput = ref('');
 const artistSearchResults = ref<Artist[]>([]);
-const artistSearchInputRef = ref<HTMLInputElement | null>(null);
 
-const genreSearchBar = ref(false);
-const genreSearchInput = ref('');
 const genreSearchResults = ref<Artist[]>([]);
-const genreSearchInputRef = ref<HTMLInputElement | null>(null);
 
 const loggedIn = ref(false);
 
 onMounted(async () => {
     const isLogged = await isLoggedInGoogle();
     loggedIn.value = isLogged;
-
-    artistSearchBar.value = false;
-    genreSearchBar.value = false;
 });
-
-watch(artistSearchInput, async (newVal) => {
-    if (newVal.length > 2) {
-        const artists = await searchSpotify(newVal, 'artist');
-        artistSearchResults.value = artists;
-    } else {
-        artistSearchResults.value = [];
-    }
-});
-
-watch(genreSearchInput, async (newVal) => {
-    if (newVal.length > 2) {
-        const genres = await searchSpotify(newVal, 'genre');
-        genreSearchResults.value = genres;
-    } else {
-        genreSearchResults.value = [];
-    }
-});
-
-const toggleArtistSearchbar = () => {
-    if (genreSearchBar.value) {
-        toggleGenreSearchbar();
-    }
-
-    if (artistSearchBar.value) {
-        window.dispatchEvent(new Event('resize'));
-    }
-
-    artistSearchBar.value = !artistSearchBar.value;
-    if (artistSearchBar.value) {
-        setTimeout(() => {
-            artistSearchInputRef.value?.focus();
-        }, 500);
-    }
-
-    if (!artistSearchBar.value) {
-        setTimeout(() => {
-            artistSearchInput.value = '';
-        }, 500);
-    }
-};
-
-const toggleGenreSearchbar = () => {
-    if (artistSearchBar.value) {
-        toggleArtistSearchbar();
-    }
-
-    if (genreSearchBar.value) {
-        window.dispatchEvent(new Event('resize'));
-    }
-    genreSearchBar.value = !genreSearchBar.value;
-    if (genreSearchBar.value) {
-        setTimeout(() => {
-            genreSearchInputRef.value?.focus();
-        }, 500);
-    }
-
-    if (!genreSearchBar.value) {
-        setTimeout(() => {
-            genreSearchInput.value = '';
-        }, 500);
-    }
-};
 
 const handleEmit = (data: { type: string, events: Event[]; modalTitle: string }) => {
     modalVisible.value = true;
@@ -133,21 +62,7 @@ const handleEmit = (data: { type: string, events: Event[]; modalTitle: string })
                                 <h1>Artists</h1>
                             </div>
                             <div class="search-container col">
-                                <div class="search-content"
-                                    :class="['position-relative', { 'start': artistSearchBar, 'end': !artistSearchBar }]">
-                                    <div class="search-icon-container" @click="toggleArtistSearchbar">
-                                        <i v-if="!artistSearchBar" class="fa-solid fa-caret-left arrow-left"></i>
-                                        <i class="fa-solid fa-magnifying-glass fa-2x search-icon"></i>
-                                        <i v-if="artistSearchBar" class="fa-solid fa-caret-right arrow-right"></i>
-                                    </div>
-                                    <div class="search-bar-container"
-                                        :class="{ 'hidden': !artistSearchBar, 'visible': artistSearchBar }">
-                                        <input ref="artistSearchInputRef" type="text" class="form-control"
-                                            placeholder="Search for artists"
-                                            :class="{ 'input-to-component': artistSearchInput.length > 2 }"
-                                            v-model="artistSearchInput" />
-                                    </div>
-                                </div>
+                                <SearchBar :type="'artist'" @search-result="artistSearchResults"/>
                             </div>
                         </div>
                         <CardList :type="'artist'" @data="handleEmit" />
@@ -160,24 +75,7 @@ const handleEmit = (data: { type: string, events: Event[]; modalTitle: string })
                                 <h1>Genres</h1>
                             </div>
                             <div class="search-container col">
-                                <div class="search-content"
-                                    :class="{ 'start': genreSearchBar, 'end': !genreSearchBar }">
-
-                                    <div class="search-icon-container" @click="toggleGenreSearchbar">
-                                        <i v-if="!genreSearchBar" class="fa-solid fa-caret-left arrow-left"></i>
-                                        <i class="fa-solid fa-magnifying-glass fa-2x search-icon"></i>
-                                        <i v-if="genreSearchBar" class="fa-solid fa-caret-right arrow-right"></i>
-                                    </div>
-
-                                    <div class="search-bar-container"
-                                        :class="{ 'hidden': !genreSearchBar, 'visible': genreSearchBar }">
-                                        <input ref="genreSearchInputRef" type="text" class="form-control"
-                                            placeholder="Search for genres"
-                                            :class="{ 'input-to-component': genreSearchInput.length > 2 }"
-                                            v-model="genreSearchInput" />
-                                    </div>
-
-                                </div>
+                                <SearchBar :type="'genre'" @search-result="genreSearchResults"/>
                             </div>
                         </div>
                         <CardList :type="'genre'" @data="handleEmit" />
@@ -209,91 +107,5 @@ const handleEmit = (data: { type: string, events: Event[]; modalTitle: string })
 .row {
     --bs-gutter-x: 1.2rem;
     justify-content: center;
-}
-
-.search-container {
-    position: relative;
-    height: 100%;
-}
-
-.search-content {
-    position: absolute;
-    width: calc(100% - .65rem);
-    display: flex;
-    align-items: center;
-    position: relative;
-    transition: transform 0.5s ease;
-}
-
-.search-content.start {
-    transform: translateX(0%);
-}
-
-.search-content.end {
-    transform: translateX(calc(100% - 2.5rem));
-}
-
-.search-icon-container {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    color: white;
-    transition: color 0.3s;
-}
-
-.search-icon-container .fa-magnifying-glass {
-    transition: transform 0.5s ease;
-}
-
-.search-icon-container .fa-magnifying-glass {
-    transform: rotate(90deg);
-}
-
-.search-content.start .search-icon {
-    transform: rotate(0deg);
-}
-
-.arrow-left,
-.arrow-right {
-    opacity: 0;
-    transition: all 0.3s;
-}
-
-.search-icon-container:hover .arrow-left {
-    opacity: 1;
-    transform: translateX(-5px);
-}
-
-.search-icon-container:hover .arrow-right {
-    opacity: 1;
-    transform: translateX(5px);
-}
-
-.search-bar-container {
-    width: 100%;
-    transition: opacity 0.5s;
-    margin-left: 1rem;
-}
-
-.search-bar-container.hidden {
-    opacity: 0;
-}
-
-.search-bar-container.visible {
-    opacity: 1;
-}
-
-input::placeholder {
-    color: #323231;
-}
-
-.form-control {
-    background-color: black;
-    border: none;
-    border-radius: 40px;
-    color: white;
-    box-shadow: none;
-    padding-left: 20px;
-    padding-right: 20px;
 }
 </style>
