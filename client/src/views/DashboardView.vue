@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { type Artist } from '@/model/spotify';
+import { ref, onMounted, watch } from 'vue';
+import { type Artist, type Genre } from '@/model/spotify';
 import { type Event } from '@/model/ticketmaster';
 import { googleLogout, isLoggedInGoogle } from '../model/google';
 import EventListModal from '../components/EventListModal.vue';
@@ -14,8 +14,7 @@ const eventList = ref<Event[]>([]);
 const modalTitle = ref('');
 
 const artistSearchResults = ref<Artist[]>([]);
-
-const genreSearchResults = ref<Artist[]>([]);
+const genreSearchResults = ref<Genre[]>([]);
 
 const loggedIn = ref(false);
 
@@ -26,10 +25,17 @@ onMounted(async () => {
 
 const handleEmit = (data: { type: string, events: Event[]; modalTitle: string }) => {
     modalVisible.value = true;
-
     type.value = data.type;
     eventList.value = data.events;
     modalTitle.value = data.modalTitle;
+};
+
+const handleSearchEmit = (data: any[], type: string) => {
+    if (type === 'artist') {
+        artistSearchResults.value = data;
+    } else if (type === 'genre') {
+        genreSearchResults.value = data;
+    }
 };
 
 </script>
@@ -62,10 +68,10 @@ const handleEmit = (data: { type: string, events: Event[]; modalTitle: string })
                                 <h1>Artists</h1>
                             </div>
                             <div class="search-container col">
-                                <SearchBar :type="'artist'" @search-result="artistSearchResults" />
+                                <SearchBar :type="'artist'" @search-results="handleSearchEmit($event, 'artist')" />
                             </div>
                         </div>
-                        <CardList :type="'artist'" @data="handleEmit" />
+                        <CardList :type="'artist'" :artists="artistSearchResults" @data="handleEmit" />
                     </div>
                 </div>
                 <div class="row flex-grow-1" style="height: calc(50vh - .8rem);">
@@ -75,10 +81,10 @@ const handleEmit = (data: { type: string, events: Event[]; modalTitle: string })
                                 <h1>Genres</h1>
                             </div>
                             <div class="search-container col">
-                                <SearchBar :type="'genre'" @search-result="genreSearchResults" />
+                                <SearchBar :type="'genre'" @search-results="handleSearchEmit($event, 'genre')" />
                             </div>
                         </div>
-                        <CardList :type="'genre'" @data="handleEmit" />
+                        <CardList :type="'genre'" :genres="genreSearchResults" @data="handleEmit" />
                     </div>
                 </div>
             </div>

@@ -177,9 +177,10 @@ router.get("/search", async (req, res) => {
     return res.status(400).send("Missing query parameter 'q'");
   }
   // Adjust the query if the type is genre
+  let isGenreSearch = false;
   if (type === "genre") {
     q = `genre:"${q}"`; // Format the query to include genre filter
-    type = "artist"; // Reset type to artist since genre search applies to artists
+    isGenreSearch = true;
   }
 
   const tokens = cache.get("spotify_tokens");
@@ -200,9 +201,26 @@ router.get("/search", async (req, res) => {
       },
     });
 
-    // Assuming response.data.artists.items or response.data.tracks.items based on the type
-    const items = response.data.artists ? response.data.artists.items : [];
-    res.json(items.slice(0, 10)); // Return the first 10 results
+    if (isGenreSearch) {
+      // Transform artist items to genre interface
+      const genresMap = new Map();
+      response.data.artists.items.forEach(artist => {
+        artist.genres.forEach(genre => {
+          if (!genresMap.has(genre)) {
+            genresMap.set(genre, {
+              genre: genre,
+              artist: artist // Assuming you want to associate the genre with the first artist found
+            });
+          }
+        });
+      });
+      const genresArray = Array.from(genresMap.values());
+      res.json(genresArray); // Return genres matching the Genre interface
+    } else {
+      // Assuming response.data.artists.items based on the type
+      const items = response.data.artists ? response.data.artists.items : [];
+      res.json(items.slice(0, 10)); // Return the first 10 results
+    }
   } catch (error) {
     res.status(500).send(error.message);
   }

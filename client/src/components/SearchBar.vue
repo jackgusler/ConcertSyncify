@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { searchSpotify } from '@/model/spotify';
+import { type Artist, type Genre, searchSpotify } from '@/model/spotify';
 
 const props = defineProps<{
     type: string;
@@ -10,25 +10,17 @@ const emit = defineEmits(['search-results']);
 
 const searchBar = ref(false);
 const searchInput = ref('');
-const searchResults = ref([]);
-// const artistSearchInputRef = ref<HTMLInputElement | null>(null);
+const searchInputRef = ref<HTMLInputElement | null>(null);
+const searchResultsArtists = ref<Artist[]>([]);
+const searchResultsGenres = ref<Genre[]>([]);
 
-const toggleArtistSearchbar = () => {
-    if (searchBar.value) {
-        window.dispatchEvent(new Event('resize'));
-    }
-
+const toggleSearchbar = () => {
     searchBar.value = !searchBar.value;
-    // if (searchBar.value) {
-    //     setTimeout(() => {
-    //         artistSearchInputRef.value?.focus();
-    //     }, 500);
-    // }
 
     if (!searchBar.value) {
-        setTimeout(() => {
-            searchInput.value = '';
-        }, 500);
+        searchInput.value = '';
+    } else {
+        searchInputRef.value?.focus();
     }
 };
 
@@ -36,21 +28,21 @@ watch(searchInput, async (newVal) => {
     if (props.type === 'artist') {
         if (newVal.length > 2) {
             const artists = await searchSpotify(newVal, 'artist');
-            searchResults.value = artists;
-            emit('search-results', searchResults.value);
+            searchResultsArtists.value = artists;
+            emit('search-results', searchResultsArtists.value);
         } else {
-            searchResults.value = [];
-            emit('search-results', searchResults.value);
+            searchResultsArtists.value = [];
+            emit('search-results', searchResultsArtists.value);
         }
     }
     else if (props.type === 'genre') {
         if (newVal.length > 2) {
             const genres = await searchSpotify(newVal, 'genre');
-            searchResults.value = genres;
-            emit('search-results', searchResults.value);
+            searchResultsGenres.value = genres;
+            emit('search-results', searchResultsGenres.value);
         } else {
-            searchResults.value = [];
-            emit('search-results', searchResults.value);
+            searchResultsGenres.value = [];
+            emit('search-results', searchResultsGenres.value);
         }
     }
 });
@@ -59,13 +51,13 @@ watch(searchInput, async (newVal) => {
 
 <template>
     <div class="search-content" :class="['position-relative', { 'start': searchBar, 'end': !searchBar }]">
-        <div class="search-icon-container" @click="toggleArtistSearchbar">
+        <div class="search-icon-container" @click="toggleSearchbar">
             <i v-if="!searchBar" class="fa-solid fa-caret-left arrow-left"></i>
             <i class="fa-solid fa-magnifying-glass fa-2x search-icon"></i>
             <i v-if="searchBar" class="fa-solid fa-caret-right arrow-right"></i>
         </div>
         <div class="search-bar-container" :class="{ 'hidden': !searchBar, 'visible': searchBar }">
-            <input ref="artistSearchInputRef" type="text" class="form-control" placeholder="Search for artists"
+            <input ref="searchInputRef" type="text" class="form-control" placeholder="Search"
                 :class="{ 'input-to-component': searchInput.length > 2 }" v-model="searchInput" />
         </div>
     </div>

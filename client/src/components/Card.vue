@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { type Artist, type Genre } from '@/model/spotify';
 import { type Event, getEvents } from '@/model/ticketmaster';
-import { getGoogleEvents, deleteGoogleEvent, googleEventExists } from '@/model/google';
+import { getGoogleEvents, deleteGoogleEvent, googleEventExists, isLoggedInGoogle } from '@/model/google';
 
 const props = defineProps<{
     type: string;
@@ -19,6 +19,8 @@ const hasEvents = ref(false);
 
 const emit = defineEmits(['data']);
 
+const loggedIn = ref(false);
+
 const isAlreadyAdded = ref(false);
 const isChecked = ref(false);
 const eventModal = document.getElementById('eventModal');
@@ -28,8 +30,13 @@ const buttonStyle = ref({
     color: '#ffffff'
 });
 
+onMounted(async () => {
+    const isLogged = await isLoggedInGoogle();
+    loggedIn.value = isLogged;
+});
+
 const buttonProps = computed(() => {
-    if (isAlreadyAdded.value) {
+    if (isAlreadyAdded.value && loggedIn.value) {
         return {
             btnClass: 'btn-success',
             iconClass: 'fa-calendar-xmark',
@@ -119,6 +126,7 @@ const emitData = async () => {
         if (hasEvents.value) {
             emit('data', { type: 'artist', events: events.value, modalTitle: props.artist?.name });
         } else if (props.artist?.genres && props.artist.genres.length > 0) {
+            console.log(props.artist.genres[0]);
             const genre = getAlternativeGenre(props.artist.genres[0]);
             const genreEvents = await getEvents(genre);
             if (genreEvents && genreEvents.length > 0) {
@@ -135,7 +143,9 @@ const getAlternativeGenre = (initialGenre: string) => {
     const alternativeGenres: { [key: string]: string } = {
         "pov: indie": "Indie",
         "springfield mo indie": "Indie",
-        "electropop": "electric pop",
+        "electropop": "Electric Pop",
+        "scenecore": "Metalcore",
+        "speedrun": "Speed Metal",
         // Add more mappings
     };
 
@@ -188,49 +198,100 @@ const toggleCheckbox = () => {
     emit('data', props.event);
 };
 
+const dateToText = (date: string | undefined) => {
+    if (!date) return '';
+
+    // Split the date string into components
+    const [year, month, day] = date.split('-').map(part => parseInt(part, 10));
+
+    // Create a new Date object using local time components
+    const dateObj = new Date(year, month - 1, day);
+
+    const currentYear = new Date().getFullYear();
+    const dateYear = dateObj.getFullYear();
+
+    const monthLong = dateObj.toLocaleString('en-US', { month: 'long' });
+    const dayWithOrdinal = getOrdinalIndicator(dateObj.getDate());
+
+    let dateString = `${monthLong} ${dayWithOrdinal}`;
+    if (dateYear !== currentYear) {
+        dateString += `, ${dateYear}`;
+    }
+
+    return dateString;
+}
+
+const getOrdinalIndicator = (day: number) => {
+    const j = day % 10,
+          k = day % 100;
+    if (j == 1 && k != 11) {
+        return day + "st";
+    }
+    if (j == 2 && k != 12) {
+        return day + "nd";
+    }
+    if (j == 3 && k != 13) {
+        return day + "rd";
+    }
+    return day + "th";
+}
+
+const formatLocation = (venue: any) => {
+    let location = [];
+    if (venue.city?.name) {
+        location.push(venue.city.name);
+    }
+
+    if (venue.state?.stateCode) {
+        location.push(venue.state.stateCode);
+    }
+
+    if (venue.country?.countryCode) {
+        location.push(venue.country.countryCode);
+    }
+
+    return location.join(', ');
+}
+
 </script>
 
 <template>
     <div class="card d-flex flex-column align-items-center"
-        :class="{ 'card-added': props.type === 'event' && isAlreadyAdded }">
+        :class="{ 'card-added': props.type === 'event' && isAlreadyAdded && loggedIn }">
         <h5 class="mt-2 mx-3 text-center truncate">{{ props.type === 'genre' ? formatGenre(props.genre!.genre) :
             props.type ===
                 'artist' ? props.artist?.name : props.type === 'event' ? props.event?.name : '' }}</h5>
         <a v-if="props.type === 'artist'" :href="props.artist?.external_urls.spotify" target="_blank"
             class="text-decoration-none text-dark" :class="{ disabled: props.listIndex !== props.centerIndex }">
-            <template v-if="props.listIndex === props.centerIndex">
-                <div class="image-container" style="margin-top: 2.5rem;">
+            <div class="image-container" style="margin-top: 2.5rem;">
+                <template v-if="props.listIndex === props.centerIndex && props.artist?.external_urls.spotify">
                     <img v-tooltip="{ content: 'Open Spotify', theme: 'tooltip-top' }"
                         v-if="props.artist?.images && props.artist.images.length > 0" :src="props.artist.images[0].url"
                         class="image" alt="Artist Image">
-                </div>
-            </template>
-            <template v-else>
-                <div class="image-container" style="margin-top: 2.5rem;">
+                </template>
+                <template v-else>
                     <img v-if="props.artist?.images && props.artist.images.length > 0" :src="props.artist.images[0].url"
                         class="image" alt="Artist Image">
-                </div>
-            </template>
+                </template>
+            </div>
         </a>
         <a v-else-if="props.type === 'genre'" :href="props.genre?.artist.external_urls.spotify" target="_blank"
             class="text-decoration-none text-dark" :class="{ disabled: props.listIndex !== props.centerIndex }">
-            <template v-if="props.listIndex === props.centerIndex">
-                <div class="image-container" style="margin-top: 2.5rem;">
+            <div class="image-container" style="margin-top: 2.5rem;">
+                <template v-if="props.listIndex === props.centerIndex && props.genre?.artist.external_urls.spotify">
                     <img v-tooltip="{ content: 'Open Spotify', theme: 'tooltip-top' }"
                         v-if="props.genre?.artist.images && props.genre.artist.images.length > 0"
                         :src="props.genre.artist.images[0].url" class="image" alt="Artist Genre Image">
-                </div>
-            </template>
-            <template v-else>
-                <div class="image-container" style="margin-top: 2.5rem;">
+                </template>
+                <template v-else>
                     <img v-if="props.genre?.artist.images && props.genre.artist.images.length > 0"
                         :src="props.genre.artist.images[0].url" class="image" alt="Artist Genre Image">
-                </div>
-            </template>
+                </template>
+            </div>
         </a>
         <a v-else-if="props.type === 'event'" :href="props.event?.url" target="_blank"
             class="text-decoration-none text-dark" :class="{ disabled: props.listIndex !== props.centerIndex }">
-            <template v-if="props.listIndex === props.centerIndex">
+            <template v-if="props.listIndex === props.centerIndex && props.event?.url">
                 <div v-tooltip="{ content: 'Buy Tickets', theme: 'tooltip-top' }" class="image-container"
                     style="margin-top: 2.5rem;">
                     <img v-if="props.event?.images && props.event.images.length > 0" :src="biggestImage" class="image"
@@ -246,19 +307,26 @@ const toggleCheckbox = () => {
         </a>
 
         <div v-if="props.type != 'event' && hasEvents"
-            class="card-body pt-0 d-flex flex-column justify-content-end align-items-center" style="height: 100%">
+            class="card-body pt-0 d-flex flex-column justify-content-end align-items-center w-100">
             <p class="my-2 w-100">
             <div class="truncate-event">
                 <span class="name-with-colon">{{ events[0].name }}:</span>
             </div>
-            <div class="truncate-event-body">
-                {{ events[0].dates.start.localDate }}
+            <!-- <div class="truncate-event-body">
+                {{ dateToText(events[0].dates.start.localDate) }}
                 in
                 {{ events[0]._embedded?.venues[0]?.city?.name || 'TBA' }},
                 {{ events[0]._embedded?.venues[0]?.state?.stateCode ?
                     events[0]._embedded?.venues[0]?.state?.stateCode :
                     (events[0]._embedded?.venues[0]?.country ?
                         events[0]._embedded?.venues[0]?.country.name : 'TBA') }}
+            </div> -->
+            <div class="truncate-event-body">
+                {{ dateToText(events[0].dates.start.localDate) }}
+                at
+                {{ events[0]._embedded && events[0]._embedded.venues[0] ? formatLocation(events[0]._embedded.venues[0])
+                : 'TBA'
+                }}
             </div>
             </p>
             <button @click="emitData" class="btn btn-success mt-auto" data-bs-toggle="modal"
@@ -268,11 +336,11 @@ const toggleCheckbox = () => {
             </button>
         </div>
         <div v-else-if="props.type != 'event'"
-            class="card-body d-flex flex-column justify-content-end align-items-center"
+            class="card-body d-flex flex-column justify-content-end align-items-center w-100"
             :class="{ 'pt-0': props.type === 'artist' }">
             <div v-if="props.type === 'artist'">
-                <p class="my-4">
-                    <span style="color: #6d6d6d;">No upcoming events</span>
+                <p class="my-4 d-flex justify-content-center align-items-center" style="color: #6d6d6d;">
+                    No upcoming events
                 </p>
                 <button @click="emitData" class="btn btn-success mt-auto" data-bs-toggle="modal"
                     data-bs-target="#eventModal"
@@ -292,7 +360,7 @@ const toggleCheckbox = () => {
                 <span class="name-with-colon">{{ props.event?.name }}:</span>
             </div>
             <div class="truncate-event-body">
-                {{ props.event?.dates.start.localDate }}
+                {{ dateToText(props.event?.dates.start.localDate) }}
                 in
                 {{ props.event?._embedded?.venues[0]?.city?.name || 'TBA' }},
                 {{ props.event?._embedded?.venues[0]?.state?.stateCode ?

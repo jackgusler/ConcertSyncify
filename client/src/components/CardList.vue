@@ -1,20 +1,19 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { type Artist, type Genre, getTopArtists, getTopGenres } from '@/model/spotify';
 import { type Event } from '@/model/ticketmaster';
-import { isLoggedInGoogle } from '@/model/google';
 import Card from './Card.vue';
 
 const props = defineProps<{
     type: string;
+    artists?: Artist[];
+    genres?: Genre[];
     events?: Event[];
 }>();
 
 const emit = defineEmits(['data']);
 
 const selectedEvents = ref<Event[]>([]);
-
-const loggedIn = ref(false);
 
 const allArtists = ref<Artist[]>([]);
 const allGenres = ref<Genre[]>([]);
@@ -27,16 +26,21 @@ let scrollInterval: number | null | undefined = null;
 const eventModal = document.getElementById('eventModal');
 
 onMounted(async () => {
-
-    const isLogged = await isLoggedInGoogle();
-    loggedIn.value = isLogged;
-
     if (props.type === 'artist') {
-        const artists = await getTopArtists();
-        allArtists.value = artists;
+        if (props.artists && props.artists?.length > 0) {
+            console.log(props.artists);
+            allArtists.value = props.artists;
+        } else {
+            const artists = await getTopArtists();
+            allArtists.value = artists;
+        }
     } else if (props.type === 'genre') {
-        const genres = await getTopGenres();
-        allGenres.value = genres;
+        if (props.genres && props.genres?.length > 0) {
+            allGenres.value = props.genres;
+        } else {
+            const genres = await getTopGenres();
+            allGenres.value = genres;
+        }
     }
 
     eventModal?.addEventListener('hidden.bs.modal', () => {
@@ -46,6 +50,28 @@ onMounted(async () => {
             centerIndex.value = 0;
         }
     });
+});
+
+watch(() => props.artists, async (newVal) => {
+    if (props.type === 'artist' && newVal) {
+        if (newVal.length > 2) {
+        allArtists.value = newVal;
+        } else {
+            const artists = await getTopArtists();
+            allArtists.value = artists;
+        }
+    }
+});
+
+watch(() => props.genres, async (newVal) => {
+    if (props.type === 'genre' && newVal) {
+        if (newVal.length > 2) {
+            allGenres.value = newVal;
+        } else {
+            const genres = await getTopGenres();
+            allGenres.value = genres;
+        }
+    }
 });
 
 const calculateScale = (index: number) => {
@@ -150,10 +176,11 @@ function handleEmitEvent(event: Event) {
         </div>
         <div class="col list-display-container">
             <Card v-if="props.type === 'artist'" v-for="(item, index) in artistStyles" :type="props.type"
-                :artist="item.artist" :listIndex="index" :centerIndex="centerIndex" :style="item.style"
-                :key="item.artist.id" @data="handleEmit" />
+                :artist="item.artist" :listIndex="index" :centerIndex="centerIndex" :key="item.artist.id"
+                :style="item.style" @data="handleEmit" />
+
             <Card v-if="props.type === 'genre'" v-for="(item, index) in genreStyles" :type="props.type"
-                :genre="item.genre" :listIndex="index" :centerIndex="centerIndex" :key="item.genre.artist.id"
+                :genre="item.genre" :listIndex="index" :centerIndex="centerIndex" :key="item.genre.genre + `-` + item.genre.artist.id"
                 :style="item.style" @data="handleEmit" />
 
             <Card v-if="props.type === 'event'" v-for="(item, index) in eventStyles" :type="props.type"
