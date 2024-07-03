@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue';
-import { type Artist, type Genre, getTopArtists, getTopGenres } from '@/model/spotify';
+import { type Artist, type Genre, getTopArtists, getTopGenres, handleLoading, loadingArtists, loadingGenres, loadingEvents } from '@/model/spotify';
 import { type Event } from '@/model/ticketmaster';
 import Card from './Card.vue';
 
@@ -31,15 +31,19 @@ onMounted(async () => {
             console.log(props.artists);
             allArtists.value = props.artists;
         } else {
+            handleLoading(props.type, '+');
             const artists = await getTopArtists();
             allArtists.value = artists;
+            handleLoading(props.type, '-');
         }
     } else if (props.type === 'genre') {
         if (props.genres && props.genres?.length > 0) {
             allGenres.value = props.genres;
         } else {
+            handleLoading(props.type, '+');
             const genres = await getTopGenres();
             allGenres.value = genres;
+            handleLoading(props.type, '-');
         }
     }
 
@@ -55,7 +59,9 @@ onMounted(async () => {
 watch(() => props.artists, async (newVal) => {
     if (props.type === 'artist' && newVal) {
         if (newVal.length > 2) {
-        allArtists.value = newVal;
+            handleLoading(props.type, '+');
+            allArtists.value = newVal;
+            handleLoading(props.type, '-');
         } else {
             const artists = await getTopArtists();
             allArtists.value = artists;
@@ -66,7 +72,9 @@ watch(() => props.artists, async (newVal) => {
 watch(() => props.genres, async (newVal) => {
     if (props.type === 'genre' && newVal) {
         if (newVal.length > 2) {
+            handleLoading(props.type, '+');
             allGenres.value = newVal;
+            handleLoading(props.type, '-');
         } else {
             const genres = await getTopGenres();
             allGenres.value = genres;
@@ -167,7 +175,15 @@ function handleEmitEvent(event: Event) {
 </script>
 
 <template>
-    <div class="row mt-2 align-items-center justify-content-center" style="position: relative;">
+    <div class="row mt-2 align-items-center justify-content-center card-list-container">
+        <Transition>
+            <div v-if="(props.type === 'artist' && loadingArtists) || (props.type === 'genre' && loadingGenres)"
+                class="loading-container">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </Transition>
         <div class="col-auto">
             <button class="btn btn-secondary circle-btn" @mousedown="startScrolling(scrollLeft)"
                 @mouseup="stopScrolling" @mouseleave="stopScrolling" :disabled="centerIndex === 0">
@@ -180,8 +196,8 @@ function handleEmitEvent(event: Event) {
                 :style="item.style" @data="handleEmit" />
 
             <Card v-if="props.type === 'genre'" v-for="(item, index) in genreStyles" :type="props.type"
-                :genre="item.genre" :listIndex="index" :centerIndex="centerIndex" :key="item.genre.genre + `-` + item.genre.artist.id"
-                :style="item.style" @data="handleEmit" />
+                :genre="item.genre" :listIndex="index" :centerIndex="centerIndex"
+                :key="item.genre.genre + `-` + item.genre.artist.id" :style="item.style" @data="handleEmit" />
 
             <Card v-if="props.type === 'event'" v-for="(item, index) in eventStyles" :type="props.type"
                 :event="item.event" :listIndex="index" :centerIndex="centerIndex" :key="item.event.id"
@@ -206,5 +222,15 @@ function handleEmitEvent(event: Event) {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
+}
+
+.v-enter-active,
+.v-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+    opacity: 0;
 }
 </style>

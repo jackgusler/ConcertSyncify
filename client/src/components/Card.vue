@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import { type Artist, type Genre } from '@/model/spotify';
+import { type Artist, type Genre, handleLoading } from '@/model/spotify';
 import { type Event, getEvents } from '@/model/ticketmaster';
 import { getGoogleEvents, deleteGoogleEvent, googleEventExists, isLoggedInGoogle } from '@/model/google';
 
@@ -82,19 +82,23 @@ const biggestImage = computed(() => {
 
 onMounted(async () => {
     if (props.type === 'artist' && props.artist && props.artist.name) {
+        handleLoading(props.type, '+');
         const artistEvents = await getEvents(props.artist.name);
         if (artistEvents && artistEvents.length > 0) {
             events.value = artistEvents;
             hasEvents.value = true;
         }
+        handleLoading(props.type, '-');
     }
 
     if (props.type === 'genre' && props.genre && props.genre.genre) {
+        handleLoading(props.type, '+');
         let genreEvents = await getEvents(props.genre.genre);
         if (!genreEvents || genreEvents.length === 0) {
             const alternativeGenre = getAlternativeGenre(props.genre.genre);
             genreEvents = await getEvents(alternativeGenre);
         }
+        handleLoading(props.type, '-');
 
         if (genreEvents && genreEvents.length > 0) {
             events.value = genreEvents;
@@ -121,6 +125,7 @@ onMounted(async () => {
 });
 
 const emitData = async () => {
+    handleLoading('event', '+');
     if (props.type === 'artist') {
 
         if (hasEvents.value) {
@@ -137,6 +142,7 @@ const emitData = async () => {
     } else if (props.type === 'genre') {
         emit('data', { type: 'genre', events: events.value, modalTitle: props.genre?.genre });
     }
+    handleLoading('event', '-');
 };
 
 const getAlternativeGenre = (initialGenre: string) => {
@@ -223,7 +229,7 @@ const dateToText = (date: string | undefined) => {
 
 const getOrdinalIndicator = (day: number) => {
     const j = day % 10,
-          k = day % 100;
+        k = day % 100;
     if (j == 1 && k != 11) {
         return day + "st";
     }
@@ -325,7 +331,7 @@ const formatLocation = (venue: any) => {
                 {{ dateToText(events[0].dates.start.localDate) }}
                 at
                 {{ events[0]._embedded && events[0]._embedded.venues[0] ? formatLocation(events[0]._embedded.venues[0])
-                : 'TBA'
+                    : 'TBA'
                 }}
             </div>
             </p>
@@ -373,12 +379,10 @@ const formatLocation = (venue: any) => {
                 <div class="d-flex justify-content-center">
                     <button :class="['btn', buttonProps.btnClass, 'circle-button event-button']"
                         @click="buttonProps.action">
-                        <transition name="fade" mode="out-in">
-                            <div :key="buttonProps.text">
-                                <i :class="['fa-solid', buttonProps.iconClass]" v-if="buttonProps.iconClass"></i>
-                                {{ buttonProps.text }}
-                            </div>
-                        </transition>
+                        <div :key="buttonProps.text">
+                            <i :class="['fa-solid', buttonProps.iconClass]" v-if="buttonProps.iconClass"></i>
+                            {{ buttonProps.text }}
+                        </div>
                     </button>
                 </div>
             </div>
@@ -431,16 +435,6 @@ const formatLocation = (venue: any) => {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.5s;
-}
-
-.fade-enter,
-.fade-leave-to {
-    opacity: 0;
 }
 
 .event-button {

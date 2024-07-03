@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import { type Artist, type Genre } from '@/model/spotify';
 import { type Event } from '@/model/ticketmaster';
 import { googleLogout, isLoggedInGoogle } from '../model/google';
@@ -62,7 +62,7 @@ const handleSearchEmit = (data: any[], type: string) => {
 
             <div class="col-md-7 d-flex flex-column position-relative overflow-hidden">
                 <div class="row flex-grow-1" style="height: calc(50vh - .8rem); margin-bottom: .6rem;">
-                    <div class="box px-3 py-2 rounded-3">
+                    <div class="box px-3 py-2 rounded-3 position-relative">
                         <div class="row align-items-center">
                             <div class="col-auto">
                                 <h1>Artists</h1>
@@ -75,7 +75,7 @@ const handleSearchEmit = (data: any[], type: string) => {
                     </div>
                 </div>
                 <div class="row flex-grow-1" style="height: calc(50vh - .8rem);">
-                    <div class="box px-3 py-2 rounded-3">
+                    <div class="box px-3 py-2 rounded-3 position-relative">
                         <div class="row align-items-center">
                             <div class="col-auto">
                                 <h1>Genres</h1>
