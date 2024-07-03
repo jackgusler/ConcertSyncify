@@ -96,7 +96,7 @@ const artistStyles = computed(() => {
             style: {
                 transform: `scale(${scale}) translateX(${translateX}px)`,
                 zIndex: zIndex,
-                left: '194px',
+                left: '30%',
                 top: 0,
                 position: 'absolute',
             }
@@ -115,7 +115,7 @@ const genreStyles = computed(() => {
             style: {
                 transform: `scale(${scale}) translateX(${translateX}px)`,
                 zIndex: zIndex,
-                left: '194px',
+                left: '30%',
                 top: 0,
                 position: 'absolute',
             }

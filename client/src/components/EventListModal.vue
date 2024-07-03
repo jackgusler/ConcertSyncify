@@ -110,7 +110,6 @@ const sortByDistance = async () => {
                 distances.sort((a, b) => a.distance - b.distance);
             else
                 distances.sort((a, b) => b.distance - a.distance);
-            console.log("Sorting by distance");
             eventList.value = distances.map(item => item.event);
         } catch (error) {
             console.error("Error getting location:", error);

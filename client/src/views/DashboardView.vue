@@ -61,31 +61,29 @@ const handleSearchEmit = (data: any[], type: string) => {
             </div>
 
             <div class="col-md-7 d-flex flex-column position-relative overflow-hidden">
-                <div class="row flex-grow-1" style="height: calc(50vh - .8rem); margin-bottom: .6rem;">
-                    <div class="box px-3 py-2 rounded-3 position-relative">
-                        <div class="row align-items-center">
-                            <div class="col-auto">
-                                <h1>Artists</h1>
-                            </div>
-                            <div class="search-container col">
-                                <SearchBar :type="'artist'" @search-results="handleSearchEmit($event, 'artist')" />
-                            </div>
+                <div class="row box px-3 py-2 rounded-3 flex-grow-1 position-relative d-flex justify-content-center align-items-start"
+                    style="margin-bottom: .6rem;">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <h1>Artists</h1>
                         </div>
-                        <CardList :type="'artist'" :artists="artistSearchResults" @data="handleEmit" />
+                        <div class="search-container col">
+                            <SearchBar :type="'artist'" @search-results="handleSearchEmit($event, 'artist')" />
+                        </div>
                     </div>
+                    <CardList :type="'artist'" :artists="artistSearchResults" @data="handleEmit" />
                 </div>
-                <div class="row flex-grow-1" style="height: calc(50vh - .8rem);">
-                    <div class="box px-3 py-2 rounded-3 position-relative">
-                        <div class="row align-items-center">
-                            <div class="col-auto">
-                                <h1>Genres</h1>
-                            </div>
-                            <div class="search-container col">
-                                <SearchBar :type="'genre'" @search-results="handleSearchEmit($event, 'genre')" />
-                            </div>
+                <div
+                    class="row box px-3 py-2 rounded-3 flex-grow-1 position-relative d-flex justify-content-center align-items-start">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <h1>Genres</h1>
                         </div>
-                        <CardList :type="'genre'" :genres="genreSearchResults" @data="handleEmit" />
+                        <div class="search-container col">
+                            <SearchBar :type="'genre'" @search-results="handleSearchEmit($event, 'genre')" />
+                        </div>
                     </div>
+                    <CardList :type="'genre'" :genres="genreSearchResults" @data="handleEmit" />
                 </div>
             </div>
 
