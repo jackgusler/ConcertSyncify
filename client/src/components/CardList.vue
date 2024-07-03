@@ -177,7 +177,7 @@ function handleEmitEvent(event: Event) {
     <div class="row mt-2 align-items-center justify-content-center card-list-container">
         <Transition>
             <div v-if="(props.type === 'artist' && loadingArtists) || (props.type === 'genre' && loadingGenres)"
-                class="loading-container">
+                class="loading-container rounded-3">
                 <div class="spinner-border" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
