@@ -206,7 +206,6 @@ export const isLoggedInGoogle = async () => {
 export const getGoogleEvents = async () => {
   try {
     const response = await axios.get('/api/google/events')
-    console.log(response.data.items)
     return response.data.items
   } catch (error) {
     console.error('Error fetching events:', error)

@@ -1,6 +1,4 @@
-import { ref } from 'vue'
 import axios from '../myAxios'
-import ngeohash from 'ngeohash'
 
 export interface Event {
   _embedded: {
@@ -158,13 +156,11 @@ export interface Event {
   url: string
 }
 
-export const getEvents = async (keyword: string, sort?: string, geoHash?: string) => {
+export const getEvents = async (keyword: string) => {
   try {
     const response = await axios.get('/api/ticketmaster/events', {
       params: {
         keyword,
-        sort,
-        geoHash
       }
     })
     if (!response.data._embedded) {
@@ -174,22 +170,5 @@ export const getEvents = async (keyword: string, sort?: string, geoHash?: string
   } catch (error) {
     console.error('Error fetching events:', error)
     return []
-  }
-}
-
-export const getUserGeoHash = async () => {
-  try {
-    const position: GeolocationPosition = await new Promise((resolve, reject) => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(resolve, reject)
-      } else {
-        reject(new Error('Geolocation is not supported by this browser.'))
-      }
-    })
-    const { latitude, longitude } = position.coords
-    const geohash = ngeohash.encode(latitude, longitude)
-    return geohash
-  } catch (error) {
-    console.error('Error getting user location or encoding geohash:', error)
   }
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { loadingArtists, loadingGenres, loadingEvents } from '@/model/spotify';
 import { type GoogleEvent, googleLogin, isLoggedInGoogle, getGoogleEvents } from '@/model/google';
 import VueCal from 'vue-cal';
 import 'vue-cal/dist/vuecal.css';
@@ -57,8 +58,15 @@ const formatEvents = () => {
 
 <template>
     <div class="my-container">
-        <button v-if="!loggedIn" @click="googleLogin" class="btn btn-success">Login with Google</button>
-        <!-- <button v-else @click="handleLogout" class="btn btn-success">Logout</button> -->
+        <button v-if="!loggedIn && (loadingArtists || loadingGenres || loadingEvents)" class="btn btn-success"
+            style="width: 180.15px;">
+            <div class="spinner-border" role="status" style="width: 1.25rem; height: 1.25rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </button>
+        <button v-else-if="!loggedIn" @click="googleLogin" class="btn btn-success">
+            <span>Login with Google</span>
+        </button>
         <div v-if="loggedIn" class="calendar-wrapper">
             <vue-cal class="vuecal--rounded-theme" xsmall hide-view-selector :time="false" active-view="month"
                 :disable-views="['week']" style="width: 375px; height: 450px;" :events="formattedEvents">

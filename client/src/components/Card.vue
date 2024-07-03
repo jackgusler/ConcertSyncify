@@ -131,7 +131,6 @@ const emitData = async () => {
         if (hasEvents.value) {
             emit('data', { type: 'artist', events: events.value, modalTitle: props.artist?.name });
         } else if (props.artist?.genres && props.artist.genres.length > 0) {
-            console.log(props.artist.genres[0]);
             const genre = getAlternativeGenre(props.artist.genres[0]);
             const genreEvents = await getEvents(genre);
             if (genreEvents && genreEvents.length > 0) {
@@ -318,15 +317,6 @@ const formatLocation = (venue: any) => {
             <div class="truncate-event">
                 <span class="name-with-colon">{{ events[0].name }}:</span>
             </div>
-            <!-- <div class="truncate-event-body">
-                {{ dateToText(events[0].dates.start.localDate) }}
-                in
-                {{ events[0]._embedded?.venues[0]?.city?.name || 'TBA' }},
-                {{ events[0]._embedded?.venues[0]?.state?.stateCode ?
-                    events[0]._embedded?.venues[0]?.state?.stateCode :
-                    (events[0]._embedded?.venues[0]?.country ?
-                        events[0]._embedded?.venues[0]?.country.name : 'TBA') }}
-            </div> -->
             <div class="truncate-event-body">
                 {{ dateToText(events[0].dates.start.localDate) }}
                 at
@@ -360,31 +350,25 @@ const formatLocation = (venue: any) => {
         </div>
 
         <div v-if="props.type === 'event'"
-            class="card-body pt-0 d-flex flex-column justify-content-end align-items-center">
+            class="card-body pt-0 d-flex flex-column justify-content-end align-items-center w-100">
             <p class="my-2 w-100">
             <div class="truncate-event">
                 <span class="name-with-colon">{{ props.event?.name }}:</span>
             </div>
             <div class="truncate-event-body">
                 {{ dateToText(props.event?.dates.start.localDate) }}
-                in
-                {{ props.event?._embedded?.venues[0]?.city?.name || 'TBA' }},
-                {{ props.event?._embedded?.venues[0]?.state?.stateCode ?
-                    props.event._embedded?.venues[0]?.state?.stateCode :
-                    (props.event?._embedded?.venues[0]?.country ?
-                        props.event._embedded?.venues[0]?.country.name : 'TBA') }}
+                at
+                {{ props.event?._embedded?.venues[0] ? formatLocation(props.event._embedded.venues[0]) : 'TBA' }}
             </div>
             </p>
-            <div class="form-check mt-auto me-4">
-                <div class="d-flex justify-content-center">
-                    <button :class="['btn', buttonProps.btnClass, 'circle-button event-button']"
-                        @click="buttonProps.action">
-                        <div :key="buttonProps.text">
-                            <i :class="['fa-solid', buttonProps.iconClass]" v-if="buttonProps.iconClass"></i>
-                            {{ buttonProps.text }}
-                        </div>
-                    </button>
-                </div>
+            <div class="mt-auto">
+                <button :class="['btn', buttonProps.btnClass, 'circle-button event-button']"
+                    @click="buttonProps.action">
+                    <div :key="buttonProps.text">
+                        <i :class="['fa-solid', buttonProps.iconClass]" v-if="buttonProps.iconClass"></i>
+                        {{ buttonProps.text }}
+                    </div>
+                </button>
             </div>
         </div>
 

@@ -28,7 +28,6 @@ const eventModal = document.getElementById('eventModal');
 onMounted(async () => {
     if (props.type === 'artist') {
         if (props.artists && props.artists?.length > 0) {
-            console.log(props.artists);
             allArtists.value = props.artists;
         } else {
             handleLoading(props.type, '+');

@@ -27,26 +27,12 @@ const fetchWithRetry = async (url, retries = 3, delayTime = 1000) => {
 
 router.get("/events", async (req, res) => {
   const keyword = req.query.keyword;
-  const sort = req.query.sort; // Get sort parameter from query
-  const geoHash = req.query.geoHash; // Get geoHash from query
-
   if (!keyword) {
     return res.status(400).send("Missing keyword query parameter");
   }
 
-  let api_url = `https://app.ticketmaster.com/discovery/v2/events.json?keyword=${keyword}&apikey=${consumer_key}`;
-
-  // Check if sort parameter is provided and is either 'date,asc' or 'distance,asc'
-  if (sort && (sort === 'date,asc' || sort === 'distance,asc')) {
-    api_url += `&sort=${sort}`; // Append sort parameter to API URL
-  }
-
-  // Append geoPoint parameter if geoHash is provided
-  if (geoHash) {
-    api_url += `&geoPoint=${geoHash}`;
-  }
-
-  const cacheKey = `ticketmaster:events:${keyword}:${sort || 'default'}:${geoHash || 'default'}`; // Include sort and geoHash in cache key
+  const cacheKey = `ticketmaster:events:${keyword}`;
+  const api_url = `https://app.ticketmaster.com/discovery/v2/events.json?keyword=${keyword}&apikey=${consumer_key}`;
 
   try {
     // Try to fetch data from NodeCache cache first
