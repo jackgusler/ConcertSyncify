@@ -1,10 +1,5 @@
-import { ref } from 'vue'
 import axios from '../myAxios'
 import router from '@/router'
-
-export const loadingArtists = ref(0)
-export const loadingGenres = ref(0)
-export const loadingEvents = ref(0)
 
 export interface Artist {
   external_urls: {
@@ -88,16 +83,3 @@ export const searchSpotify = async (q: string, type: string) => {
     console.error('Error searching Spotify:', error)
   }
 }
-
-export const handleLoading = (type: string, sign: string) => {
-  const loadingMap: { [key: string]: any } = {
-    'artist': loadingArtists,
-    'genre': loadingGenres,
-    'event': loadingEvents
-  };
-
-  const loadingVariable = loadingMap[type];
-  if (loadingVariable) {
-    loadingVariable.value += sign === '+' ? 1 : -1;
-  }
-};

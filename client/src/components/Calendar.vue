@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { loadingArtists, loadingGenres, loadingEvents } from '@/model/spotify';
-import { type GoogleEvent, googleLogin, isLoggedInGoogle, getGoogleEvents, loadingGoogle } from '@/model/google';
+import { loadingArtists, loadingGenres, loadingEvents, loadingGoogle } from '@/model/util';
+import { type GoogleEvent, googleLogin, isLoggedInGoogle, getGoogleEvents } from '@/model/google';
 import VueCal from 'vue-cal';
 import 'vue-cal/dist/vuecal.css';
 

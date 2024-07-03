@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { handleLoading, loadingEvents } from '@/model/spotify';
+import { getCachedData, handleLoading, loadingEvents, setCachedData } from '@/model/util';
 import { type Event } from '@/model/ticketmaster';
 import { type GoogleEventInput, googleLogin, isLoggedInGoogle, getGoogleEvents, createGoogleEvent } from '@/model/google';
 import CardList from './CardList.vue';
@@ -96,21 +96,19 @@ const sortByDate = () => {
 
 const sortByDistance = async () => {
     handleLoading("event", '+');
-    if ("geolocation" in navigator) {
+    const cachedLatitude = await getCachedData("latitude");
+    const cachedLongitude = await getCachedData("longitude");
+    if (cachedLatitude && cachedLongitude) {
+        distanceSort(cachedLatitude, cachedLongitude);
+    } else if ("geolocation" in navigator) {
         try {
             const position = await new Promise<GeolocationPosition>((resolve, reject) => {
                 navigator.geolocation.getCurrentPosition(resolve, reject);
             });
             const { latitude, longitude } = position.coords;
-            const distances = eventList.value.map(event => ({
-                event,
-                distance: getEventDistance(event, latitude, longitude)
-            }));
-            if (distanceAsc.value)
-                distances.sort((a, b) => a.distance - b.distance);
-            else
-                distances.sort((a, b) => b.distance - a.distance);
-            eventList.value = distances.map(item => item.event);
+            setCachedData("latitude", latitude);
+            setCachedData("longitude", longitude);
+            distanceSort(latitude, longitude);
         } catch (error) {
             console.error("Error getting location:", error);
             // Handle location errors (e.g., user denied location access)
@@ -124,6 +122,18 @@ const sortByDistance = async () => {
     distanceAsc.value = !distanceAsc.value;
     distanceAngle.value += 180;
     handleLoading("event", '-');
+}
+
+const distanceSort = (latitude: number, longitude: number) => {
+    const distances = eventList.value.map(event => ({
+        event,
+        distance: getEventDistance(event, latitude, longitude)
+    }));
+    if (distanceAsc.value)
+        distances.sort((a, b) => a.distance - b.distance);
+    else
+        distances.sort((a, b) => b.distance - a.distance);
+    eventList.value = distances.map(item => item.event);
 }
 
 const haversine = (lat1: number, lon1: number, lat2: number, lon2: number): number => {

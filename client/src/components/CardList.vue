@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue';
-import { type Artist, type Genre, getTopArtists, getTopGenres, handleLoading, loadingArtists, loadingGenres, loadingEvents } from '@/model/spotify';
+import { handleLoading, loadingArtists, loadingGenres } from '@/model/util';
+import { type Artist, type Genre, getTopArtists, getTopGenres } from '@/model/spotify';
 import { type Event } from '@/model/ticketmaster';
 import Card from './Card.vue';
 

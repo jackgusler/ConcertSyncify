@@ -160,7 +160,7 @@ export const getEvents = async (keyword: string) => {
   try {
     const response = await axios.get('/api/ticketmaster/events', {
       params: {
-        keyword,
+        keyword
       }
     })
     if (!response.data._embedded) {

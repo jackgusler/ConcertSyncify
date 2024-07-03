@@ -1,8 +1,5 @@
 import router from '@/router'
 import axios from '../myAxios'
-import { ref } from 'vue'
-
-export const loadingGoogle = ref(0)
 
 export interface GoogleEvent {
   kind: 'calendar#event'
@@ -174,12 +171,12 @@ export interface GoogleEvent {
 }
 
 export interface GoogleEventInput {
-  summary: string;
-  description: string;
-  location: string;
-  start: string; // ISO string format for date-time
-  timeZone: string;
-  eventId: string;
+  summary: string
+  description: string
+  location: string
+  start: string // ISO string format for date-time
+  timeZone: string
+  eventId: string
 }
 
 export const googleLogin = async () => {
@@ -218,13 +215,13 @@ export const getGoogleEvents = async () => {
 
 export const createGoogleEvent = async (event: GoogleEventInput) => {
   try {
-    const response = await axios.post('/api/google/create-event', event);
-    return response.data;
+    const response = await axios.post('/api/google/create-event', event)
+    return response.data
   } catch (error) {
-    console.error('Error creating Google event:', error);
-    throw error; // Rethrow the error if you want to handle it outside this function
+    console.error('Error creating Google event:', error)
+    throw error // Rethrow the error if you want to handle it outside this function
   }
-};
+}
 
 export const googleEventExists = async (eventId: string) => {
   try {
