@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { loadingArtists, loadingGenres, loadingEvents } from '@/model/spotify';
-import { type GoogleEvent, googleLogin, isLoggedInGoogle, getGoogleEvents } from '@/model/google';
+import { type GoogleEvent, googleLogin, isLoggedInGoogle, getGoogleEvents, loadingGoogle } from '@/model/google';
 import VueCal from 'vue-cal';
 import 'vue-cal/dist/vuecal.css';
 
@@ -23,6 +23,7 @@ const fetchAndFormatEvents = async () => {
 };
 
 onMounted(async () => {
+    loadingGoogle.value++;
     const isLogged = await isLoggedInGoogle();
     loggedIn.value = isLogged;
     if (loggedIn.value) {
@@ -37,6 +38,7 @@ onMounted(async () => {
         events.value = customEvent.detail;
         formatEvents();
     });
+    loadingGoogle.value--;
 });
 
 const formatEvents = () => {
@@ -67,7 +69,15 @@ const formatEvents = () => {
         <button v-else-if="!loggedIn" @click="googleLogin" class="btn btn-success">
             <span>Login with Google</span>
         </button>
-        <div v-if="loggedIn" class="calendar-wrapper">
+        <div v-if="loggedIn" class="calendar-wrapper position-relative">
+            <Transition>
+                <div v-if="loadingGoogle"
+                    class="loading-container rounded-3">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </Transition>
             <vue-cal class="vuecal--rounded-theme" xsmall hide-view-selector :time="false" active-view="month"
                 :disable-views="['week']" style="width: 375px; height: 450px;" :events="formattedEvents">
             </vue-cal>

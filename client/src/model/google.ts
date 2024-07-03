@@ -1,5 +1,8 @@
 import router from '@/router'
 import axios from '../myAxios'
+import { ref } from 'vue'
+
+export const loadingGoogle = ref(0)
 
 export interface GoogleEvent {
   kind: 'calendar#event'
