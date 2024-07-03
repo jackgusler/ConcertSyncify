@@ -130,9 +130,9 @@ const distanceSort = (latitude: number, longitude: number) => {
         distance: getEventDistance(event, latitude, longitude)
     }));
     if (distanceAsc.value)
-        distances.sort((a, b) => a.distance - b.distance);
-    else
         distances.sort((a, b) => b.distance - a.distance);
+    else
+        distances.sort((a, b) => a.distance - b.distance);
     eventList.value = distances.map(item => item.event);
 }
 
