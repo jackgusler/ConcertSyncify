@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import {handleLoading} from '@/model/util';
+import { handleLoading } from '@/model/util';
 import { type Artist, type Genre } from '@/model/spotify';
 import { type Event, getEvents } from '@/model/ticketmaster';
 import { getGoogleEvents, deleteGoogleEvent, googleEventExists, isLoggedInGoogle } from '@/model/google';
@@ -333,12 +333,12 @@ const formatLocation = (venue: any) => {
             </button>
         </div>
         <div v-else-if="props.type != 'event'"
-            class="card-body d-flex flex-column justify-content-end align-items-center w-100"
+            class="card-body d-flex flex-column justify-content-end align-items-center w-100 h-100"
             :class="{ 'pt-0': props.type === 'artist' }">
             <div v-if="props.type === 'artist'">
-                <p class="my-4 d-flex justify-content-center align-items-center" style="color: #6d6d6d;">
-                    No upcoming events
-                </p>
+                <div class="d-flex justify-content-center p-4" style="color: #6d6d6d;">
+                    No events found
+                </div>
                 <button @click="emitData" class="btn btn-success mt-auto" data-bs-toggle="modal"
                     data-bs-target="#eventModal"
                     :class="{ 'btn-disabled': props.listIndex !== props.centerIndex, 'btn-enabled': props.listIndex === props.centerIndex }">

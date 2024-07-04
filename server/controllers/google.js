@@ -71,7 +71,7 @@ router.get("/events", async (req, res) => {
       singleEvents: true,
       orderBy: "startTime",
     });
-    
+
     response.data.items.forEach((event) => {
       const eventId = event.extendedProperties?.private?.eventId;
       if (eventId && !cache.has(eventId)) {

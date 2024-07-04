@@ -204,12 +204,12 @@ router.get("/search", async (req, res) => {
     if (isGenreSearch) {
       // Transform artist items to genre interface
       const genresMap = new Map();
-      response.data.artists.items.forEach(artist => {
-        artist.genres.forEach(genre => {
+      response.data.artists.items.forEach((artist) => {
+        artist.genres.forEach((genre) => {
           if (!genresMap.has(genre)) {
             genresMap.set(genre, {
               genre: genre,
-              artist: artist // Assuming you want to associate the genre with the first artist found
+              artist: artist, // Assuming you want to associate the genre with the first artist found
             });
           }
         });

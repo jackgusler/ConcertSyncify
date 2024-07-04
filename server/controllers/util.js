@@ -19,10 +19,12 @@ router.get("/get-cache", async (req, res) => {
 router.post("/set-cache", async (req, res) => {
   const { key, value } = req.body;
   try {
-    if (typeof key !== 'string' && typeof key !== 'number') {
-      throw new Error('The key argument has to be of type `string` or `number`.');
+    if (typeof key !== "string" && typeof key !== "number") {
+      throw new Error(
+        "The key argument has to be of type `string` or `number`."
+      );
     }
-    cache.set(key, value);
+    cache.set(key, value, 3600);
     res.send("Cache set successfully");
   } catch (error) {
     console.error("Error setting cache", error.message);

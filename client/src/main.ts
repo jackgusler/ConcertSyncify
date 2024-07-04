@@ -16,12 +16,12 @@ app.use(router)
 app.use(FloatingVue, {
   themes: {
     'tooltip-top': {
-      '$extend': 'tooltip', // Extend the default tooltip theme
+      $extend: 'tooltip', // Extend the default tooltip theme
       triggers: ['hover'], // Trigger the tooltip on hover
       autoHide: true, // Automatically hide the tooltip
-      placement: 'top', // Place the tooltip at the top
-    },
-  },
+      placement: 'top' // Place the tooltip at the top
+    }
+  }
 })
 
 app.mount('#app')

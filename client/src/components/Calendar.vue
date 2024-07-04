@@ -71,8 +71,7 @@ const formatEvents = () => {
         </button>
         <div v-if="loggedIn" class="calendar-wrapper position-relative">
             <Transition>
-                <div v-if="loadingGoogle"
-                    class="loading-container rounded-3">
+                <div v-if="loadingGoogle" class="loading-container rounded-3">
                     <div class="spinner-border" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
