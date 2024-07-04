@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { loadingArtists, loadingGenres, loadingEvents, loadingGoogle } from '@/model/util';
 import { type GoogleEvent, googleLogin, isLoggedInGoogle, getGoogleEvents } from '@/model/google';
 import VueCal from 'vue-cal';
@@ -38,6 +38,16 @@ onMounted(async () => {
         events.value = customEvent.detail;
         formatEvents();
     });
+
+    // Watch for container resize
+    const container = document.querySelector('.my-container');
+    if (container) {
+        const resizeObserver = new ResizeObserver(() => {
+            adjustCalendarSize();
+        });
+        resizeObserver.observe(container);
+    }
+
     loadingGoogle.value--;
 });
 
@@ -56,19 +66,34 @@ const formatEvents = () => {
         };
     });
 };
+
+const adjustCalendarSize = () => {
+    const container = document.querySelector('.my-container') as HTMLElement;
+    const calendarWrapper = document.querySelector('.calendar-wrapper') as HTMLElement;
+
+    if (container && calendarWrapper) {
+        const containerWidth = container.clientWidth;
+        const containerHeight = containerWidth * 6 / 5; // Maintain 5:6 ratio
+
+        calendarWrapper.style.width = `${containerWidth}px`;
+        calendarWrapper.style.height = `${containerHeight}px`;
+    }
+};
 </script>
 
 <template>
     <div class="my-container">
-        <button v-if="!loggedIn && (loadingArtists || loadingGenres || loadingEvents)" class="btn btn-success"
-            style="width: 180.15px;">
-            <div class="spinner-border" role="status" style="width: 1.25rem; height: 1.25rem;">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </button>
-        <button v-else-if="!loggedIn" @click="googleLogin" class="btn btn-success">
-            <span>Login with Google</span>
-        </button>
+        <div class="d-flex justify-content-center align-items-center">
+            <button v-if="!loggedIn && (loadingArtists || loadingGenres || loadingEvents)" class="btn btn-success"
+                style="width: 180.15px;">
+                <div class="spinner-border" role="status" style="width: 1.25rem; height: 1.25rem;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </button>
+            <button v-else-if="!loggedIn" @click="googleLogin" class="btn btn-success">
+                <span>Login with Google</span>
+            </button>
+        </div>
         <div v-if="loggedIn" class="calendar-wrapper position-relative">
             <Transition>
                 <div v-if="loadingGoogle" class="loading-container rounded-3">
@@ -77,8 +102,8 @@ const formatEvents = () => {
                     </div>
                 </div>
             </Transition>
-            <vue-cal class="vuecal--rounded-theme" xsmall hide-view-selector :time="false" active-view="month"
-                :disable-views="['week']" style="width: 375px; height: 450px;" :events="formattedEvents">
+            <vue-cal class="vuecal--rounded-theme custom-calendar" xsmall hide-view-selector :time="false"
+                active-view="month" :disable-views="['week']" :events="formattedEvents">
             </vue-cal>
         </div>
     </div>
@@ -90,7 +115,7 @@ const formatEvents = () => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: calc(100vh - 10rem);
+    width: 100%;
 }
 
 .calendar-wrapper {
@@ -101,9 +126,17 @@ const formatEvents = () => {
     border-radius: 2rem;
     overflow: hidden;
     transition: border-color 0.5s ease;
+    max-width: 375px;
+    max-height: 450px;
 }
 
 .calendar-wrapper:hover {
     border-color: #1db954;
+}
+
+.custom-calendar {
+    width: 100%;
+    height: 100%;
+
 }
 </style>

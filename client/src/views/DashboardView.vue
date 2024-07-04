@@ -52,7 +52,7 @@ const handleSearchEmit = (data: any[], type: string) => {
     <div class="container mt-2">
         <div class="row h-100">
 
-            <div class="col-md-1 d-flex justify-content-center align-items-center">
+            <div class="col-md-1 d-flex justify-content-center align-items-center custom-margin-home">
                 <div class="box p-3 rounded-3 w-100 d-flex justify-content-center align-items-center">
                     <router-link to="/" class="btn btn-secondary circle-btn">
                         <i class="fa-solid fa-house"></i>
@@ -61,25 +61,25 @@ const handleSearchEmit = (data: any[], type: string) => {
             </div>
 
             <div class="col-md-7 d-flex flex-column position-relative overflow-hidden">
-                <div class="row box px-3 py-2 rounded-3 flex-grow-1 position-relative d-flex justify-content-center align-items-start"
+                <div class="row box py-2 rounded-3 flex-grow-1 position-relative d-flex justify-content-center align-items-start custom-margin-card-list"
                     style="margin-bottom: .6rem;">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
+                    <div class="row align-items-center px-3">
+                        <div class="col-auto p-0">
                             <h1>Artists</h1>
                         </div>
-                        <div class="search-container col">
+                        <div class="search-container col p-0 ps-3">
                             <SearchBar :type="'artist'" @search-results="handleSearchEmit($event, 'artist')" />
                         </div>
                     </div>
                     <CardList :type="'artist'" :artists="artistSearchResults" @data="handleEmit" />
                 </div>
                 <div
-                    class="row box px-3 py-2 rounded-3 flex-grow-1 position-relative d-flex justify-content-center align-items-start">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
+                    class="row box py-2 rounded-3 flex-grow-1 position-relative d-flex justify-content-center align-items-start custom-margin-card-list">
+                    <div class="row align-items-center px-3">
+                        <div class="col-auto p-0">
                             <h1>Genres</h1>
                         </div>
-                        <div class="search-container col">
+                        <div class="search-container col p-0 ps-3">
                             <SearchBar :type="'genre'" @search-results="handleSearchEmit($event, 'genre')" />
                         </div>
                     </div>
@@ -88,12 +88,18 @@ const handleSearchEmit = (data: any[], type: string) => {
             </div>
 
             <div class="col-md-4 d-flex">
-                <div class="box px-3 py-2 rounded-3 w-100">
-                    <div class="col-auto d-flex justify-content-between align-items-center">
-                        <h1>Calendar</h1>
-                        <button v-if="loggedIn" @click="googleLogout" class="btn btn-success">Logout</button>
+                <div class="box px-3 py-2 rounded-3 w-100 h-100 custom-margin-calendar mb-5">
+                    <div class="row justify-content-between align-items-center px-3 pb-2">
+                        <div class="col-auto p-0">
+                            <h1 class="m-0">Calendar</h1>
+                        </div>
+                        <div class="col d-flex justify-content-end p-0">
+                            <button v-if="loggedIn" @click="googleLogout" class="btn btn-success">Logout</button>
+                        </div>
                     </div>
-                    <Calendar />
+                    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+                        <Calendar />
+                    </div>
                 </div>
             </div>
 
@@ -111,5 +117,21 @@ const handleSearchEmit = (data: any[], type: string) => {
 .row {
     --bs-gutter-x: 1.2rem;
     justify-content: center;
+}
+
+
+@media (max-width: 768px) {
+    .custom-margin-home {
+        margin-bottom: 0.6rem !important;
+    }
+
+    .custom-margin-card-list {
+        margin: 0rem !important;
+        margin-bottom: 0.6rem !important;
+    }
+
+    .custom-margin-calendar {
+        margin-bottom: 0.6rem !important;
+    }
 }
 </style>
