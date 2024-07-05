@@ -52,9 +52,9 @@ watch(searchInput, async (newVal) => {
 <template>
     <div class="search-content" :class="['position-relative', { 'start': searchBar, 'end': !searchBar }]">
         <div class="search-icon-container" @click="toggleSearchbar">
-            <i v-if="!searchBar" class="fa-solid fa-caret-left arrow-left"></i>
+            <i v-if="!searchBar" class="fa-solid fa-caret-left arrow-left d-md-block d-none"></i>
             <i class="fa-solid fa-magnifying-glass fa-2x search-icon"></i>
-            <i v-if="searchBar" class="fa-solid fa-caret-right arrow-right"></i>
+            <i v-if="searchBar" class="fa-solid fa-caret-right arrow-right d-md-block d-none"></i>
         </div>
         <div class="search-bar-container" :class="{ 'hidden': !searchBar, 'visible': searchBar }">
             <input ref="searchInputRef" type="text" class="form-control" placeholder="Search"

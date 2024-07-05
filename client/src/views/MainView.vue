@@ -12,18 +12,21 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="container mt-2">
-        <div class="box p-5 mb-2 rounded-3 d-flex align-items-center justify-content-center">
+    <div class="container mt-2 custom-margin-end">
+        <div class="box p-md-5 p-3 mb-2 rounded-3 d-flex align-items-center justify-content-center">
             <div class="text-center">
-                <h1 class="display-5 fw-bold larger-title">Concert Syncify</h1>
+                <h1 class="fw-bold larger-title medium-title mb-md-1 mb-0">
+                    Concert Syncify
+                </h1>
             </div>
         </div>
 
-        <div class="row mb-md-2">
+        <div class="row mb-md-2 h-100">
             <div class="col-md-4 mb-md-0 mb-2">
-                <div class="box h-100 p-5 rounded-3">
+                <div class="box h-100 p-md-5 p-3 rounded-3">
                     <h1>Discover New Music Events</h1>
-                    <p class="fs-4">Never miss a concert again. Discover events for your favorite artists and genres, or
+                    <p class="fs-4 mb-md-1 mb-0">Never miss a concert again. Discover events for your favorite artists
+                        and genres, or
                         find new ones to explore.
                     </p>
                 </div>
@@ -43,18 +46,19 @@ onMounted(async () => {
                 </div>
             </div>
             <div class="col-md-4 mb-md-0 mb-2">
-                <div class="box h-100 p-5 rounded-3">
+                <div class="box h-100 p-md-5 p-3 rounded-3 custom-margin-middle">
                     <h1>Easy Calendar Integration</h1>
-                    <p class="fs-4">Add events directly to your Google Calendar with just a click. Stay organized
+                    <p class="fs-4 mb-md-1 mb-0">Add events directly to your Google Calendar with just a click. Stay
+                        organized
                         effortlessly.</p>
                 </div>
             </div>
         </div>
 
-        <div class="box p-5 rounded-3 d-flex align-items-center justify-content-center">
-            <div class="text-center">
+        <div class="box p-md-5 p-3 rounded-3 h-100">
+            <div class="text-md-center">
                 <h1>About</h1>
-                <p class="fs-4">
+                <p class="fs-4 mb-md-1 mb-0">
                     ConcertSyncify is a web application that allows users to sync their Spotify top artists or genres
                     with upcoming concerts and add them to their Google Calendar. The application uses the Spotify API
                     to fetch the user's top artists and genres and the Ticketmaster API to fetch upcoming concerts. The
@@ -99,5 +103,22 @@ a {
 
 .larger-title {
     font-size: 8rem;
+}
+
+@media (max-width: 768px) {
+
+    .custom-margin-middle,
+    .custom-margin-end {
+        margin-bottom: 0.6rem;
+    }
+
+    .medium-title {
+        font-size: 5rem;
+        /* Default size */
+    }
+
+    .container {
+        height: auto;
+    }
 }
 </style>

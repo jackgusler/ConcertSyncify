@@ -87,8 +87,8 @@ const handleSearchEmit = (data: any[], type: string) => {
                 </div>
             </div>
 
-            <div class="col-md-4 d-flex">
-                <div class="box px-3 py-2 rounded-3 w-100 h-100 custom-margin-calendar mb-5">
+            <div class="col-md-4">
+                <div class="box px-3 py-2 rounded-3 d-flex flex-column w-100 h-100 custom-margin-calendar">
                     <div class="row justify-content-between align-items-center px-3 pb-2">
                         <div class="col-auto p-0">
                             <h1 class="m-0">Calendar</h1>
