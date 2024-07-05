@@ -23,7 +23,7 @@ onMounted(async () => {
 
         <div class="row mb-md-2 h-100">
             <div class="col-md-4 mb-md-0 mb-2">
-                <div class="box h-100 p-md-5 p-3 rounded-3">
+                <div class="box h-100 p-lg-5 p-3 rounded-3">
                     <h1>Discover New Music Events</h1>
                     <p class="fs-4 mb-md-1 mb-0">Never miss a concert again. Discover events for your favorite artists
                         and genres, or
@@ -46,7 +46,7 @@ onMounted(async () => {
                 </div>
             </div>
             <div class="col-md-4 mb-md-0 mb-2">
-                <div class="box h-100 p-md-5 p-3 rounded-3 custom-margin-middle">
+                <div class="box h-100 p-lg-5 p-3 rounded-3">
                     <h1>Easy Calendar Integration</h1>
                     <p class="fs-4 mb-md-1 mb-0">Add events directly to your Google Calendar with just a click. Stay
                         organized
@@ -55,7 +55,7 @@ onMounted(async () => {
             </div>
         </div>
 
-        <div class="box p-md-5 p-3 rounded-3 h-100">
+        <div class="box p-lg-5 p-3 rounded-3 h-100">
             <div class="text-md-center">
                 <h1>About</h1>
                 <p class="fs-4 mb-md-1 mb-0">
@@ -106,8 +106,6 @@ a {
 }
 
 @media (max-width: 768px) {
-
-    .custom-margin-middle,
     .custom-margin-end {
         margin-bottom: 0.6rem;
     }
