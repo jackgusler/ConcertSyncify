@@ -174,7 +174,7 @@ export interface GoogleEventInput {
   summary: string
   description: string
   location: string
-  start: string // ISO string format for date-time
+  start: string
   timeZone: string
   eventId: string
 }
@@ -219,7 +219,7 @@ export const createGoogleEvent = async (event: GoogleEventInput) => {
     return response.data
   } catch (error) {
     console.error('Error creating Google event:', error)
-    throw error // Rethrow the error if you want to handle it outside this function
+    throw error
   }
 }
 

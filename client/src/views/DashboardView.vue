@@ -148,7 +148,6 @@ const handleSearchEmit = (data: any[], type: string) => {
 @media (min-width: 768px) and (max-width: 1200px) {
     .custom-logout-container {
         justify-content: flex-start !important;
-        /* Aligns the button at the start */
     }
 }
 </style>

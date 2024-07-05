@@ -176,10 +176,9 @@ router.get("/search", async (req, res) => {
   if (!q) {
     return res.status(400).send("Missing query parameter 'q'");
   }
-  // Adjust the query if the type is genre
   let isGenreSearch = false;
   if (type === "genre") {
-    q = `genre:"${q}"`; // Format the query to include genre filter
+    q = `genre:"${q}"`;
     isGenreSearch = true;
   }
 
@@ -202,24 +201,22 @@ router.get("/search", async (req, res) => {
     });
 
     if (isGenreSearch) {
-      // Transform artist items to genre interface
       const genresMap = new Map();
       response.data.artists.items.forEach((artist) => {
         artist.genres.forEach((genre) => {
           if (!genresMap.has(genre)) {
             genresMap.set(genre, {
               genre: genre,
-              artist: artist, // Assuming you want to associate the genre with the first artist found
+              artist: artist,
             });
           }
         });
       });
       const genresArray = Array.from(genresMap.values());
-      res.json(genresArray); // Return genres matching the Genre interface
+      res.json(genresArray);
     } else {
-      // Assuming response.data.artists.items based on the type
       const items = response.data.artists ? response.data.artists.items : [];
-      res.json(items.slice(0, 10)); // Return the first 10 results
+      res.json(items.slice(0, 10));
     }
   } catch (error) {
     res.status(500).send(error.message);

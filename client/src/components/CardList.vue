@@ -65,7 +65,7 @@ onMounted(async () => {
 
 const updateSize = () => {
     baseScale.value = window.innerWidth < 768 ? 0.7 : 1.0
-    if ( props.type === 'event' ) {
+    if (props.type === 'event') {
         scaleDecrement.value = window.innerWidth < 768 ? 0.0707 : 0.0909
     } else {
         scaleDecrement.value = window.innerWidth < 768 ? 0.0707 : 0.101

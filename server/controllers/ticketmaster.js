@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
@@ -16,7 +17,7 @@ const fetchWithRetry = async (url, retries = 3, delayTime = 1000) => {
     } catch (error) {
       if (error.response && error.response.status === 429 && i < retries - 1) {
         await delay(delayTime);
-        delayTime *= 2; // Exponential backoff
+        delayTime *= 2;
       } else {
         throw error;
       }
@@ -35,16 +36,13 @@ router.get("/events", async (req, res) => {
   const api_url = `https://app.ticketmaster.com/discovery/v2/events.json?keyword=${keyword}&apikey=${consumer_key}`;
 
   try {
-    // Try to fetch data from NodeCache cache first
     const cachedData = await cache.get(cacheKey);
     if (cachedData) {
       return res.json(cachedData);
     }
 
-    // If not in cache, fetch from API
     const response = await fetchWithRetry(api_url);
 
-    // Cache the API response in NodeCache and set an expiration (e.g., 1 hour)
     cache.set(cacheKey, response.data, 3600);
 
     res.json(response.data);

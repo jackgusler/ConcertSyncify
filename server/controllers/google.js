@@ -75,7 +75,6 @@ router.get("/events", async (req, res) => {
     response.data.items.forEach((event) => {
       const eventId = event.extendedProperties?.private?.eventId;
       if (eventId && !cache.has(eventId)) {
-        // Check if eventId is not already in cache
         cache.set(eventId, event.id, 3600);
       }
     });
@@ -97,9 +96,8 @@ router.post("/create-event", async (req, res) => {
 
   const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
-  // Calculate end time as 3 hours after start time
   const endTime = new Date(start);
-  endTime.setHours(endTime.getHours() + 3); // Default duration of 3 hours
+  endTime.setHours(endTime.getHours() + 3);
 
   const event = {
     summary: summary,
@@ -110,7 +108,7 @@ router.post("/create-event", async (req, res) => {
       timeZone: timeZone,
     },
     end: {
-      dateTime: endTime.toISOString(), // Convert to ISO string format
+      dateTime: endTime.toISOString(),
       timeZone: timeZone,
     },
     extendedProperties: {
@@ -125,7 +123,7 @@ router.post("/create-event", async (req, res) => {
       calendarId: "primary",
       resource: event,
     });
-    const validEventId = String(eventId); // Convert eventId to string to ensure it meets the key type requirement
+    const validEventId = String(eventId);
     cache.set(validEventId, response.data.id, 3600);
     res.status(200).send(response.data);
   } catch (error) {

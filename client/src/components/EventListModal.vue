@@ -66,15 +66,13 @@ const handleEmit = (data: Event) => {
 };
 
 const formatGenre = (genre: string) => {
-    const exceptions = ["mo", "uk", "dj"]; // Add more exceptions as needed
+    const exceptions = ["mo", "uk", "dj"];
     return genre
         .split(' ')
         .map(word => {
-            // Check if the word is an exception
             if (exceptions.includes(word.toLowerCase())) {
-                return word.toUpperCase(); // Return the word in uppercase if it's an exception
+                return word.toUpperCase();
             } else {
-                // Capitalize the first letter of the word and make the rest lowercase
                 return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
             }
         })
@@ -137,7 +135,7 @@ const distanceSort = (latitude: number, longitude: number) => {
 }
 
 const haversine = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
-    const R = 6371; // Radius of the Earth in kilometers
+    const R = 6371;
     const toRadians = (angle: number) => angle * (Math.PI / 180);
     const dLat = toRadians(lat2 - lat1);
     const dLon = toRadians(lon2 - lon1);
@@ -147,7 +145,7 @@ const haversine = (lat1: number, lon1: number, lat2: number, lon2: number): numb
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
         Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1Rad) * Math.cos(lat2Rad);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in kilometers
+    return R * c;
 }
 
 const getEventDistance = (event: any, userLat: number, userLon: number): number => {
@@ -187,16 +185,19 @@ const getEventDistance = (event: any, userLat: number, userLon: number): number 
             <div class="w-100 d-lg-flex justify-content-between">
                 <div class="d-flex justify-content-lg-start justify-content-center mb-2 mb-lg-0">
                     <button type="button" class="btn btn-secondary small-btn me-3" @click="sortByDate">
-                        <i class="fa-solid fa-arrow-up-short-wide" :style="{ transform: `rotate(${dateAngle}deg)` }"></i>
+                        <i class="fa-solid fa-arrow-up-short-wide"
+                            :style="{ transform: `rotate(${dateAngle}deg)` }"></i>
                         Sort by date
                     </button>
                     <button type="button" class="btn btn-secondary small-btn" @click="sortByDistance">
-                        <i class="fa-solid fa-arrow-up-short-wide" :style="{ transform: `rotate(${distanceAngle}deg)` }"></i>
+                        <i class="fa-solid fa-arrow-up-short-wide"
+                            :style="{ transform: `rotate(${distanceAngle}deg)` }"></i>
                         Sort by distance
                     </button>
                 </div>
                 <div class="d-flex justify-content-lg-end justify-content-center">
-                    <button v-if="loggedIn" type="button" class="btn btn-success small-btn" :disabled="selectedEvents.length === 0" @click="handleSelected()">
+                    <button v-if="loggedIn" type="button" class="btn btn-success small-btn"
+                        :disabled="selectedEvents.length === 0" @click="handleSelected()">
                         Add selected to calendar
                     </button>
                     <button v-else type="button" class="btn btn-success small-btn" @click="googleLogin">

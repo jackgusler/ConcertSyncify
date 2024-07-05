@@ -118,7 +118,6 @@ a {
 @media (max-width: 768px) {
     .medium-title {
         font-size: 5rem;
-        /* Default size */
     }
 }
 </style>

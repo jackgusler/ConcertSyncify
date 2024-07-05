@@ -161,11 +161,11 @@ const getAlternativeGenre = (initialGenre: string) => {
         // Add more mappings
     };
 
-    return alternativeGenres[initialGenre] || "Alternative"; // Fallback to "Alternative" if no mapping found
+    return alternativeGenres[initialGenre] || "Alternative";
 }
 
 const formatGenre = (genre: string) => {
-    const exceptions = ["mo", "uk", "dj"]; // Add more exceptions as needed
+    const exceptions = ["mo", "uk", "dj"];
     return genre
         .split(' ')
         .map(word => {
@@ -213,10 +213,8 @@ const toggleCheckbox = () => {
 const dateToText = (date: string | undefined) => {
     if (!date) return '';
 
-    // Split the date string into components
     const [year, month, day] = date.split('-').map(part => parseInt(part, 10));
 
-    // Create a new Date object using local time components
     const dateObj = new Date(year, month - 1, day);
 
     const currentYear = new Date().getFullYear();

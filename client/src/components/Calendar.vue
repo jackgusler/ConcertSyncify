@@ -39,7 +39,6 @@ onMounted(async () => {
         formatEvents();
     });
 
-    // Watch for container resize
     const container = document.querySelector('.my-container');
     if (container) {
         const resizeObserver = new ResizeObserver(() => {
@@ -60,8 +59,8 @@ const formatEvents = () => {
             start: start,
             end: end,
             title: event.summary,
-            from: start.getHours() * 60 + start.getMinutes(), // Convert to minutes from midnight
-            to: end.getHours() * 60 + end.getMinutes(), // Convert to minutes from midnight
+            from: start.getHours() * 60 + start.getMinutes(),
+            to: end.getHours() * 60 + end.getMinutes(),
             label: event.summary,
         };
     });
@@ -73,7 +72,7 @@ const adjustCalendarSize = () => {
 
     if (container && calendarWrapper) {
         const containerWidth = container.clientWidth;
-        const containerHeight = containerWidth * 6 / 5; // Maintain 5:6 ratio
+        const containerHeight = containerWidth * 6 / 5;
 
         calendarWrapper.style.width = `${containerWidth}px`;
         calendarWrapper.style.height = `${containerHeight}px`;
