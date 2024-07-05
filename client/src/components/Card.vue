@@ -138,6 +138,12 @@ const emitData = async () => {
                 events.value = genreEvents;
                 emit('data', { type: 'artist', events: events.value, modalTitle: genre });
             }
+        } else {
+            const genreEvents = await getEvents('Alternative');
+            if (genreEvents && genreEvents.length > 0) {
+                events.value = genreEvents;
+                emit('data', { type: 'artist', events: events.value, modalTitle: 'Alternative' });
+            }
         }
     } else if (props.type === 'genre') {
         emit('data', { type: 'genre', events: events.value, modalTitle: props.genre?.genre });

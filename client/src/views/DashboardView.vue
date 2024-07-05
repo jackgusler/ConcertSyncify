@@ -54,7 +54,7 @@ const handleSearchEmit = (data: any[], type: string) => {
 
             <div class="col-md-1 d-flex justify-content-center align-items-center custom-margin-home">
                 <div class="box p-3 rounded-3 w-100 d-flex justify-content-center align-items-center">
-                    <router-link to="/" class="btn btn-secondary circle-btn">
+                    <router-link to="/" class="btn btn-secondary circle-btn small-btn">
                         <i class="fa-solid fa-house"></i>
                     </router-link>
                 </div>
@@ -93,7 +93,7 @@ const handleSearchEmit = (data: any[], type: string) => {
                         <div class="col-auto p-0">
                             <h1 class="m-0">Calendar</h1>
                         </div>
-                        <div class="col d-flex justify-content-end p-0">
+                        <div class="col d-flex p-0 justify-content-end custom-logout-container">
                             <button v-if="loggedIn" @click="googleLogout" class="btn btn-success">Logout</button>
                         </div>
                     </div>
@@ -132,6 +132,23 @@ const handleSearchEmit = (data: any[], type: string) => {
 
     .custom-margin-calendar {
         margin-bottom: 0.6rem !important;
+    }
+
+    .small-btn {
+        transform: scale(1) !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .small-btn {
+        transform: scale(0.6);
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1200px) {
+    .custom-logout-container {
+        justify-content: flex-start !important;
+        /* Aligns the button at the start */
     }
 }
 </style>

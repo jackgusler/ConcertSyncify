@@ -71,6 +71,7 @@ body {
 
 h1 {
   color: white;
+  font-size: clamp(2.25rem, 2.5vw, 5rem);
 }
 
 p.fs-4 {
@@ -102,33 +103,6 @@ p.fs-4 {
 
 .v-popper--theme-tooltip-top .v-popper__arrow-outer {
   border-color: #1db954 !important;
-}
-
-.list-display-container {
-  overflow: hidden;
-  position: relative;
-  height: 380px;
-  width: 100%;
-  overflow: hidden;
-  position: relative;
-  height: 380px;
-}
-
-.list-display-container > * {
-  flex: 0 0 auto;
-  position: absolute;
-}
-
-.list-display-container::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to right, #121212 0%, transparent 25%, transparent 75%, #121212 100%);
-  pointer-events: none;
-  z-index: 200;
 }
 
 .card {

@@ -183,25 +183,27 @@ const getEventDistance = (event: any, userLat: number, userLon: number): number 
             </Transition>
             <CardList :type="'event'" :events="eventList" @data="handleEmit" />
         </div>
-        <div class="modal-footer d-flex align-items-center justify-content-between">
-            <div>
-                <button type="button" class="btn btn-secondary me-3" @click="sortByDate">
-                    <i class="fa-solid fa-arrow-up-short-wide" :style="{ transform: `rotate(${dateAngle}deg)` }"></i>
-                    Sort by date
-                </button>
-                <button type="button" class="btn btn-secondary" @click="sortByDistance">
-                    <i class="fa-solid fa-arrow-up-short-wide"
-                        :style="{ transform: `rotate(${distanceAngle}deg)` }"></i>
-                    Sort by distance
-                </button>
+        <div class="modal-footer">
+            <div class="w-100 d-lg-flex justify-content-between">
+                <div class="d-flex justify-content-lg-start justify-content-center mb-2 mb-lg-0">
+                    <button type="button" class="btn btn-secondary small-btn me-3" @click="sortByDate">
+                        <i class="fa-solid fa-arrow-up-short-wide" :style="{ transform: `rotate(${dateAngle}deg)` }"></i>
+                        Sort by date
+                    </button>
+                    <button type="button" class="btn btn-secondary small-btn" @click="sortByDistance">
+                        <i class="fa-solid fa-arrow-up-short-wide" :style="{ transform: `rotate(${distanceAngle}deg)` }"></i>
+                        Sort by distance
+                    </button>
+                </div>
+                <div class="d-flex justify-content-lg-end justify-content-center">
+                    <button v-if="loggedIn" type="button" class="btn btn-success small-btn" :disabled="selectedEvents.length === 0" @click="handleSelected()">
+                        Add selected to calendar
+                    </button>
+                    <button v-else type="button" class="btn btn-success small-btn" @click="googleLogin">
+                        Login with Google to add events
+                    </button>
+                </div>
             </div>
-            <button v-if="loggedIn" type="button" class="btn btn-success" :disabled="selectedEvents.length === 0"
-                @click="handleSelected()">
-                Add selected to calendar
-            </button>
-            <button v-else type="button" class="btn btn-success" data-bs-dismiss="modal" @click="googleLogin">
-                Login with Google to add events
-            </button>
         </div>
     </div>
 </template>
@@ -229,5 +231,11 @@ const getEventDistance = (event: any, userLat: number, userLon: number): number 
 .v-enter-from,
 .v-leave-to {
     opacity: 0;
+}
+
+@media (max-width: 768px) {
+    .small-btn {
+        font-size: 0.8rem;
+    }
 }
 </style>
