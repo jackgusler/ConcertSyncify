@@ -105,18 +105,20 @@ a {
     font-size: 8rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1400px) {
     .custom-margin-end {
         margin-bottom: 0.6rem;
     }
 
+    .container {
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
     .medium-title {
         font-size: 5rem;
         /* Default size */
-    }
-
-    .container {
-        height: auto;
     }
 }
 </style>
