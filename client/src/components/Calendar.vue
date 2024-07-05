@@ -24,8 +24,7 @@ const fetchAndFormatEvents = async () => {
 
 onMounted(async () => {
     loadingGoogle.value++;
-    const isLogged = await isLoggedInGoogle();
-    loggedIn.value = isLogged;
+    loggedIn.value = await isLoggedInGoogle();
     if (loggedIn.value) {
         await fetchAndFormatEvents();
     } else {

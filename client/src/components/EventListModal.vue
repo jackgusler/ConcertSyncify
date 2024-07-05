@@ -24,11 +24,10 @@ const eventModal = document.getElementById('eventModal');
 
 const emit = defineEmits(['modal-closed']);
 
-const loggedIn = ref(false);
+const loggedIn = ref(true);
 
 onMounted(async () => {
-    const isLogged = await isLoggedInGoogle();
-    loggedIn.value = isLogged;
+    loggedIn.value = await isLoggedInGoogle();
 
     eventModal?.addEventListener('hidden.bs.modal', () => {
         emit('modal-closed');

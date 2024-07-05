@@ -32,8 +32,7 @@ const buttonStyle = ref({
 });
 
 onMounted(async () => {
-    const isLogged = await isLoggedInGoogle();
-    loggedIn.value = isLogged;
+    loggedIn.value = await isLoggedInGoogle();
 });
 
 const buttonProps = computed(() => {

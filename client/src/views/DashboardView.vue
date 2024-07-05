@@ -19,8 +19,7 @@ const genreSearchResults = ref<Genre[]>([]);
 const loggedIn = ref(false);
 
 onMounted(async () => {
-    const isLogged = await isLoggedInGoogle();
-    loggedIn.value = isLogged;
+    loggedIn.value = await isLoggedInGoogle();
 });
 
 const handleEmit = (data: { type: string, events: Event[]; modalTitle: string }) => {

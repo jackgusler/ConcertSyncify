@@ -5,8 +5,7 @@ import { onMounted, ref } from 'vue';
 
 const loggedIn = ref(false)
 onMounted(async () => {
-    const isLogged = await isLoggedInSpotify()
-    loggedIn.value = isLogged
+    loggedIn.value = await isLoggedInSpotify()
 })
 
 </script>
