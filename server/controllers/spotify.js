@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
@@ -9,59 +10,6 @@ const redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const client_url = process.env.CLIENT_URL;
-
-// Utility function to refresh the access token
-async function refreshAccessToken(refreshToken) {
-  const auth_options = {
-    url: "https://accounts.spotify.com/api/token",
-    form: {
-      grant_type: "refresh_token",
-      refresh_token: refreshToken,
-    },
-    headers: {
-      Authorization:
-        "Basic " +
-        Buffer.from(client_id + ":" + client_secret).toString("base64"),
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  };
-
-  try {
-    const response = await axios.post(
-      auth_options.url,
-      querystring.stringify(auth_options.form),
-      { headers: auth_options.headers }
-    );
-    const { access_token, refresh_token: new_refresh_token } = response.data;
-    cache.set(
-      "spotify_tokens",
-      { access_token, refresh_token: new_refresh_token || refreshToken },
-      3600
-    );
-    return access_token;
-  } catch (error) {
-    console.error("Error refreshing access token:", error.message);
-    throw new Error("Unable to refresh access token");
-  }
-}
-
-// Middleware to ensure valid access token
-async function ensureAccessToken(req, res, next) {
-  let tokens = cache.get("spotify_tokens");
-  let access_token = tokens ? tokens.access_token : null;
-  const refresh_token = tokens ? tokens.refresh_token : null;
-
-  if (!access_token && refresh_token) {
-    try {
-      access_token = await refreshAccessToken(refresh_token);
-    } catch (error) {
-      return res.status(401).send("Unable to refresh access token");
-    }
-  }
-
-  req.access_token = access_token;
-  next();
-}
 
 router.get("/login", (req, res) => {
   const scope = "user-read-private user-read-email user-top-read";
@@ -84,7 +32,6 @@ router.get("/callback", async (req, res) => {
       "Content-Type": "application/x-www-form-urlencoded",
     },
   };
-
   try {
     const response = await axios.post(
       auth_options.url,
@@ -95,7 +42,7 @@ router.get("/callback", async (req, res) => {
     cache.set("spotify_tokens", { access_token, refresh_token }, 3600);
     res.redirect(`${client_url}/dashboard`);
   } catch (error) {
-    console.error("Error during callback:", error.message);
+    console.error("Error during callback:", error);
     res.redirect(`${client_url}/error`);
   }
 });
@@ -124,8 +71,9 @@ router.get("/logged-in", async (req, res) => {
   }
 });
 
-router.get("/top-artists", ensureAccessToken, async (req, res) => {
-  const access_token = req.access_token;
+router.get("/top-artists", async (req, res) => {
+  const tokens = cache.get("spotify_tokens");
+  const access_token = tokens ? tokens.access_token : null;
   if (!access_token) {
     return res.status(401).send("Unauthorized");
   }
@@ -148,17 +96,16 @@ router.get("/top-artists", ensureAccessToken, async (req, res) => {
     );
 
     cache.set(cacheKey, response.data, 3600);
+
     res.json(response.data);
   } catch (error) {
-    if (error.response && error.response.status === 429) {
-      return res.status(429).send("Too many requests");
-    }
     res.status(500).send(error.message);
   }
 });
 
-router.get("/top-genres", ensureAccessToken, async (req, res) => {
-  const access_token = req.access_token;
+router.get("/top-genres", async (req, res) => {
+  const tokens = cache.get("spotify_tokens");
+  const access_token = tokens ? tokens.access_token : null;
   if (!access_token) {
     return res.status(401).send("Unauthorized");
   }
@@ -207,7 +154,7 @@ router.get("/top-genres", ensureAccessToken, async (req, res) => {
         })
         .then((response) => ({ genre, artist: response.data.artists.items[0] }))
         .catch((error) => {
-          console.error(`Error searching for genre ${genre}:`, error.message);
+          console.error(`Error searching for genre ${genre}:`, error);
           return { genre, artist: null };
         })
     );
@@ -217,16 +164,15 @@ router.get("/top-genres", ensureAccessToken, async (req, res) => {
     let top10Genres = genreArtistMap.slice(0, 10);
 
     cache.set(topGenresCacheKey, top10Genres, 3600);
+
     res.json({ genres: top10Genres });
   } catch (error) {
-    if (error.response && error.response.status === 429) {
-      return res.status(429).send("Too many requests");
-    }
+    console.error("Error fetching top genres:", error);
     res.status(500).send(error.message);
   }
 });
 
-router.get("/search", ensureAccessToken, async (req, res) => {
+router.get("/search", async (req, res) => {
   let { q, type = "artist" } = req.query;
   if (!q) {
     return res.status(400).send("Missing query parameter 'q'");
@@ -237,7 +183,8 @@ router.get("/search", ensureAccessToken, async (req, res) => {
     isGenreSearch = true;
   }
 
-  const access_token = req.access_token;
+  const tokens = cache.get("spotify_tokens");
+  const access_token = tokens ? tokens.access_token : null;
   if (!access_token) {
     return res.status(401).send("Unauthorized");
   }
@@ -273,9 +220,6 @@ router.get("/search", ensureAccessToken, async (req, res) => {
       res.json(items.slice(0, 10));
     }
   } catch (error) {
-    if (error.response && error.response.status === 429) {
-      return res.status(429).send("Too many requests");
-    }
     res.status(500).send(error.message);
   }
 });
