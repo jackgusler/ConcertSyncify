@@ -11,10 +11,12 @@ const spotify_controller = require("./controllers/spotify");
 const ticketmaster_controller = require("./controllers/ticketmaster");
 const google_controller = require("./controllers/google");
 
+const clientUrl = process.env.CLIENT_URL || 'https://concert-syncify.vercel.app';
+
 app
   .use(
     cors({
-      origin: process.env.CLIENT_URL,
+      origin: clientUrl,
       credentials: true,
     })
   )
