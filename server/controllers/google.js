@@ -11,6 +11,8 @@ const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_REDIRECT_URI
 );
 
+const client_url = process.env.CLIENT_URL;
+
 const SCOPES = ["https://www.googleapis.com/auth/calendar"];
 
 router.get("/login", (req, res) => {
@@ -27,9 +29,9 @@ router.get("/callback", async (req, res) => {
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
     cache.set("google_tokens", tokens, 3600);
-    res.redirect("http://localhost:5173/dashboard");
+    res.redirect(`${client_url}/dashboard`);
   } catch (error) {
-    res.redirect("http://localhost:5173/error");
+    res.redirect(`${client_url}/error`);
   }
 });
 

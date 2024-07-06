@@ -9,6 +9,7 @@ const cache = require("../cache");
 const redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+const client_url = process.env.CLIENT_URL;
 
 router.get("/login", (req, res) => {
   const scope = "user-read-private user-read-email user-top-read";
@@ -39,10 +40,10 @@ router.get("/callback", async (req, res) => {
     );
     const { access_token, refresh_token } = response.data;
     cache.set("spotify_tokens", { access_token, refresh_token }, 3600);
-    res.redirect("http://localhost:5173/dashboard");
+    res.redirect(`${client_url}/dashboard`);
   } catch (error) {
     console.error("Error during callback:", error);
-    res.redirect("http://localhost:5173/error");
+    res.redirect(`${client_url}/error`);
   }
 });
 
