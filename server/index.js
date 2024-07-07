@@ -1,8 +1,10 @@
 require("dotenv").config();
 
 const express = require("express");
+const session = require("express-session");
 const cors = require("cors");
 const path = require("path");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -16,11 +18,20 @@ app
   .use(express.static(path.join(__dirname, "../client/dist/")))
   .use(
     cors({
-      origin: "*",
+      origin: process.env.CLIENT_URL,
       credentials: true,
     })
   )
   .use(express.json())
+  .use(
+    session({
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: true,
+      cookie: { secure: false }, // Set secure: true if you are using HTTPS
+    })
+  )
+  .use(cookieParser())
   .use("/util", util_controller)
   .use("/api/spotify", spotify_controller)
   .use("/api/ticketmaster", ticketmaster_controller)
