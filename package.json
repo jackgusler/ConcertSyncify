@@ -1,6 +1,9 @@
 {
-    "scripts": {
-        "build": "npm i --production && cd server && npm i && cd .. && cd client && npm i && npm run build",
-        "start": "node server/index.js"
-    }
+  "scripts": {
+    "build": "npm i --production && cd server && npm i && cd .. && cd client && npm i && npm run build",
+    "start": "node server/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.5"
+  }
 }
