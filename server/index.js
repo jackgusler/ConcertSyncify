@@ -28,7 +28,7 @@ app
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: true,
-      cookie: { secure: false }, // Set secure: true if you are using HTTPS
+      cookie: { secure: process.env.NODE_ENV === "production" },
     })
   )
   .use(cookieParser())
