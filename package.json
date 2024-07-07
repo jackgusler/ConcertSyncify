@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "",
   "scripts": {
-    "build": "npm i --production && cd server && npm i && cd .. && cd client && npm i && npm run build",
+    "build": "npm i && cd server && npm i && cd .. && cd client && npm i && npm run build",
     "start": "node server/index.js"
   },
   "engines": {
