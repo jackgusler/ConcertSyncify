@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "build": "npm i --production && cd server && npm i && cd.. && cd client && npm i && npm run build",
+        "build": "npm i --production && cd server && npm i && cd .. && cd client && npm i && npm run build",
         "start": "node server/index.js"
     }
 }
