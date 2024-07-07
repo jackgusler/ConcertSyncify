@@ -16,7 +16,7 @@ app
   .use(express.static(path.join(__dirname, "../client/dist/")))
   .use(
     cors({
-      origin: process.env.CLIENT_URL,
+      origin: "*",
       credentials: true,
     })
   )
