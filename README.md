@@ -3,13 +3,45 @@
 Concert Syncify is a web application that integrates Spotify, Ticketmaster, and Google Calendar to help users track and manage upcoming concerts of their favorite artists. Users can view their top artists and genres, search for artists and genres, and add events to their Google Calendar.
 
 ## Table of Contents
-1. [Installation](#installation)
-2. [Configuration](#configuration)
-3. [Usage](#usage)
+1. [Screenshots](#screenshots)
+2. [Demo](#demo)
+3. [Technologies](#technologies)
+4. [Installation](#installation)
+5. [Configuration](#configuration)
+6. [Usage](#usage)
    - [Authentication](#authentication)
    - [Search](#search)
    - [Event Management](#event-management)
-4. [License](#license)
+7. [License](#license)
+
+## Screenshots
+
+![Main Page](screenshots/MainPage.png)
+![Dashboard](screenshots/Dashboard.png)
+![Search Results](screenshots/Search.png)
+![Multiple Events Selected](screenshots/MultiEventsSelected.png)
+![Event Added to Calendar](screenshots/EventAdded.png)
+
+## Demo
+
+As this app is a project and not in production, I still chose to host it on Render. You can view the live demo [here](https://concertsyncify.onrender.com/), but you will need to send me your Spotify and Google emails to be added to the whitelist, including your full name. You can email me at jackgusler16@yahoo.com. If that's too much, you can follow the installation steps below to run it locally, or view the demo video below.
+
+<video width="320" height="240" controls>
+  <source src="demo/ConcertSyncifyDemo.mkv" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+## Technologies
+- Node.js
+- Express
+- Vue.js
+- Bootstrap
+- JWT
+- OAuth 2.0
+- Axios
+- Spotify API
+- Ticketmaster API
+- Google Calendar API
 
 ## Installation
 
