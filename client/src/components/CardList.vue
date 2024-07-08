@@ -27,6 +27,8 @@ const top = ref(0);
 let scrollInterval: number | null | undefined = null;
 const containerWidth = ref(0);
 const modalContainerWidth = ref(0);
+const startX = ref(0);
+const startScroll = ref(0);
 
 const eventModal = document.getElementById('eventModal');
 
@@ -237,10 +239,74 @@ const handleEmit = (data: { type: string, events: Event[]; modalTitle: string })
 function handleEmitEvent(event: Event) {
     emit('data', event);
 }
+
+// Drag functionality
+const handleMouseDown = (event: MouseEvent) => {
+    startX.value = event.clientX;
+    startScroll.value = centerIndex.value;
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+};
+
+const handleMouseMove = (event: MouseEvent) => {
+    const diffX = event.clientX - startX.value;
+    const moveThreshold = props.events ? modalContainerWidth.value / 6 : containerWidth.value / 6; // Adjust this value to control sensitivity
+
+    const maxIndex = props.type === 'artist' ? allArtists.value.length - 1
+        : props.type === 'genre' ? allGenres.value.length - 1
+            : props.events ? props.events.length - 1
+                : 0;
+
+    if (diffX > moveThreshold && centerIndex.value > 0) {
+        centerIndex.value--;
+        startX.value = event.clientX;
+    } else if (diffX < -moveThreshold && centerIndex.value < maxIndex) {
+        centerIndex.value++;
+        startX.value = event.clientX;
+    }
+};
+
+const handleMouseUp = () => {
+    window.removeEventListener('mousemove', handleMouseMove);
+    window.removeEventListener('mouseup', handleMouseUp);
+};
+
+// Touch functionality
+const handleTouchStart = (event: TouchEvent) => {
+    startX.value = event.touches[0].clientX;
+    startScroll.value = centerIndex.value;
+    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener('touchend', handleTouchEnd);
+};
+
+const handleTouchMove = (event: TouchEvent) => {
+    const diffX = event.touches[0].clientX - startX.value;
+    const moveThreshold = props.events ? modalContainerWidth.value / 6 : containerWidth.value / 6; // Adjust this value to control sensitivity
+
+    const maxIndex = props.type === 'artist' ? allArtists.value.length - 1
+        : props.type === 'genre' ? allGenres.value.length - 1
+            : props.events ? props.events.length - 1
+                : 0;
+
+    if (diffX > moveThreshold && centerIndex.value > 0) {
+        centerIndex.value--;
+        startX.value = event.touches[0].clientX;
+    } else if (diffX < -moveThreshold && centerIndex.value < maxIndex) {
+        centerIndex.value++;
+        startX.value = event.touches[0].clientX;
+    }
+};
+
+const handleTouchEnd = () => {
+    window.removeEventListener('touchmove', handleTouchMove);
+    window.removeEventListener('touchend', handleTouchEnd);
+};
+
 </script>
 
 <template>
-    <div class="row mt-2 align-items-center justify-content-center">
+    <div class="row mt-2 align-items-center justify-content-center" @mousedown="handleMouseDown"
+        @touchstart="handleTouchStart">
         <Transition>
             <div v-if="(props.type === 'artist' && loadingArtists) || (props.type === 'genre' && loadingGenres)"
                 class="loading-container rounded-3">

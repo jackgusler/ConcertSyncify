@@ -22,7 +22,8 @@ onMounted(async () => {
 
         <div class="row mb-md-2 h-100">
             <div class="col-md-4 mb-md-0 mb-2">
-                <div class="box h-100 p-lg-5 p-3 rounded-3">
+                <div
+                    class="box h-100 p-lg-5 p-3 rounded-3 d-flex flex-column justify-content-center align-items-center">
                     <h1>Discover New Music Events</h1>
                     <p class="fs-4 mb-md-1 mb-0">Never miss a concert again. Discover events for your favorite artists
                         and genres, or
@@ -31,9 +32,9 @@ onMounted(async () => {
                 </div>
             </div>
             <div class="col-md-4 px-md-0 mb-md-0 mb-2">
-                <div class="box h-100 rounded-3 d-flex flex-column align-items-center">
+                <div class="box h-100 rounded-3 d-flex flex-column align-items-center justify-content-center">
                     <img :src="logo" alt="Spotify Logo" class="img-fluid mb-3">
-                    <div class="p-3 d-flex flex-column">
+                    <div class="p-3 d-flex flex-column align-items-center">
                         <button v-if="!loggedIn" @click="spotifyLogin" class="btn btn-success mb-2">
                             Login with Spotify
                         </button>
@@ -45,7 +46,8 @@ onMounted(async () => {
                 </div>
             </div>
             <div class="col-md-4 mb-md-0 mb-2">
-                <div class="box h-100 p-lg-5 p-3 rounded-3">
+                <div
+                    class="box h-100 p-lg-5 p-3 rounded-3 d-flex flex-column justify-content-center align-items-center">
                     <h1>Easy Calendar Integration</h1>
                     <p class="fs-4 mb-md-1 mb-0">Add events directly to your Google Calendar with just a click. Stay
                         organized
