@@ -1,7 +1,6 @@
 require("dotenv").config();
 
 const express = require("express");
-const session = require("express-session");
 const cors = require("cors");
 const path = require("path");
 const cookieParser = require("cookie-parser");
@@ -23,14 +22,6 @@ app
     })
   )
   .use(express.json())
-  .use(
-    session({
-      secret: process.env.SESSION_SECRET,
-      resave: false,
-      saveUninitialized: true,
-      cookie: { secure: process.env.NODE_ENV === "production" },
-    })
-  )
   .use(cookieParser())
   .use("/util", util_controller)
   .use("/api/spotify", spotify_controller)

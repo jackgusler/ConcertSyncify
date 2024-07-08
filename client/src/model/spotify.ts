@@ -1,5 +1,6 @@
 import axios from '../myAxios'
 import router from '@/router'
+import { loadingArtists } from './util'
 
 export interface Artist {
   external_urls: {
@@ -28,12 +29,24 @@ export interface Genre {
   artist: Artist
 }
 
+// Function to get the token from the URL or localStorage
+const getToken = () => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const token = urlParams.get('token')
+  if (token) {
+    localStorage.setItem('spotify_token', token)
+    window.history.replaceState({}, document.title, window.location.pathname) // Remove the token from the URL
+  }
+  return localStorage.getItem('spotify_token')
+}
+
 export const spotifyLogin = async () => {
   window.location.href = axios.defaults.baseURL + '/api/spotify/login'
 }
 
 export const spotifyLogout = async () => {
   try {
+    localStorage.clear()
     const response = await axios.get('/api/spotify/logout')
     window.location.reload()
     router.push(response.data.redirectUrl)
@@ -42,19 +55,18 @@ export const spotifyLogout = async () => {
   }
 }
 
-export const isLoggedInSpotify = async () => {
-  try {
-    const response = await axios.get('/api/spotify/logged-in')
-    return response.data.logged_in
-  } catch (error) {
-    console.error('Error checking login status:', error)
-    return false
-  }
+export const isLoggedInSpotify = () => {
+  const token = getToken()
+  if (!token) return false
+  else return true
 }
 
 export const getTopArtists = async () => {
   try {
-    const response = await axios.get('/api/spotify/top-artists')
+    const token = getToken()
+    const response = await axios.get('/api/spotify/top-artists', {
+      params: { token }
+    })
     return response.data.items
   } catch (error) {
     console.error('Error fetching top artists:', error)
@@ -63,7 +75,10 @@ export const getTopArtists = async () => {
 
 export const getTopGenres = async () => {
   try {
-    const response = await axios.get('/api/spotify/top-genres')
+    const token = getToken()
+    const response = await axios.get('/api/spotify/top-genres', {
+      params: { token }
+    })
     return response.data.genres
   } catch (error) {
     console.error('Error fetching top genres:', error)
@@ -72,11 +87,9 @@ export const getTopGenres = async () => {
 
 export const searchSpotify = async (q: string, type: string) => {
   try {
+    const token = getToken()
     const response = await axios.get('/api/spotify/search', {
-      params: {
-        q,
-        type
-      }
+      params: { q, type, token }
     })
     return response.data
   } catch (error) {

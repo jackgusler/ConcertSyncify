@@ -93,8 +93,11 @@ const sortByDate = () => {
 
 const sortByDistance = async () => {
     handleLoading("event", '+');
-    const cachedLatitude = await getCachedData("latitude");
-    const cachedLongitude = await getCachedData("longitude");
+    const token = localStorage.getItem('token');
+
+    const cachedLatitude = await getCachedData(`latitude${token}`);
+    const cachedLongitude = await getCachedData(`longitude${token}`);
+
     if (cachedLatitude && cachedLongitude) {
         distanceSort(cachedLatitude, cachedLongitude);
     } else if ("geolocation" in navigator) {
@@ -102,10 +105,12 @@ const sortByDistance = async () => {
             const position = await new Promise<GeolocationPosition>((resolve, reject) => {
                 navigator.geolocation.getCurrentPosition(resolve, reject);
             });
+
             const { latitude, longitude } = position.coords;
-            setCachedData("latitude", latitude);
-            setCachedData("longitude", longitude);
+            setCachedData(`latitude${token}`, latitude);
+            setCachedData(`longitude${token}`, longitude);
             distanceSort(latitude, longitude);
+            
         } catch (error) {
             console.error("Error getting location:", error);
             // Handle location errors (e.g., user denied location access)

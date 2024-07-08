@@ -9,7 +9,7 @@ const consumer_key = process.env.TICKETMASTER_CONSUMER_KEY;
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const fetchWithRetry = async (url, retries = 3, delayTime = 1000) => {
+const fetchWithRetry = async (url, retries = 5, delayTime = 1000) => {
   for (let i = 0; i < retries; i++) {
     try {
       const response = await axios.get(url);

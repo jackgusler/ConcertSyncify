@@ -28,7 +28,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
-  const isLogged = await isLoggedInSpotify()
+  const isLogged = isLoggedInSpotify()
 
   if (requiresAuth && !isLogged) {
     next('/')

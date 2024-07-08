@@ -179,13 +179,28 @@ export interface GoogleEventInput {
   eventId: string
 }
 
+const getToken = () => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const token = urlParams.get('google_token')
+  if (token) {
+    localStorage.setItem('google_token', token)
+    window.history.replaceState({}, document.title, window.location.pathname) // Remove the token from the URL
+  }
+  return localStorage.getItem('google_token')
+}
+
 export const googleLogin = async () => {
   window.location.href = axios.defaults.baseURL + '/api/google/login'
 }
 
 export const googleLogout = async () => {
   try {
-    const response = await axios.get('/api/google/logout')
+    const response = await axios.get('/api/google/logout', {
+      headers: {
+        Authorization: `Bearer ${getToken()}`
+      }
+    })
+    localStorage.removeItem('google_token')
     router.push(response.data.redirectUrl)
     window.location.reload()
   } catch (error) {
@@ -193,19 +208,19 @@ export const googleLogout = async () => {
   }
 }
 
-export const isLoggedInGoogle = async () => {
-  try {
-    const response = await axios.get('/api/google/logged-in')
-    return response.data.logged_in
-  } catch (error) {
-    console.error('Error checking login status:', error)
-    return false
-  }
+export const isLoggedInGoogle = () => {
+  const token = getToken()
+  if (!token) return false
+  else return true
 }
 
 export const getGoogleEvents = async () => {
   try {
-    const response = await axios.get('/api/google/events')
+    const response = await axios.get('/api/google/events', {
+      headers: {
+        Authorization: `Bearer ${getToken()}`
+      }
+    })
     return response.data.items
   } catch (error) {
     console.error('Error fetching events:', error)
@@ -215,7 +230,11 @@ export const getGoogleEvents = async () => {
 
 export const createGoogleEvent = async (event: GoogleEventInput) => {
   try {
-    const response = await axios.post('/api/google/create-event', event)
+    const response = await axios.post('/api/google/create-event', event, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`
+      }
+    })
     return response.data
   } catch (error) {
     console.error('Error creating Google event:', error)
@@ -224,10 +243,12 @@ export const createGoogleEvent = async (event: GoogleEventInput) => {
 }
 
 export const googleEventExists = async (eventId: string) => {
+  if (!isLoggedInGoogle()) return false
   try {
     const response = await axios.get('/api/google/event-exists', {
-      params: {
-        eventId
+      params: { eventId },
+      headers: {
+        Authorization: `Bearer ${getToken()}`
       }
     })
     return response.data.exists
@@ -240,8 +261,9 @@ export const googleEventExists = async (eventId: string) => {
 export const deleteGoogleEvent = async (eventId: string) => {
   try {
     const response = await axios.delete('/api/google/delete-event', {
-      data: {
-        eventId
+      data: { eventId },
+      headers: {
+        Authorization: `Bearer ${getToken()}`
       }
     })
     return response.data

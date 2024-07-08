@@ -4,6 +4,7 @@ const express = require("express");
 const router = express.Router();
 const cache = require("../cache");
 const { google } = require("googleapis");
+const jwt = require("jsonwebtoken");
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -12,52 +13,76 @@ const oauth2Client = new google.auth.OAuth2(
 );
 
 const client_url = process.env.CLIENT_URL;
+const jwt_secret = process.env.JWT_SECRET;
 
 const SCOPES = ["https://www.googleapis.com/auth/calendar"];
 
 router.get("/login", (req, res) => {
+  const state = jwt.sign({}, jwt_secret, { expiresIn: "15m" });
+  res.cookie("google_auth_state", state);
+
   const auth_url = oauth2Client.generateAuthUrl({
     access_type: "offline",
     scope: SCOPES,
+    state: state,
   });
   res.redirect(auth_url);
 });
 
 router.get("/callback", async (req, res) => {
-  const { code } = req.query;
+  const { code, state } = req.query;
+  const storedState = req.cookies ? req.cookies["google_auth_state"] : null;
+
+  try {
+    jwt.verify(state, jwt_secret);
+  } catch (err) {
+    res.redirect(`${client_url}/error?error=state_mismatch`);
+    return;
+  }
+
+  if (state === null || state !== storedState) {
+    res.redirect(`${client_url}/error?error=state_mismatch`);
+    return;
+  }
+
+  res.clearCookie("google_auth_state");
+
   try {
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
-    cache.set("google_tokens", tokens, 3600);
-    res.redirect(`${client_url}/dashboard`);
+
+    // Generate JWT containing access and refresh tokens
+    const token = jwt.sign(tokens, jwt_secret, { expiresIn: "1h" });
+
+    // Store the token in local storage
+    res.redirect(`${client_url}/dashboard?google_token=${token}`);
   } catch (error) {
     res.redirect(`${client_url}/error`);
   }
 });
 
 router.get("/logout", (req, res) => {
-  cache.del("google_tokens");
+  res.clearCookie("google_auth_state");
   res.json({ redirectUrl: "/dashboard" });
 });
 
-router.get("/logged-in", async (req, res) => {
-  const tokens = cache.get("google_tokens");
-  if (!tokens) {
-    return res.json({ logged_in: false });
+// Middleware to extract token from query or headers
+const extractToken = (req, res, next) => {
+  const token =
+    req.query.google_token || req.headers["authorization"]?.split(" ")[1];
+  if (!token) {
+    return res.status(401).send("Unauthorized");
   }
-
-  oauth2Client.setCredentials(tokens);
-
   try {
-    await oauth2Client.getAccessToken();
-    res.json({ logged_in: true });
-  } catch (error) {
-    res.json({ logged_in: false });
+    req.user = jwt.verify(token, jwt_secret);
+    next();
+  } catch (err) {
+    return res.status(401).send("Unauthorized");
   }
-});
+};
 
-router.get("/events", async (req, res) => {
-  const tokens = cache.get("google_tokens");
+router.get("/events", extractToken, async (req, res) => {
+  const tokens = req.user;
   if (!tokens) {
     return res.status(401).send("Unauthorized");
   }
@@ -76,8 +101,11 @@ router.get("/events", async (req, res) => {
 
     response.data.items.forEach((event) => {
       const eventId = event.extendedProperties?.private?.eventId;
-      if (eventId && !cache.has(eventId)) {
-        cache.set(eventId, event.id, 3600);
+      if (eventId) {
+        const uniqueKey = `${eventId}-${tokens}`;
+        if (!cache.has(uniqueKey)) {
+          cache.set(uniqueKey, event.id, 3600);
+        }
       }
     });
 
@@ -87,9 +115,9 @@ router.get("/events", async (req, res) => {
   }
 });
 
-router.post("/create-event", async (req, res) => {
+router.post("/create-event", extractToken, async (req, res) => {
   const { summary, description, location, start, timeZone, eventId } = req.body;
-  const tokens = cache.get("google_tokens");
+  const tokens = req.user;
   if (!tokens) {
     return res.status(401).send("Unauthorized");
   }
@@ -125,33 +153,41 @@ router.post("/create-event", async (req, res) => {
       calendarId: "primary",
       resource: event,
     });
-    const validEventId = String(eventId);
-    cache.set(validEventId, response.data.id, 3600);
+    const eventResponseId = String(response.data.id); // Renamed variable
+    const uniqueKey = `${eventId}-${tokens}`; // Use the eventId from req.body
+    cache.set(uniqueKey, eventResponseId, 3600); // Use the renamed variable
     res.status(200).send(response.data);
   } catch (error) {
+    console.error("Error creating event:", error);
     res.status(500).send("Error creating event: " + error.message);
   }
 });
 
-router.get("/event-exists", async (req, res) => {
+router.get("/event-exists", extractToken, async (req, res) => {
   const { eventId } = req.query;
-  const googleEventId = cache.get(eventId);
+  const tokens = req.user;
+  if (!tokens) {
+    return res.status(401).send("Unauthorized");
+  }
+
+  const uniqueKey = `${eventId}-${tokens}`;
+  const googleEventId = cache.get(uniqueKey);
   if (!googleEventId) {
     return res.json({ exists: false });
   }
   res.json({ exists: true });
 });
 
-router.delete("/delete-event", async (req, res) => {
+router.delete("/delete-event", extractToken, async (req, res) => {
   const { eventId } = req.body;
-  const googleEventId = cache.get(eventId);
-  if (!googleEventId) {
-    return res.status(404).send("Event not found");
-  }
-
-  const tokens = cache.get("google_tokens");
+  const tokens = req.user;
   if (!tokens) {
     return res.status(401).send("Unauthorized");
+  }
+  const uniqueKey = `${eventId}-${tokens}`;
+  const googleEventId = cache.get(uniqueKey);
+  if (!googleEventId) {
+    return res.status(404).send("Event not found");
   }
 
   oauth2Client.setCredentials(tokens);
@@ -163,7 +199,8 @@ router.delete("/delete-event", async (req, res) => {
       calendarId: "primary",
       eventId: googleEventId,
     });
-    cache.del(eventId);
+    const uniqueKey = `${eventId}-${tokens}`;
+    cache.del(uniqueKey);
     res.status(200).send("Event deleted successfully");
   } catch (error) {
     console.error(

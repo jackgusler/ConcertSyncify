@@ -20,27 +20,12 @@ export const handleLoading = (type: string, sign: string) => {
   }
 }
 
-export const getCachedData = async (key: string) => {
-  try {
-    const response = await axios.get('/util/get-cache', {
-      params: {
-        key
-      }
-    })
-    return response.data
-  } catch (error) {
-    console.error('Error fetching cached data:', error)
-  }
+export const getCachedData = (key: string) => {
+  const data = localStorage.getItem(key)
+  return data ? JSON.parse(data) : null
 }
 
-export const setCachedData = async (key: string, data: any) => {
-  try {
-    const response = await axios.post('/util/set-cache', {
-      key,
-      value: data
-    })
-    return response
-  } catch (error) {
-    console.error('Error setting cached data:', error)
-  }
+export const setCachedData = (key: string, data: any) => {
+  localStorage.setItem(key, JSON.stringify(data))
+  console.log(localStorage.getItem(key))
 }
