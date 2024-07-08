@@ -8,26 +8,42 @@ Concert Syncify is a web application that integrates Spotify, Ticketmaster, and 
 2. [Demo](#demo)
 3. [Technologies](#technologies)
 4. [Installation](#installation)
+    - [Prerequisites](#prerequisites)
+    - [Steps](#steps)
 5. [Configuration](#configuration)
 6. [Usage](#usage)
    - [Authentication](#authentication)
+        - [Spotify Login](#spotify-login)
+        - [Google Calendar Login](#google-calendar-login)
    - [Search](#search)
    - [Event Management](#event-management)
 7. [License](#license)
 
 ## Screenshots
 
-<img src="screenshots/MainPage.png" width="250"/>
-<img src="screenshots/Dashboard.png" width="250"/>
-<img src="screenshots/Search.png" width="250"/>
-<img src="screenshots/MultiEventsSelected.png" width="250"/>
-<img src="screenshots/EventAdded.png" width="250"/>
+<div style="text-align:center;">
+  <img src="screenshots/MainPage.png" width="800"/>
+</div>
+
+<div style="text-align:center;">
+  <img src="screenshots/Dashboard.png" width="400"/>
+  <img src="screenshots/Search.png" width="400"/>
+</div>
+
+<div style="text-align:center;">
+  <img src="screenshots/MultiEventsSelected.png" width="400"/>
+  <img src="screenshots/EventAdded.png" width="400"/>
+</div>
 
 ## Demo
 
 As this app is a project and not in production, I still chose to host it on Render. You can view the live demo [here](https://concertsyncify.onrender.com/), but you will need to send me your Spotify and Google emails to be added to the whitelist, including your full name. You can email me at jackgusler16@yahoo.com. If that's too much, you can follow the installation steps below to run it locally, or click on the image below to view the demo video.
 
-[![Demo Video](screenshots/MainPage.png)](https://drive.google.com/file/d/13nZrZMZnmrnUyVYgsS3x6zKtLn4PIJ7r/view?usp=sharing)
+<div style="text-align: center;">
+    <a href="https://drive.google.com/file/d/13nZrZMZnmrnUyVYgsS3x6zKtLn4PIJ7r/view?usp=sharing">
+        <img src="screenshots/MainPage.png" width="800" alt="Demo Video"/>
+    </a>
+</div>
 
 ## Technologies
 
@@ -86,7 +102,7 @@ VITE_API_ROOT=http://localhost:3000
 Create a `.env` file in the server directory and add the following environment variables:
 
 ```env
-CLIENT_URL=your_client_url
+CLIENT_URL=http://localhost:5173
 
 SPOTIFY_CLIENT_ID=your_spotify_client_id
 SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
