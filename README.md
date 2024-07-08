@@ -3,6 +3,7 @@
 Concert Syncify is a web application that integrates Spotify, Ticketmaster, and Google Calendar to help users track and manage upcoming concerts of their favorite artists. Users can view their top artists and genres, search for artists and genres, and add events to their Google Calendar.
 
 ## Table of Contents
+
 1. [Screenshots](#screenshots)
 2. [Demo](#demo)
 3. [Technologies](#technologies)
@@ -16,22 +17,20 @@ Concert Syncify is a web application that integrates Spotify, Ticketmaster, and 
 
 ## Screenshots
 
-![Main Page](screenshots/MainPage.png)
-![Dashboard](screenshots/Dashboard.png)
-![Search Results](screenshots/Search.png)
-![Multiple Events Selected](screenshots/MultiEventsSelected.png)
-![Event Added to Calendar](screenshots/EventAdded.png)
+<img src="screenshots/MainPage.png" width="250"/>
+<img src="screenshots/Dashboard.png" width="250"/>
+<img src="screenshots/Search.png" width="250"/>
+<img src="screenshots/MultiEventsSelected.png" width="250"/>
+<img src="screenshots/EventAdded.png" width="250"/>
 
 ## Demo
 
-As this app is a project and not in production, I still chose to host it on Render. You can view the live demo [here](https://concertsyncify.onrender.com/), but you will need to send me your Spotify and Google emails to be added to the whitelist, including your full name. You can email me at jackgusler16@yahoo.com. If that's too much, you can follow the installation steps below to run it locally, or view the demo video below.
+As this app is a project and not in production, I still chose to host it on Render. You can view the live demo [here](https://concertsyncify.onrender.com/), but you will need to send me your Spotify and Google emails to be added to the whitelist, including your full name. You can email me at jackgusler16@yahoo.com. If that's too much, you can follow the installation steps below to run it locally, or click on the image below to view the demo video.
 
-<video width="320" height="240" controls>
-  <source src="demo/ConcertSyncifyDemo.mkv" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+[![Demo Video](screenshots/MainPage.png)](https://drive.google.com/file/d/13nZrZMZnmrnUyVYgsS3x6zKtLn4PIJ7r/view?usp=sharing)
 
 ## Technologies
+
 - Node.js
 - Express
 - Vue.js
@@ -46,6 +45,7 @@ As this app is a project and not in production, I still chose to host it on Rend
 ## Installation
 
 ### Prerequisites
+
 - Node.js
 - npm
 - Spotify Developer Account
@@ -53,24 +53,28 @@ As this app is a project and not in production, I still chose to host it on Rend
 - Google Developer Account
 
 ### Steps
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/jackgusler/ConcertSyncify.git
-    ```
-2. Install dependencies for the client and start the development server:
-    ```sh
-    cd client
-    npm install
-    npm run dev
-    ```
-    Leave this terminal running.
 
-4. Open a new terminal, navigate to the server directory, install dependencies, and start the server:
-    ```sh
-    cd server
-    npm install
-    npm start
-    ```
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/jackgusler/ConcertSyncify.git
+   ```
+2. Install dependencies for the client and start the development server:
+
+   ```sh
+   cd client
+   npm install
+   npm run dev
+   ```
+
+   Leave this terminal running.
+
+3. Open a new terminal, navigate to the server directory, install dependencies, and start the server:
+   ```sh
+   cd server
+   npm install
+   npm start
+   ```
+
 ## Configuration
 
 Create a `.env` file in the client directory and add the following environment variables:
@@ -101,15 +105,19 @@ GOOGLE_REDIRECT_URI=http://localhost:3000/api/google/callback
 ### Authentication
 
 #### Spotify Login
+
 To log in with Spotify, click the "Login with Spotify" button on the homepage. You will be redirected to Spotify's authentication page. After logging in, you will be redirected back to the dashboard.
 
 #### Google Calendar Login
+
 To log in with Google Calendar, click the "Login with Google" button on the dashboard. You will be redirected to Google's authentication page. After logging in, you will be redirected back to the dashboard.
 
 ### Search
+
 On the dashboard, use the search bar to find your favorite artists or genres. Click on a result to view the top events.
 
 ### Event Management
+
 - **Viewing Events:** Select an artist or genre to view their upcoming events.
 - **Adding Events to Google Calendar:** Select events and click "Add to Calendar" to add them to your Google Calendar.
 - **Removing Events:** Click the "Remove" button to remove an event from your Google Calendar.
