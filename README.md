@@ -1,6 +1,7 @@
 # Concert Syncify
 
 Concert Syncify is a web application that integrates Spotify, Ticketmaster, and Google Calendar to help users track and manage upcoming concerts of their favorite artists. Users can view their top artists and genres, search for artists and genres, and add events to their Google Calendar.
+I realize this may seem impractical since Spotify already has its own event feature, but I undertook this project as a learning experience. I believe I am more proficient in frontend development, so I challenged myself with more backend coding. My goal was to integrate as many public APIs as possible while keeping the project relatively small and manageable.
 
 ## Table of Contents
 
