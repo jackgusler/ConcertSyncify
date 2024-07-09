@@ -48,6 +48,7 @@ As this app is a project and not in production, I still chose to host it on Rend
 - Vue.js
 - Bootstrap
 - Render
+- Jira
 - JWT
 - OAuth 2.0
 - Axios
