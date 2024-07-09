@@ -44,7 +44,7 @@ As this app is a project and not in production, I still chose to host it on Rend
 ## Technologies
 
 - Node.js
-- Express.js
+- Express
 - Vue.js
 - Bootstrap
 - Render
